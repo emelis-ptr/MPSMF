@@ -1,2 +1,2 @@
-# MPSMF
-Progetto: Metodi Probbailistici e Statistici per i Mercati Finanziari
+# Metodi Probabilistici e Statistici per i Mercati Finanziari
+
