@@ -1,18 +1,18 @@
 "Progetto di Metodi Probabilistici e Statistici per i Mercati Finanziari
 
-Il modello ARCH è un modello 'Autoregressive Conditional Heteroskedasticity' assume 
+Il modello ARCH è un modello 'Autoregressive Conditional Heteroskedasticity' che assume 
 che la varianza del termine corrente sia una funzione non lineare della varianza dei rumori precedenti. 
 Un aspetto rilevante dei processi ARCH è la capacità di modellare il clustering della volatilità; 
 questo significa che le serie storiche finanziarie possono mostrare periodi in cui la volatilità è
 elevata e seguita da periodi di volatilità relativamente bassa. 
 
 Il modello GARCH è modello 'Generalized Autoregressive Conditional Heteroskedasticity' ed 
-è un'estensione del modello ARCH che consentedi modellare la varianza del processo in base non solo 
+è un'estensione del modello ARCH che consente di modellare la varianza del processo in base non solo 
 ai valori precedenti del processo, ma anche ai valori precedenti della varianza.
 "
 
 author_content <- "Author: Melissa Petrolo"
-content <- "University of Roma \"Tor Vergata\" - \u0040 MPSMF 2022-2023"
+content <- "University of Roma \"Tor Vergata\" - \u0040 Metodi Probabilistici e Statistici per i Mercati Finanziari 2022-2023"
 
 # verifica se il pacchetto è già stato installato
 if (!requireNamespace("skewtDist", quietly = TRUE)) {
@@ -34,7 +34,7 @@ library(tseries)
 ##########################################################################################################################
 "Genero tre diverse traiettorie per tre distribuzioni differenti: 
 t-student simmetrica, t-student asimmetrica, distribuzione normale"
-samples <- 10000 # numero di campioni
+samples <-500 # numero di campioni
 n <- samples -1  # numero di campioni meno X0
 df <- 5 # gradi di libertà
 
@@ -317,9 +317,6 @@ print(a1*sigmasquaredW)
 Xt_normal_arch2_q1 <- model_arch(a0, a1, X0, dist_normal2, q)
 Xt_normal_arch2_q1
 
-type_dist = "Normal Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
 # creo il primo plot del modello Arch(1) con la distribuzione normale
 plot_dist_normal <- ggplot(data.frame(value = Xt_normal_arch_q1, index = seq_along(Xt_normal_arch_q1)), aes(x = index, y = value)) + 
   geom_line() +
@@ -328,25 +325,34 @@ plot_dist_normal <- ggplot(data.frame(value = Xt_normal_arch_q1, index = seq_alo
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il secondo plot del modello Arch(1) con la distribuzione normale
-plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_arch1_q1, index = seq_along(Xt_normal_arch_q1)), aes(x = index, y = value)) +
+plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_arch1_q1, index = seq_along(Xt_normal_arch1_q1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il terzo plot del modello Arch(1) con la distribuzione normale
-plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_arch2_q1, index = seq_along(Xt_normal_arch_q1)), aes(x = index, y = value)) +
+plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_arch2_q1, index = seq_along(Xt_normal_arch2_q1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
   labs(caption=author_content) +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Normal Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist)) ))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_normal2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-arch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
-
+plots <- plots_dist_norm +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
+  
 ##########  DISTRUBUZIONE T-STUDENT SIMMETRICA
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric)
@@ -365,9 +371,6 @@ sigmasquaredW <- var(dist_t_student_symmetric2)
 print(a1*sigmasquaredW)
 Xt_t_student_symmetric_arch2_q1 <- model_arch(a0, a1, X0, dist_t_student_symmetric2, q)
 Xt_t_student_symmetric_arch2_q1
-
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
 
 # creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_arch_q1, index = seq_along(Xt_t_student_symmetric_arch_q1)), aes(x = index, y = value)) + 
@@ -391,10 +394,19 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ar
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Symmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist)) ))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-arch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
 # Prima traiettoria
@@ -448,7 +460,6 @@ arch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_
 ############################################## " MODELLO GARCH "
 
 type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
-
 
 ##########  DISTRUBUZIONE NORMALE
 # Prima traiettoria
@@ -1265,35 +1276,147 @@ df_Xt_normal_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_arch_q1_lm <- lm(Xt~t, data=df_Xt_normal_arch_q1)
 summary(Xt_normal_arch_q1_lm)
+summary(Xt_normal_arch_q1_lm$fitted.values)
 
 Xt_normal_arch_q1_res <- Xt_normal_arch_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_arch_q1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_arch_q1_res)                  # theoretical value 3.
-# La skew è pari a -0.00868007; questo indica che la sua distribuzione dei dati nei resdui
+# La skew è pari a -0.08652625; questo indica che la sua distribuzione dei dati nei resdui
 # è molto vicina alla simmetria con una coda negativa.
-# La kurtosi è pari a 3.123922; questo indica che la distribuzione è leggermenete leptocurtica, 
-# cioè ha code più pesanti rispetto ad una normale ma non in modo significativo.
+# La kurtosi è pari a 2.835148; questo indica che la distribuzione è leggermenete  platykurtic, 
+# cioè ha code più sottili rispetto ad una normale.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q1_sp)
 
 plot(Xt_normal_arch_q1_lm,1) # Residuals vs Fitted
-plot(Xt_normal_arch_q1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
 
+# Stazionarietà
+# Test Dickey-Fuller 
 Xt_normal_arch_q1_df <- adf.test(Xt_normal_arch_q1)
 show(Xt_normal_arch_q1_df)
 # Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
 
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q1_sp)
+
+plot(Xt_normal_arch_q1_lm,3) # Scale-location
+
+# Omoschedasticità
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_arch_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_arch_q1)
 show(Xt_normal_arch_q1_bp)
-# Si ha un p-value di 0.01983 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.00615 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_arch_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_arch_q1)
 show(Xt_normal_arch_q1_w)
-# Si ha un p-value di 0.03048 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.02191 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1336,18 +1459,21 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_normal_arch_q1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.84216, df = 1, p-value = 0.3588
+# X-squared = 3.7866, df = 1, p-value = 0.05166
+# Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 
 # Test Durbin-Watson
 dwtest(Xt_normal_arch_q1_lm, alternative="two.sided")
-# DW = 1.9816, p-value = 0.3536
+# DW = 1.8247, p-value = 0.04454
+# Si ha un p-value < 0.05, quindi è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_arch_q1_lm, order=5, type="Chisq")
-# LM test = 3.0326, df = 5, p-value = 0.695
+# LM test = 4.0142, df = 5, p-value = 0.5474
+# Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che c'è un'indicazione di autocorrelazione nei residui nel test di Durbin-Waston, mentre,
+# nel test di Ljiung-box e Breusch-Godfrey non forniscono evidenze significative di autocorrelazione nei resisui.
 
 ##########################################
 
@@ -1358,31 +1484,146 @@ df_Xt_t_student_symmetric_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_arch_q1_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_arch_q1)
 summary(Xt_t_student_symmetric_arch_q1_lm)
+summary(Xt_t_student_symmetric_arch_q1_lm$fitted.values)
 
 Xt_t_student_symmetric_arch_q1_res <- Xt_t_student_symmetric_arch_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_arch_q1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_arch_q1_res)                  # theoretical value 3.
-# La skew è pari a 0.5739274; questo indica che la distribuzione è leggermente asimmetrica, ma dato
-# che il suo valore è vicino allo zero possiamo dire che la sua distribuzione è simmetrica.
-# La kurtosi è pari a 12.30628; questo indica che la distribuzione è leptocurtica, 
+# La skew è pari a 0.1786124; il suo valore è vicino allo zero possiamo dire che 
+# la sua distribuzione è simmetrica.
+# La kurtosi è pari a 4.836038; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q1_sp)
+
 plot(Xt_t_student_symmetric_arch_q1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_arch_q1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_arch_q1_df <- adf.test(Xt_t_student_symmetric_arch_q1)
+show(Xt_t_student_symmetric_arch_q1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch_q1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q1_sp)
+
+plot(Xt_t_student_symmetric_arch_q1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_arch_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q1)
 show(Xt_t_student_symmetric_arch_q1_bp)
-# Si ha un p-value di 0.5947 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.001644 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_arch_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q1)
 show(Xt_t_student_symmetric_arch_q1_w)
-# Si ha un p-value di 0.6687 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.007024 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1425,15 +1666,15 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_arch_q1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 3.4758, df = 1, p-value = 0.06227
+# X-squared = 0.47606, df = 1, p-value = 0.4902
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_arch_q1_lm, alternative="two.sided")
-# DW = 1.9624, p-value = 0.05855
+# DW = 1.9381, p-value = 0.4599
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_arch_q1_lm, order=5, type="Chisq")
-# LM test = 5.8768, df = 5, p-value = 0.3184
+# LM test = 2.4665, df = 5, p-value = 0.7815
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -1447,31 +1688,147 @@ df_Xt_t_student_asymmetric_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_arch_q1_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_arch_q1)
 summary(Xt_t_student_asymmetric_arch_q1_lm)
+summary(Xt_t_student_asymmetric_arch_q1_lm$fitted.values)
 
 Xt_t_student_asymmetric_arch_q1_res <- Xt_t_student_asymmetric_arch_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_arch_q1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_arch_q1_res)                  # theoretical value 3.
-# La skew è pari a -2.398814; questo indica una forte asimmetria verso sinistra
+# La skew è pari a -1.675295; questo indica una forte asimmetria verso sinistra
 # con una coda lunga negativa.
-# La kurtosi è pari a 15.90909; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 7.014481; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q1_sp)
+
 plot(Xt_t_student_asymmetric_arch_q1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_arch_q1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_arch_q1_df <- adf.test(Xt_t_student_asymmetric_arch_q1)
+show(Xt_t_student_asymmetric_arch_q1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q1_sp)
+
+plot(Xt_t_student_asymmetric_arch_q1_lm,3) # Scale-location
+
+#Determiniamo se la serie è eteroschedastico:
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q1)
 show(Xt_t_student_asymmetric_arch_q1_bp)
-# Si ha un p-value di 0.5958 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01372 > 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q1)
 show(Xt_t_student_asymmetric_arch_q1_w)
-# Si ha un p-value di 0.8664 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.04648 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1506,23 +1863,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta eccetto nel primo lag, quindi, possiamo dire che che la serie non è significativamente 
 # correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
 # variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_arch_q1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 75.926, df = 1, p-value < 2.2e-16
+# X-squared = 12.319, df = 1, p-value = 0.0004484
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_arch_q1_lm, alternative="two.sided")
-# DW = 1.8255, p-value < 2.2e-16
+# DW = 1.6837, p-value = 0.000333
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_arch_q1_lm, order=5, type="Chisq")
-# LM test = 78.512, df = 5, p-value = 1.718e-15
+# LM test = 12.47, df = 5, p-value = 0.02888
 
 # Per tutti e tre i test si ha un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -1537,30 +1894,145 @@ df_Xt_normal_garch_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q1_p1_lm <- lm(Xt~t, data=df_Xt_normal_garch_q1_p1)
 summary(Xt_normal_garch_q1_p1_lm)
+summary(Xt_normal_garch_q1_p1_lm$fitted.values)
 
 Xt_normal_garch_q1_p1_res <- Xt_normal_garch_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q1_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q1_p1_res)                  # theoretical
-# La skew è pari a -0.01203641; il suo valore è prossimo a zero e negativo, quindi la sua distribuzione 
+# La skew è pari a -0.03823827; il suo valore è prossimo a zero e negativo, quindi la sua distribuzione 
 # viene considerata approssimativamente simmetrica con una coda negativa.
-# La kurtosi è pari a 3.035664; questo indica che la distribuzione è leggermenete leptocurtica
+# La kurtosi è pari a 2.942394; questo indica che la distribuzione è leggermenete platykurtic
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p1_sp)
 
 plot(Xt_normal_garch_q1_p1_lm,1) # Residuals vs Fitted
-plot(Xt_normal_garch_q1_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q1_p1_df <- adf.test(Xt_normal_garch_q1_p1)
+show(Xt_normal_garch_q1_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p1_sp)
+
+plot(Xt_normal_garch_q1_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q1_p1)
 show(Xt_normal_garch_q1_p1_bp)
-# Si ha un p-value di 0.7876 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.7758 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q1_p1)
 show(Xt_normal_garch_q1_p1_w)
-# Si ha un p-value di 0.3665 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.9314 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1603,15 +2075,15 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_normal_garch_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 4.4068, df = 1, p-value = 0.0358
+# X-squared = 0.20218, df = 1, p-value = 0.653
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q1_p1_lm, alternative="two.sided")
-#DW = 2.0418, p-value = 0.03757
+# DW = 2.0391, p-value = 0.694
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q1_p1_lm, order=5, type="Chisq")
-# LM test = 11.792, df = 5, p-value = 0.03775
+# LM test = 5.6334, df = 5, p-value = 0.3435
 
 # Per tutti e tre i test si ha un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -1625,30 +2097,145 @@ df_Xt_t_student_symmetric_garch_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q1_p1_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q1_p1)
 summary(Xt_t_student_symmetric_garch_q1_p1_lm)
+summary(Xt_t_student_symmetric_garch_q1_p1_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q1_p1_res <- Xt_t_student_symmetric_garch_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q1_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q1_p1_res)                  # theoretical value 3.
-# La skew è pari a 0.638849; il suo valore è positivo e la sua distribuzione è approssimativamente simmetrica.
-# La kurtosi è pari a 15.58163; questo indica che la distribuzione è leptocurtica, 
+# La skew è pari a -0.01744386; il suo valore è negativo e la sua distribuzione è approssimativamente simmetrica.
+# La kurtosi è pari a 4.204011; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p1_sp)
+
 plot(Xt_t_student_symmetric_garch_q1_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q1_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q1_p1_df <- adf.test(Xt_t_student_symmetric_garch_q1_p1)
+show(Xt_t_student_symmetric_garch_q1_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p1_sp)
+
+plot(Xt_t_student_symmetric_garch_q1_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p1)
 show(Xt_t_student_symmetric_garch_q1_p1_bp)
-# Si ha un p-value di 0.6434 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.1184 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p1)
 show(Xt_t_student_symmetric_garch_q1_p1_w)
-# Si ha un p-value di 0.832 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.1875 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1692,15 +2279,15 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.19693, df = 1, p-value = 0.6572
+# X-squared = 2.932, df = 1, p-value = 0.08684
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q1_p1_lm, alternative="two.sided")
-# DW = 1.9911, p-value = 0.65
+# DW = 2.1514, p-value = 0.09866
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q1_p1_lm, order=5, type="Chisq")
-# LM test = 0.52794, df = 5, p-value = 0.9911
+# LM test = 7.2349, df = 5, p-value = 0.2037
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -1714,31 +2301,146 @@ df_Xt_t_student_asymmetric_garch_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q1_p1_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q1_p1)
 summary(Xt_t_student_asymmetric_garch_q1_p1_lm)
+summary(Xt_t_student_asymmetric_garch_q1_p1_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q1_p1_res <- Xt_t_student_asymmetric_garch_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q1_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q1_p1_res)                  # theoretical value 3.
-# La skew è pari a -1.984191; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -1.732549; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 9.683713; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 7.407139; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p1_sp)
+
 plot(Xt_t_student_asymmetric_garch_q1_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q1_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q1_p1_df <- adf.test(Xt_t_student_asymmetric_garch_q1_p1)
+show(Xt_t_student_asymmetric_garch_q1_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p1_sp)
+
+plot(Xt_t_student_asymmetric_garch_q1_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p1)
 show(Xt_t_student_asymmetric_garch_q1_p1_bp)
-# Si ha un p-value di 0.6332 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.02387 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p1)
 show(Xt_t_student_asymmetric_garch_q1_p1_w)
-# Si ha un p-value di 0.8731 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.03169 > 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1779,15 +2481,15 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 28.077, df = 1, p-value = 1.166e-07
+# X-squared = 12.535, df = 1, p-value = 0.0003994
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_garch_q1_p1_lm, alternative="two.sided")
-# DW = 1.894, p-value = 1.078e-07
+# DW = 1.6801, p-value = 0.0002842
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_garch_q1_p1_lm, order=5, type="Chisq")
-# LM test = 44.87, df = 5, p-value = 1.542e-08
+# LM test = 17.88, df = 5, p-value = 0.0031
 
 # I risultati dei tre test hanno un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -1802,30 +2504,145 @@ df_Xt_normal_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_normal_garch_q1_p2)
 summary(Xt_normal_garch_q1_p2_lm)
+summary(Xt_normal_garch_q1_p2_lm$fitted.values)
 
 Xt_normal_garch_q1_p2_res <- Xt_normal_garch_q1_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q1_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q1_p2_res)                  # theoretical value 3.
-# La skew è pari a -0.01017818; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# La skew è pari a -0.08092882; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica con una coda negativa.
-# La kurtosi è pari a 3.132656; questo indica che la distribuzione è leggermenete leptocurtica.
+# La kurtosi è pari a 2.832292; questo indica che la distribuzione è leggermenete platykurtic.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p2_sp)
 
 plot(Xt_normal_garch_q1_p2_lm,1) # Residuals vs Fitted
-plot(Xt_normal_garch_q1_p2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q1_p2_df <- adf.test(Xt_normal_garch_q1_p2)
+show(Xt_normal_garch_q1_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p2_sp)
+
+plot(Xt_normal_garch_q1_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q1_p2)
 show(Xt_normal_garch_q1_p2_bp)
-# Si ha un p-value di 0.01438 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.004426 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q1_p2)
 show(Xt_normal_garch_q1_p2_w)
-# Si ha un p-value di 0.02121 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.0166 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1868,18 +2685,25 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_normal_garch_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.87929, df = 1, p-value = 0.3484
+# X-squared = 3.783, df = 1, p-value = 0.05177
+# Si ha un p-value > 0.05, quindi non è possibile rigettare l'ipotesi nulla di 
+# assenza di autocorrelazione.
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q1_p2_lm, alternative="two.sided")
-# DW = 1.9812, p-value = 0.3433
+# DW = 1.8248, p-value = 0.04465
+# Si ha un p-value < 0.05, quindi è possibile rigettare l'ipotesi nulla di 
+# assenza di autocorrelazione.
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q1_p2_lm, order=5, type="Chisq")
-# LM test = 3.1194, df = 5, p-value = 0.6816
+# LM test = 3.9654, df = 5, p-value = 0.5544
+# Si ha un p-value > 0.05, quindi non è possibile rigettare l'ipotesi nulla di 
+# assenza di autocorrelazione.
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che c'è una presenza di autocorrelazione per il test di
+# Durbin-Wtason; mentre, c'è un'assenza di autocorrelazione per il test di Box-Lijung 
+# e Breusch-Gdfrey.
 
 ##########################################
 
@@ -1890,31 +2714,146 @@ df_Xt_t_student_symmetric_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q1_p2)
 summary(Xt_t_student_symmetric_garch_q1_p2_lm)
+summary(Xt_t_student_symmetric_garch_q1_p2_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q1_p2_res <- Xt_t_student_symmetric_garch_q1_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q1_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q1_p2_res)                  # theoretical value 3.
-# La skew è pari a 0.5744184; il suo valore è positivo e vicino allo zero; quindi, la sua distribuzione
+# La skew è pari a 0.1368888; il suo valore è positivo e vicino allo zero; quindi, la sua distribuzione
 # è vicina alla simmetria.
-# La kurtosi è pari a 12.42203; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 5.499922; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p2_sp)
+
 plot(Xt_t_student_symmetric_garch_q1_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q1_p2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q1_p2_df <- adf.test(Xt_t_student_symmetric_garch_q1_p2)
+show(Xt_t_student_symmetric_garch_q1_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p2_sp)
+
+plot(Xt_t_student_symmetric_garch_q1_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p2)
 show(Xt_t_student_symmetric_garch_q1_p2_bp)
-# Si ha un p-value di 0.5635 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.002272 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p2)
 show(Xt_t_student_symmetric_garch_q1_p2_w)
-# Si ha un p-value di 0.6823 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.009257 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1958,15 +2897,15 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 3.5983, df = 1, p-value = 0.05784
+# X-squared = 0.40705, df = 1, p-value = 0.5235
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q1_p2_lm, alternative="two.sided")
-# DW = 1.9617, p-value = 0.05435
+# DW = 1.9426, p-value = 0.4916
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q1_p2_lm, order=5, type="Chisq")
-# LM test = 5.99, df = 5, p-value = 0.3072
+# LM test = 2.7652, df = 5, p-value = 0.7361
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -1978,37 +2917,152 @@ Xt <- Xt_t_student_asymmetric_garch_q1_p2
 df_Xt_t_student_asymmetric_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Consideriamo un modello lineare
-Xt_t_student_asymmetric_garch_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q1_p2)
-summary(Xt_t_student_asymmetric_garch_lm)
+Xt_t_student_asymmetric_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q1_p2)
+summary(Xt_t_student_asymmetric_garch_q1_p2_lm)
+summary(Xt_t_student_asymmetric_garch_q1_p2_lm$fitted.values)
 
-Xt_t_student_asymmetric_garch_res <- Xt_t_student_asymmetric_garch_lm$residuals
+Xt_t_student_asymmetric_garch_q1_p2_res <- Xt_t_student_asymmetric_garch_q1_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_t_student_asymmetric_garch_res)                  # theoretical value 0.
-moments::kurtosis(Xt_t_student_asymmetric_garch_res)                  # theoretical value 3.
-# La skew è pari a -1.996857; il suo valore è negativo e la sua distribuzione è
+moments::skewness(Xt_t_student_asymmetric_garch_q1_p2_res)                  # theoretical value 0.
+moments::kurtosis(Xt_t_student_asymmetric_garch_q1_p2_res)                  # theoretical value 3.
+# La skew è pari a -1.728404; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 10.26631; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 7.426788; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
-plot(Xt_t_student_asymmetric_garch_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_lm,3) # Scale-location
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,2) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p2_sp)
+
+plot(Xt_t_student_asymmetric_garch_q1_p2_lm,1) # Residuals vs Fitted
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q1_p2_df <- adf.test(Xt_t_student_asymmetric_garch_q1_p2)
+show(Xt_t_student_asymmetric_garch_q1_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,2) of a asymmetricc t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p2_sp)
+
+plot(Xt_t_student_asymmetric_garch_q1_p2_lm,3) # Scale-location
+
 # Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_t_student_asymmetric_garch_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
-show(Xt_t_student_asymmetric_garch_bp)
-# Si ha un p-value di 0.0001279 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+Xt_t_student_asymmetric_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
+show(Xt_t_student_asymmetric_garch_q1_p2_bp)
+# Si ha un p-value di 0.0178 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
-Xt_t_student_asymmetric_garch_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
-show(Xt_t_student_asymmetric_garch_w)
-# Si ha un p-value di 4.497e-05 > 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+Xt_t_student_asymmetric_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
+show(Xt_t_student_asymmetric_garch_q1_p2_w)
+# Si ha un p-value di 0.0594 > 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
-y <- Xt_t_student_asymmetric_garch_lm$residuals
+y <- Xt_t_student_asymmetric_garch_q1_p2_lm$residuals
 length <- length(y)
 maxlag <- ceiling(10*log10(length))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
@@ -2040,108 +3094,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
-# una banda ristretta, anche se in alcuni lag questo valore esce dall'intervallo; 
-# quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
-
-# Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-
-# Test Durbin-Watson
-dwtest(Xt_t_student_symmetric_garch_lm, alternative="two.sided")
-
-# Test Breusch-Godfrey
-bgtest(Xt_t_student_symmetric_garch_lm, order=5, type="Chisq")
-
-# Per tutti e tre i test si ha un p-value < 0.05, ciò significa che ci sono prove
-# di autocorrelazione nei residui del modello
-
-# Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,2)
-Xt <- Xt_t_student_asymmetric_garch_q1_p2
-df_Xt_t_student_asymmetric_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
-
-# Consideriamo un modello lineare
-Xt_t_student_asymmetric_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q1_p2)
-summary(Xt_t_student_asymmetric_garch_q1_p2_lm)
-
-Xt_t_student_asymmetric_garch_q1_p2_res <- Xt_t_student_asymmetric_garch_q1_p2_lm$residuals
-# Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_t_student_asymmetric_garch_q1_p2_res)                  # theoretical value 0.
-moments::kurtosis(Xt_t_student_asymmetric_garch_q1_p2_res)                  # theoretical value 3.
-# La skew è pari a -2.404047; il suo valore è negativo e la sua distribuzione è
-# asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 15.98523; questo indica che la distribuzione è leptocurtica, 
-# cioè ha code più pesanti rispetto ad una normale.
-
-plot(Xt_t_student_asymmetric_garch_q1_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q1_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
-
-# Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_t_student_asymmetric_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
-show(Xt_t_student_asymmetric_garch_q1_p2_bp)
-# Si ha un p-value di 0.5865 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
-# omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
-# Test WHITE sui residui del modello lineare
-Xt_t_student_asymmetric_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
-show(Xt_t_student_asymmetric_garch_q1_p2_w)
-# Si ha un p-value di 0.8625 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
-# omoschedasticità in favore  dell'ipotesi alternativa
-
-# Plot of the autocorrelogram.
-y <- Xt_t_student_asymmetric_garch_q1_p2_lm$residuals
-length <- length(y)
-maxlag <- ceiling(10*log10(length))
-Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
-ci_90 <- qnorm((1+0.90)/2)/sqrt(length)
-ci_95 <- qnorm((1+0.95)/2)/sqrt(length)
-ci_99 <- qnorm((1+0.99)/2)/sqrt(length)
-Plot_Aut_Fun_y <- data.frame(lag=Aut_Fun_y$lag, acf=Aut_Fun_y$acf)
-title_content <- bquote(atop(.(content), paste("Plot of the Autocorrelogram of the Residuals in the Linear Model for the model GARCH(1,2)")))
-subtitle_content <- bquote(paste("t-student asymmetric distribution, path length ", .(length), " sample points,   ", "lags ", .(maxlag)))
-caption_content <- author_content
-ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) + 
-  geom_segment(aes(x=lag, y=rep(0,length(lag)), xend=lag, yend=acf), size = 1, col="black") +
-  # geom_col(mapping=NULL, data=NULL, position="dodge", width = 0.1, col="black", inherit.aes = TRUE)+
-  geom_hline(aes(yintercept=-ci_90, color="CI_90"), show.legend = TRUE, lty=3) +
-  geom_hline(aes(yintercept=ci_90, color="CI_90"), lty=3) +
-  geom_hline(aes(yintercept=ci_95, color="CI_95"), show.legend = TRUE, lty=4) + 
-  geom_hline(aes(yintercept=-ci_95, color="CI_95"), lty=4) +
-  geom_hline(aes(yintercept=-ci_99, color="CI_99"), show.legend = TRUE, lty=4) +
-  geom_hline(aes(yintercept=ci_99, color="CI_99"), lty=4) +
-  scale_x_continuous(name="lag", breaks=waiver(), label=waiver()) +
-  scale_y_continuous(name="acf value", breaks=waiver(), labels=NULL,
-                     sec.axis = sec_axis(~., breaks=waiver(), labels=waiver())) +
-  scale_color_manual(name="Conf. Inter.", labels=c("90%","95%","99%"),
-                     values=c(CI_90="red", CI_95="blue", CI_99="green")) +
-  ggtitle(title_content) +
-  labs(subtitle=subtitle_content, caption=caption_content) +
-  theme(plot.title=element_text(hjust = 0.5), 
-        plot.subtitle=element_text(hjust =  0.5),
-        plot.caption = element_text(hjust = 1.0),
-        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori nei primi lag 
-# tendono a eseguire un trend; mentre dal lag 10 i valori oscillano all'interno dell'intervallo 
+# una banda ristretta, anche se in alcuni lag questo valore esce dall'intervallo.
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 89.078, df = 1, p-value < 2.2e-16
+# X-squared = 13.422, df = 1, p-value = 0.0002487
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_garch_q1_p2_lm, alternative="two.sided")
-# DW = 1.811, p-value < 2.2e-16
+# DW = 1.67, p-value = 0.000183
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_garch_q1_p2_lm, order=5, type="Chisq")
-# LM test = 125.08, df = 5, p-value < 2.2e-16
+# LM test = 14.04, df = 5, p-value = 0.01536
 
-# I risultati dei tre test indicano un p-value < 0.05; ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# Per tutti e tre i test si ha un p-value < 0.05, ciò significa che ci sono prove
+# di autocorrelazione nei residui del modello
 
 ##########################################
 ##########################################
@@ -2153,32 +3122,146 @@ df_Xt_normal_arch_q2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_arch_q2_lm <- lm(Xt~t, data=df_Xt_normal_arch_q2)
 summary(Xt_normal_arch_q2_lm)
+summary(Xt_normal_arch_q2_lm$fitted.values)
 
 Xt_normal_arch_q2_res <- Xt_normal_arch_q2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_arch_q2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_arch_q2_res)                  # theoretical value 3.
-# La skew è pari a -0.008294173; questo indica una leggera asimmetria, tuttavia,
-# il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
+# La skew è pari a -0.1206737; il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
 # considerata approssimativamente simmetrica.
-# La kurtosi è pari a 3.522397; questo indica che la distribuzione è leggermenete leptocurtica.
+# La kurtosi è pari a 2.890637; questo indica che la distribuzione è leggermenete platykurtic.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q2_sp)
 
 plot(Xt_normal_arch_q2_lm,1) # Residuals vs Fitted
-plot(Xt_normal_arch_q2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_arch_q2_df <- adf.test(Xt_normal_arch_q2)
+show(Xt_normal_arch_q2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q2_sp)
+
+plot(Xt_normal_arch_q2_lm,3) # Scale-location
 # Dal grafico "Scale-Location" possiamo notare omoschedasticità nei residui.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_arch_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_arch_q2)
 show(Xt_normal_arch_q2_bp)
-# Si ha un p-value di 0.02456 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.004084 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_arch_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_arch_q2)
 show(Xt_normal_arch_q2_w)
-# Si ha un p-value di 0.0188 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01576 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2213,26 +3296,24 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta eccetto in due lag.
 
 # Test Ljiung-box
 y <- Xt_normal_arch_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.5659, df = 1, p-value = 0.2108
+# X-squared = 4.4703, df = 1, p-value = 0.03449
 
 # Test Durbin-Watson
 dwtest(Xt_normal_arch_q2_lm, alternative="two.sided")
-# DW = 1.975, p-value = 0.2072
+# DW = 1.8093, p-value = 0.02916
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_arch_q2_lm, order=5, type="Chisq")
-# LM test = 3.7932, df = 5, p-value = 0.5796
+# LM test = 4.551, df = 5, p-value = 0.4731
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che c'è una presenza di autocorrelazione nei residui del modello con i test Box-Ljung e Durbin-Watson, 
+# ma non ci sono evidenze di correlazione seriale nel test Breusch-Godfrey.
 
 ##########################################
 
@@ -2243,33 +3324,146 @@ df_Xt_t_student_symmetric_arch_q2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_arch_q2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_arch_q2)
 summary(Xt_t_student_symmetric_arch_q2_lm)
+summary(Xt_t_student_symmetric_arch_q2_lm$fitted.values)
 
 Xt_t_student_symmetric_arch_q2_res <- Xt_t_student_symmetric_arch_q2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_arch_q2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_arch_q2_res)                  # theoretical value 3.
-# La skew è pari a -0.2455441; questo indica una leggera asimmetria verso sinistra, tuttavia,
-# il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
+# La skew è pari a 0.2677586; il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
 # considerata approssimativamente simmetrica.
-# La kurtosi è pari a 13.36341; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 9.305962; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch_q2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q2_sp)
+
 plot(Xt_t_student_symmetric_arch_q2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_arch_q2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
-# Dal grafico "Scale-Location" possiamo notare omoschedasticità nei residui.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_arch_q2_df <- adf.test(Xt_t_student_symmetric_arch_q2)
+show(Xt_t_student_symmetric_arch_q2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch_q2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q2_sp)
+
+plot(Xt_t_student_symmetric_arch_q2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_arch_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q2)
 show(Xt_t_student_symmetric_arch_q2_bp)
-# Si ha un p-value di 0.01557 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.05495 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_arch_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q2)
 show(Xt_t_student_symmetric_arch_q2_w)
-# Si ha un p-value di 0.009318 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.1056 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2304,26 +3498,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta, eccetto per il lag 15.
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_arch_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 4.8797, df = 1, p-value = 0.02717
+# X-squared = 1.1745, df = 1, p-value = 0.2785
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_arch_q2_lm, alternative="two.sided")
-# DW = 2.0441, p-value = 0.02822
+# DW = 2.0965, p-value = 0.3002
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_arch_q2_lm, order=5, type="Chisq")
-# LM test = 6.5521, df = 5, p-value = 0.2561
+# LM test = 2.7325, df = 5, p-value = 0.7411
 
-# Per i test di Ljiung-box e Durbin-Watson si ha un p-value < 0.05; questo, potrebbe
-# indicare che potrebbe esserci un'evidenza di autocorrelazione nei residui del modello.
+# I risultati dei test hanno un p-value > 0.05; questo, significa che c'è assenza di autocorrelazione.
 
 ##########################################
 
@@ -2334,32 +3525,144 @@ df_Xt_t_student_asymmetric_arch_q2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_arch_q2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_arch_q2)
 summary(Xt_t_student_asymmetric_arch_q2_lm)
+summary(Xt_t_student_asymmetric_arch_q2_lm$fitted.values)
 
 Xt_t_student_asymmetric_arch_q2_res <- Xt_t_student_asymmetric_arch_q2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_arch_q2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_arch_q2_res)                  # theoretical value 3.
-# La skew è pari a -2.601034; questo indica una forte asimmetria verso sinistra
+# La skew è pari a -1.876595; questo indica una forte asimmetria verso sinistra
 # con una coda lunga negativa.
-# La kurtosi è pari a 18.88024; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 8.390935; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(2) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q2_sp)
+
 plot(Xt_t_student_asymmetric_arch_q2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_arch_q2_df <- adf.test(Xt_t_student_asymmetric_arch_q2)
+show(Xt_t_student_asymmetric_arch_q2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(21) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q2_sp)
+
 plot(Xt_t_student_asymmetric_arch_q2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
-# Dal grafico "Scale-Location" possiamo notare omoschedasticità nei residui.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q2)
 show(Xt_t_student_asymmetric_arch_q2_bp)
-# Si ha un p-value di  0.4853 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di  0.008644 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q2)
 show(Xt_t_student_asymmetric_arch_q2_w)
-# Si ha un p-value di 0.7058 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.0311 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2395,20 +3698,20 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori nei primi lag tendono a seguire un 
-# trend; mentre, dal lag 8 i valori oscillano all'interno dell'intervallo.
+# trend; mentre, dal lag 5 i valori oscillano all'interno dell'intervallo.
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_arch_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 114.71, df = 1, p-value < 2.2e-16
+# X-squared = 18.342, df = 1, p-value = 1.846e-05
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_arch_q2_lm, alternative="two.sided")
-# DW = 1.7856, p-value < 2.2e-16
+# DW = 1.615, p-value = 1.309e-05
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_arch_q2_lm, order=5, type="Chisq")
-# LM test = 234.47, df = 5, p-value < 2.2e-16
+# LM test = 26.239, df = 5, p-value = 8.019e-05
 
 # Per tutti e tre i test si ha un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -2423,30 +3726,143 @@ df_Xt_normal_garch_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q2_p1_lm <- lm(Xt~t, data=df_Xt_normal_garch_q2_p1)
 summary(Xt_normal_garch_q2_p1_lm)
+summary(Xt_normal_garch_q2_p1_lm$fitted.values)
 
 Xt_normal_garch_q2_p1_res <- Xt_normal_garch_q2_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q2_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q2_p1_res)                  # theoretical value 3.
-# La skew è pari a -0.01889716; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# La skew è pari a -0.06363277; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica con una coda negativa.
-# La kurtosi è pari a 3.752621; questo indica che la distribuzione è leggermenete leptocurtica.
+# La kurtosi è pari a 2.944331; questo indica che la distribuzione è leggermenete platykurtic.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p1_sp)
 
 plot(Xt_normal_garch_q2_p1_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q2_p1_df <- adf.test(Xt_normal_garch_q2_p1)
+show(Xt_normal_garch_q2_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p1_sp)
+
 plot(Xt_normal_garch_q2_p1_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q2_p1)
 show(Xt_normal_garch_q2_p1_bp)
-# Si ha un p-value di 0.005296 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.0008743 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q2_p1)
 show(Xt_normal_garch_q2_p1_w)
-# Si ha un p-value di 0.002665 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.003932 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2482,25 +3898,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta.
 
 # Test Ljiung-box
 y <- Xt_normal_garch_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 2.0644, df = 1, p-value = 0.1508
+# X-squared = 4.6602, df = 1, p-value = 0.03087
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q2_p1_lm, alternative="two.sided")
-# DW = 1.9713, p-value = 0.148
+# DW = 1.8052, p-value = 0.02596
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q2_p1_lm, order=5, type="Chisq")
-# LM test = 5.0859, df = 5, p-value = 0.4055
+# LM test = 5.0596, df = 5, p-value = 0.4086
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che ci potrebbe essere autocorrelazione nei residui del modello con i test Box-Ljung e Durbin-Watson,
+# ma non ci sono evidenze di correlazione seriale con il test Breusch-Godfrey.
 
 ##########################################
 
@@ -2511,31 +3925,146 @@ df_Xt_t_student_symmetric_garch_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q2_p1_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q2_p1)
 summary(Xt_t_student_symmetric_garch_q2_p1_lm)
+summary(Xt_t_student_symmetric_garch_q2_p1_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q2_p1_res <- Xt_t_student_symmetric_garch_q2_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q2_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q2_p1_res)                  # theoretical value 3.
-# La skew è pari a-0.9138125; il suo valore è negativo e vicino allo zero; quindi, la sua distribuzione
+# La skew è pari a 0.3829596; il suo valore è vicino allo zero; quindi, la sua distribuzione
 # è vicina alla simmetria.
-# La kurtosi è pari a 22.51892; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 11.59399; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,1) of a symmetic t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p1_sp)
+
 plot(Xt_t_student_symmetric_garch_q2_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q2_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q2_p1_df <- adf.test(Xt_t_student_symmetric_garch_q2_p1)
+show(Xt_t_student_symmetric_garch_q2_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p1_sp)
+
+plot(Xt_t_student_symmetric_garch_q2_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p1)
 show(Xt_t_student_symmetric_garch_q2_p1_bp)
-# Si ha un p-value di 0.007136 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.06841 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p1)
 show(Xt_t_student_symmetric_garch_q2_p1_w)
-# Si ha un p-value di 0.003628 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.07795 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2571,26 +4100,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
-# una banda ristretta, anche se in alcuni lag questo valore esce dall'intervallo; 
-# quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 6.5903, df = 1, p-value = 0.01025
+# X-squared = 1.5367, df = 1, p-value = 0.2151
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q2_p1_lm, alternative="two.sided")
-# DW = 2.0512, p-value = 0.0107
+# DW = 2.1104, p-value = 0.2332
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q2_p1_lm, order=5, type="Chisq")
-# LM test = 8.9942, df = 5, p-value = 0.1093
+# LM test = 2.9784, df = 5, p-value = 0.7033
 
-# Per i test di Ljiung-box e Durbin-Watson si ha un p-value < 0.05; ciò potrebbe indicare
-# un'evidenza di autocorrelazione nei residui del modello.
+# I risultati indicano un p-value > 0.05; ciò indica
+# un'assenza di autocorrelazione nei residui del modello.
 
 ##########################################
 
@@ -2601,32 +4127,151 @@ df_Xt_t_student_asymmetric_garch_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q2_p1_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q2_p1)
 summary(Xt_t_student_asymmetric_garch_q2_p1_lm)
+summary(Xt_t_student_asymmetric_garch_q2_p1_lm_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q2_p1_res <- Xt_t_student_asymmetric_garch_q2_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q2_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q2_p1_res)                  # theoretical value 3.
-# La skew è pari a -2.655877; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -2.055272; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 19.09937; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 9.592723; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p1_sp)
+
 plot(Xt_t_student_asymmetric_garch_q2_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q2_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q2_p1_df <- adf.test(Xt_t_student_asymmetric_garch_q2_p1)
+show(Xt_t_student_asymmetric_garch_q2_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p1_sp)
+
+plot(Xt_t_student_asymmetric_garch_q2_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p1)
 show(Xt_t_student_asymmetric_garch_q2_p1_bp)
-# Si ha un p-value di 0.5129 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01844 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p1)
 show(Xt_t_student_asymmetric_garch_q2_p1_w)
-# Si ha un p-value di 0.5696 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.06222 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
+
+# Nel test di Breusch-Pagan il p-value < 0.05 ed indica una presenza di eteroschedasticità nei residui del modello; ma,
+# nel test di White il p-value > 0.05 ed indica che la presenza di eteroschedasticità è meno chiara nel momento in cui si considerano
+# due gradi di libertà poichè non possiamo rifiutare l'ipotesi nulla di omoschedasticità.
 
 # Plot of the autocorrelogram.
 y <- Xt_t_student_asymmetric_garch_q2_p1_lm$residuals
@@ -2664,19 +4309,19 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # un trend; mentre, dal lag 8 i valori oscillano all'interno dell'intervallo.
 
 # Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_q2_p1_res
+y <- Xt_t_student_asymmetric_garch_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 6.5903, df = 1, p-value = 0.01025
+# X-squared = 24.414, df = 1, p-value = 7.771e-07
 
 # Test Durbin-Watson
-dwtest(Xt_t_student_symmetric_garch_q2_p1_lm, alternative="two.sided")
-# DW = 2.0512, p-value = 0.0107
+dwtest(Xt_t_student_asymmetric_garch_q2_p1_lm, alternative="two.sided")
+# DW = 1.5564, p-value = 5.321e-07
 
 # Test Breusch-Godfrey
-bgtest(Xt_t_student_symmetric_garch_q2_p1_lm, order=5, type="Chisq")
-# LM test = 8.9942, df = 5, p-value = 0.1093
+bgtest(Xt_t_student_asymmetric_garch_q2_p1_lm, order=5, type="Chisq")
+# LM test = 36.094, df = 5, p-value = 9.097e-07
 
-# Per i test di Ljiung-box e Durbin-Watson si ha un p-value < 0.05; ciò potrebbe indicare
+# I risultati hanno un p-value < 0.05; ciò indica
 # un'evidenza di autocorrelazione nei residui del modello.
 
 ##########################################
@@ -2689,31 +4334,145 @@ df_Xt_normal_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_normal_garch_q2_p2)
 summary(Xt_normal_garch_q2_p2_lm)
+summary(Xt_normal_garch_q2_p2_lm$fitted.values)
 
 Xt_normal_garch_q2_p2_res <- Xt_normal_garch_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q2_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q2_p2_res)                  # theoretical value 3.
-# La skew è pari a -0.01443772; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# La skew è pari a -0.07990184; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica.
-# La kurtosi è pari a 3.659755; questo indica che la distribuzione è leptocurtica, 
-# cioè ha code più pesanti rispetto ad una normale.
+# La kurtosi è pari a 2.925623; questo indica che la distribuzione è platykurtic
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p2_sp)
 
 plot(Xt_normal_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_normal_garch_q2_p2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q2_p2_df <- adf.test(Xt_normal_garch_q2_p2)
+show(Xt_normal_garch_q2_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p2_sp)
+
+plot(Xt_normal_garch_q2_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q2_p2)
 show(Xt_normal_garch_q2_p2_bp)
-# Si ha un p-value di 0.004081 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.0005444 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q2_p2)
 show(Xt_normal_garch_q2_p2_w)
-# Si ha un p-value di 0.002102 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.00252 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2753,18 +4512,18 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_normal_garch_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 2.0259, df = 1, p-value = 0.1546
+# X-squared = 4.4317, df = 1, p-value = 0.03528
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q2_p2_lm, alternative="two.sided")
-# DW = 1.9715, p-value = 0.1518
+# DW = 1.8098, p-value = 0.0296
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q2_p2_lm, order=5, type="Chisq")
-# LM test = 4.8329, df = 5, p-value = 0.4366
+# LM test = 4.7018, df = 5, p-value = 0.4533
 
-# Per tutti e tre i test il valore del p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati del test di Ljung-Box e Durbin-Watson hanno un p-value < 0.05 indicando una presenza di autocorrelazione
+# nella serie; mentre, il p-value del test di Breusch-Godfrey indica un'assenza di correlazione seriale nella serie.
 
 ##########################################
 
@@ -2775,31 +4534,146 @@ df_Xt_t_student_symmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q2_p2)
 summary(Xt_t_student_symmetric_garch_q2_p2_lm)
+summary(Xt_t_student_symmetric_garch_q2_p2_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q2_p2_res <- Xt_t_student_symmetric_garch_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 3.
-# La skew è pari a -0.6458118; il suo valore è prossima allo zero, quindi possiamo dire 
-# che la sua distribuzione è simmetrica con una coda negativa.
-# La kurtosi è pari a 17.06515; questo indica che la distribuzione è leptocurtica, 
+# La skew è pari a 0.3197632; il suo valore è prossima allo zero, quindi possiamo dire 
+# che la sua distribuzione è simmetrica.
+# La kurtosi è pari a 10.48433; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_symmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q2_p2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q2_p2_df <- adf.test(Xt_t_student_symmetric_garch_q2_p2)
+show(Xt_t_student_symmetric_garch_q2_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+
+plot(Xt_t_student_symmetric_garch_q2_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
 show(Xt_t_student_symmetric_garch_q2_p2_bp)
-# Si ha un p-value di 0.005632 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.08959 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
 show(Xt_t_student_symmetric_garch_q2_p2_w)
-# Si ha un p-value di 0.002467 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.08332 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2835,19 +4709,20 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano all'interno dell'intervallo
+# eccetto nel lag 15
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 5.13, df = 1, p-value = 0.02352
+# X-squared = 1.0338, df = 1, p-value = 0.3093
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q2_p2_lm, alternative="two.sided")
-# DW = 2.0452, p-value = 0.02444
+# DW = 2.0905, p-value = 0.3324
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q2_p2_lm, order=5, type="Chisq")
-# LM test = 8.2508, df = 5, p-value = 0.1429
+# LM test = 2.319, df = 5, p-value = 0.8035
 
 # Per i test di Ljiung-box e Burbin-Wtason si ha un p-value < 0.05, ciò significa che c'è un'evidenza di
 # autocorrelazione nei residui del modello
@@ -2861,17 +4736,132 @@ df_Xt_t_student_asymmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q2_p2)
 summary(Xt_t_student_asymmetric_garch_q2_p2_lm)
+summary(Xt_t_student_asymmetric_garch_q2_p2_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q2_p2_res <- Xt_t_student_asymmetric_garch_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 3.
-# La skew è pari a -2.604897; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -1.959105; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 18.39842; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 8.887091; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,2) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_asymmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q2_p2_df <- adf.test(Xt_t_student_asymmetric_garch_q2_p2)
+show(Xt_t_student_asymmetric_garch_q2_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_asymmetric_garch_q2_p2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
@@ -2879,13 +4869,13 @@ plot(Xt_t_student_asymmetric_garch_q2_p2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
 show(Xt_t_student_asymmetric_garch_q2_p2_bp)
-# Si ha un p-value di 0.5338 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01213 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
 show(Xt_t_student_asymmetric_garch_q2_p2_w)
-# Si ha un p-value di 0.5983 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.04304 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -2921,23 +4911,22 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori tendono a seguire un trend 
-# fino al 10 lag
 
 # Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_q2_p2_res
+y <- Xt_t_student_asymmetric_garch_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 5.13, df = 1, p-value = 0.02352
+# X-squared = 22.226, df = 1, p-value = 2.423e-06
 
 # Test Durbin-Watson
-dwtest(Xt_t_student_symmetric_garch_q2_p2_lm, alternative="two.sided")
-# DW = 2.0452, p-value = 0.02444
+dwtest(Xt_t_student_asymmetric_garch_q2_p2_lm, alternative="two.sided")
+# DW = 1.5766, p-value = 1.679e-06
 
 # Test Breusch-Godfrey
-bgtest(Xt_t_student_symmetric_garch_q2_p2_lm, order=5, type="Chisq")
-# LM test = 8.2508, df = 5, p-value = 0.1429
+bgtest(Xt_t_student_asymmetric_garch_q2_p2_lm, order=5, type="Chisq")
+# LM test = 31.244, df = 5, p-value = 8.382e-06
 
-# Per i test di Ljiung-box e Durbin-Watson si ha un p-value < 0.05, ciò significa che potrebbe esserci
-# un'evidenza di autocorrelazione nei residui del modello
+# I risultati dei test hanno un p-value < 0.05, ciò significa che è possibile rigettare l'ipotesi nulla
+# di assenza di autocorrelazione.
 
 #############################################################################################################
 #############################################################################################################
@@ -2965,6 +4954,8 @@ type_model = substitute(paste0("Model ARCH(", q, ")"))
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']] 
@@ -2977,6 +4968,8 @@ Xt_normal_arch_q1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]  
@@ -2989,6 +4982,8 @@ Xt_normal_arch1_q1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']] 
@@ -3032,6 +5027,8 @@ arch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol 
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']] 
@@ -3044,6 +5041,8 @@ Xt_t_student_symmetric_arch_q1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']] 
@@ -3056,6 +5055,8 @@ Xt_t_student_symmetric_arch1_q1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']] 
@@ -3099,6 +5100,8 @@ arch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_d
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3111,6 +5114,8 @@ Xt_t_student_asymmetric_arch_q1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3123,6 +5128,8 @@ Xt_t_student_asymmetric_arch1_q1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3170,6 +5177,8 @@ type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3183,6 +5192,8 @@ Xt_normal_garch_q1_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3196,6 +5207,8 @@ Xt_normal_garch1_q1_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3240,6 +5253,8 @@ garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3253,6 +5268,8 @@ Xt_t_student_symmetric_garch_q1_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3262,10 +5279,12 @@ print(a1*sigmasquaredW + b1)
 Xt_t_student_symmetric_garch1_q1_p1_new <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
 Xt_t_student_symmetric_garch1_q1_p1_new
 
-# Seconda traiettoria
+# Terza traiettoria
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3310,6 +5329,8 @@ garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3323,6 +5344,8 @@ Xt_t_student_asymmetric_garch_q1_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3336,6 +5359,8 @@ Xt_t_student_asymmetric_garch1_q1_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3391,6 +5416,8 @@ type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3404,6 +5431,8 @@ Xt_normal_garch_q1_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3417,6 +5446,8 @@ Xt_normal_garch1_q1_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3461,6 +5492,8 @@ garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3474,6 +5507,8 @@ Xt_t_student_symmetric_garch_q1_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3487,6 +5522,8 @@ Xt_t_student_symmetric_garch1_q1_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3531,6 +5568,8 @@ garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3544,6 +5583,8 @@ Xt_t_student_asymmetric_garch_q1_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3557,6 +5598,8 @@ Xt_t_student_asymmetric_garch1_q1_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,2)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']]
@@ -3613,6 +5656,8 @@ type_model = substitute(paste0("Model ARCH(", q, ")"))
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3625,6 +5670,8 @@ Xt_normal_arch_q2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3637,6 +5684,8 @@ Xt_normal_arch1_q2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3680,6 +5729,8 @@ arch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol 
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3692,6 +5743,8 @@ Xt_t_student_symmetric_arch_q2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3704,6 +5757,8 @@ Xt_t_student_symmetric_arch1_q2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3747,6 +5802,8 @@ arch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_d
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3759,6 +5816,8 @@ Xt_t_student_asymmetric_arch_q2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3771,6 +5830,8 @@ Xt_t_student_asymmetric_arch1_q2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3818,6 +5879,8 @@ type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3831,6 +5894,8 @@ Xt_normal_garch_q2_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3844,6 +5909,8 @@ Xt_normal_garch1_q2_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3888,6 +5955,8 @@ garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3901,6 +5970,8 @@ Xt_t_student_symmetric_garch_q2_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3914,6 +5985,8 @@ Xt_t_student_symmetric_garch1_q2_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3958,6 +6031,8 @@ garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3971,6 +6046,8 @@ Xt_t_student_asymmetric_garch_q2_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -3984,6 +6061,8 @@ Xt_t_student_asymmetric_garch1_q2_p1_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,1)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4040,6 +6119,8 @@ type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4053,6 +6134,8 @@ Xt_normal_garch_q2_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4066,6 +6149,8 @@ Xt_normal_garch1_q2_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "norm")
 fit = ugarchfit(spec = uspec, data = dist_normal2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4110,6 +6195,8 @@ garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4123,6 +6210,8 @@ Xt_t_student_symmetric_garch_q2_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4136,6 +6225,8 @@ Xt_t_student_symmetric_garch1_q2_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "std")
 fit = ugarchfit(spec = uspec, data = dist_t_student_symmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4180,6 +6271,8 @@ garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4193,6 +6286,8 @@ Xt_t_student_asymmetric_garch_q2_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4206,6 +6301,8 @@ Xt_t_student_asymmetric_garch1_q2_p2_new
 uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(2,2)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric2)
 print(fit)
+intconf = confint(fit)
+show(intconf)
 
 a0 <- coef(fit)[['omega']] 
 aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
@@ -4279,7 +6376,6 @@ concludere che che ci sia presenza di autocorrelazione nei residui del modello.
 
 "
 ##########################################
-
 # Consideriamo una traiettoia con distribuzione normale di un modello ARCH(1)
 Xt <- Xt_normal_arch_q1_new
 df_Xt_normal_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
@@ -4287,31 +6383,147 @@ df_Xt_normal_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_arch_q1_lm <- lm(Xt~t, data=df_Xt_normal_arch_q1)
 summary(Xt_normal_arch_q1_lm)
+summary(Xt_normal_arch_q1_lm$fitted.values)
 
 Xt_normal_arch_q1_res <- Xt_normal_arch_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_arch_q1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_arch_q1_res)                  # theoretical value 3.
-# La skew è pari a 0.003979596; questo indica che la sua distribuzione dei dati nei resdui
+# La skew è pari a -0.04877826; questo indica che la sua distribuzione dei dati nei resdui
 # è molto vicina alla simmetria con una coda negativa.
-# La kurtosi è pari a 3.01819; questo indica che la distribuzione è leggermenete leptocurtica, 
-# cioè ha code più pesanti rispetto ad una normale ma non in modo significativo.
+# La kurtosi è pari a 2.668457; questo indica che la distribuzione è leggermenete  platykurtic, 
+# cioè ha code più sottili rispetto ad una normale.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q1_sp)
 
 plot(Xt_normal_arch_q1_lm,1) # Residuals vs Fitted
-plot(Xt_normal_arch_q1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
 
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_arch_q1_df <- adf.test(Xt)
+show(Xt_normal_arch_q1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q1_sp)
+
+plot(Xt_normal_arch_q1_lm,3) # Scale-location
+
+# Omoschedasticità
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_arch_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_arch_q1)
 show(Xt_normal_arch_q1_bp)
-# Si ha un p-value di 0.02121 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01437 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_arch_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_arch_q1)
 show(Xt_normal_arch_q1_w)
-# Si ha un p-value di 0.03522 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.04755 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -4347,25 +6559,25 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta.
 
 # Test Ljiung-box
 y <- Xt_normal_arch_q1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.41538, df = 1, p-value = 0.5193
+# X-squared = 2.9285, df = 1, p-value = 0.08703
+# Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 
 # Test Durbin-Watson
 dwtest(Xt_normal_arch_q1_lm, alternative="two.sided")
-# DW = 1.9871, p-value = 0.5128
+# DW = 1.8454, p-value = 0.07556
+# Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_arch_q1_lm, order=5, type="Chisq")
-# LM test = 2.7348, df = 5, p-value = 0.7408
+# LM test = 3.2063, df = 5, p-value = 0.6682
+# Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che c'è un'assenza di autocorrelazione nei residui.
 
 ##########################################
 
@@ -4376,31 +6588,146 @@ df_Xt_t_student_symmetric_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_arch_q1_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_arch_q1)
 summary(Xt_t_student_symmetric_arch_q1_lm)
+summary(Xt_t_student_symmetric_arch_q1_lm$fitted.values)
 
 Xt_t_student_symmetric_arch_q1_res <- Xt_t_student_symmetric_arch_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_arch_q1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_arch_q1_res)                  # theoretical value 3.
-# La skew è pari a 0.1024834; questo indica che la distribuzione è leggermente asimmetrica, ma dato
-# che il suo valore è vicino allo zero possiamo dire che la sua distribuzione è simmetrica.
-# La kurtosi è pari a 6.305725; questo indica che la distribuzione è leptocurtica, 
+# La skew è pari a 0.1547071; il suo valore è vicino allo zero possiamo dire che 
+# la sua distribuzione è simmetrica.
+# La kurtosi è pari a 4.568766; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q1_sp)
+
 plot(Xt_t_student_symmetric_arch_q1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_arch_q1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_arch_q1_df <- adf.test(Xt)
+show(Xt_t_student_symmetric_arch_q1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch_q1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q1_sp)
+
+plot(Xt_t_student_symmetric_arch_q1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_arch_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q1)
 show(Xt_t_student_symmetric_arch_q1_bp)
-# Si ha un p-value di 0.5407 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.002928 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_arch_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q1)
 show(Xt_t_student_symmetric_arch_q1_w)
-# Si ha un p-value di 0.8279 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01187 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -4443,18 +6770,18 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_arch_q1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.93331, df = 1, p-value = 0.334
+# X-squared = 0.20422, df = 1, p-value = 0.6513
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_arch_q1_lm, alternative="two.sided")
-# DW = 1.9803, p-value = 0.3193
+# DW = 1.9593, p-value = 0.6161
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_arch_q1_lm, order=5, type="Chisq")
-# LM test = 2.5171, df = 5, p-value = 0.7739
+# LM test = 1.5326, df = 5, p-value = 0.9093
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# l'ipotesi nulla di assenza autocorrelazione.
 
 ##########################################
 
@@ -4465,32 +6792,151 @@ df_Xt_t_student_asymmetric_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_arch_q1_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_arch_q1)
 summary(Xt_t_student_asymmetric_arch_q1_lm)
+summary(Xt_t_student_asymmetric_arch_q1_lm$fitted.values)
 
 Xt_t_student_asymmetric_arch_q1_res <- Xt_t_student_asymmetric_arch_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_arch_q1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_arch_q1_res)                  # theoretical value 3.
-# La skew è pari a -2.061998; questo indica una forte asimmetria verso sinistra
+# La skew è pari a -1.710902; questo indica una forte asimmetria verso sinistra
 # con una coda lunga negativa.
-# La kurtosi è pari a 10.91005; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 7.444902; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q1_sp)
+
 plot(Xt_t_student_asymmetric_arch_q1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_arch_q1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_arch_q1_df <- adf.test(Xt)
+show(Xt_t_student_asymmetric_arch_q1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q1_sp)
+
+plot(Xt_t_student_asymmetric_arch_q1_lm,3) # Scale-location
+
+#Determiniamo se la serie è eteroschedastico:
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q1)
 show(Xt_t_student_asymmetric_arch_q1_bp)
-# Si ha un p-value di 0.9861 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.02001 > 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q1)
 show(Xt_t_student_asymmetric_arch_q1_w)
-# Si ha un p-value di 0.9133 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.06186 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
+
+# Nel test di Breusch-Pagan è possibile rigettare l’ipotesi nulla di omoschedasticità in favore dell’ipotesi alternativa di ETEROSCHEDASTICITA’; 
+# mentre, nel test di White non possiamo rigettare l’ipotesi nulla di OMOSCHEDASTICITA’.
 
 # Plot of the autocorrelogram.
 y <- Xt_t_student_asymmetric_arch_q1_lm$residuals
@@ -4524,26 +6970,24 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_arch_q1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 2.5024, df = 1, p-value = 0.1137
+# X-squared = 2.8229, df = 1, p-value = 0.09293
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_arch_q1_lm, alternative="two.sided")
-# DW = 1.9682, p-value = 0.109
+# DW = 1.8468, p-value = 0.07825
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_arch_q1_lm, order=5, type="Chisq")
-# LM test = 5.2832, df = 5, p-value = 0.3823
+# LM test = 3.2831, df = 5, p-value = 0.6564
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# l'ipotesi nulla di assenza di autocorrelazione.
 
 ##########################################
 ##########################################
@@ -4555,30 +6999,145 @@ df_Xt_normal_garch_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q1_p1_lm <- lm(Xt~t, data=df_Xt_normal_garch_q1_p1)
 summary(Xt_normal_garch_q1_p1_lm)
+summary(Xt_normal_garch_q1_p1_lm$fitted.values)
 
 Xt_normal_garch_q1_p1_res <- Xt_normal_garch_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q1_p1_res)                  # theoretical value 0.
-moments::kurtosis(Xt_normal_garch_q1_p1_res)                  # theoretical value 3.
-# La skew è pari a -0.0003512817; il suo valore è prossimo a zero e negativo, quindi la sua distribuzione 
-# viene considerata approssimativamente simmetrica con una coda negativa.
-# La kurtosi è pari a 3.158059; questo indica che la distribuzione è leggermenete leptocurtica
+moments::kurtosis(Xt_normal_garch_q1_p1_res)                  # theoretical
+# La skew è pari a 0.1730432; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# viene considerata approssimativamente simmetrica.
+# La kurtosi è pari a 3.735618; questo indica che la distribuzione è leggermenete leptocurtica
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p1_sp)
 
 plot(Xt_normal_garch_q1_p1_lm,1) # Residuals vs Fitted
-plot(Xt_normal_garch_q1_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q1_p1_df <- adf.test(Xt)
+show(Xt_normal_garch_q1_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p1_sp)
+
+plot(Xt_normal_garch_q1_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q1_p1)
 show(Xt_normal_garch_q1_p1_bp)
-# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.015e-12 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q1_p1)
 show(Xt_normal_garch_q1_p1_w)
-# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 1.722e-11 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -4614,25 +7173,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta
 
 # Test Ljiung-box
 y <- Xt_normal_garch_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 3.615, df = 1, p-value = 0.05726
+# X-squared = 0.18709, df = 1, p-value = 0.6654
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q1_p1_lm, alternative="two.sided")
-# DW = 2.0379, p-value = 0.05952
+# DW = 2.0367, p-value = 0.7144
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q1_p1_lm, order=5, type="Chisq")
-# LM test = 10.318, df = 5, p-value = 0.06672
+# LM test = 2.6647, df = 5, p-value = 0.7515
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# l'ipotesi nulla di assenza di autocorrelazione.
 
 ##########################################
 
@@ -4643,31 +7200,149 @@ df_Xt_t_student_symmetric_garch_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q1_p1_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q1_p1)
 summary(Xt_t_student_symmetric_garch_q1_p1_lm)
+summary(Xt_t_student_symmetric_garch_q1_p1_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q1_p1_res <- Xt_t_student_symmetric_garch_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q1_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q1_p1_res)                  # theoretical value 3.
-# La skew è pari a 0.2371285; il suo valore è positivo e la sua distribuzione è approssimativamente simmetrica.
-# La kurtosi è pari a 7.223226; questo indica che la distribuzione è leptocurtica, 
+# La skew è pari a 0.05638369; la sua distribuzione è approssimativamente simmetrica.
+# La kurtosi è pari a 3.996305; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p1_sp)
+
 plot(Xt_t_student_symmetric_garch_q1_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q1_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q1_p1_df <- adf.test(Xt)
+show(Xt_t_student_symmetric_garch_q1_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p1_sp)
+
+plot(Xt_t_student_symmetric_garch_q1_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p1)
 show(Xt_t_student_symmetric_garch_q1_p1_bp)
-# Si ha un p-value di 3.365e-10 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.1289 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p1)
 show(Xt_t_student_symmetric_garch_q1_p1_w)
-# Si ha un p-value di 4.93e-13 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.006824 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
+
+# Il test di Breusch-Pagan indica l'assenza di eteroschedasticità nei residui del modello, 
+# mentre il test di White suggerisce la presenza di eteroschedasticità.
 
 # Plot of the autocorrelogram.
 y <- Xt_t_student_symmetric_garch_q1_p1_lm$residuals
@@ -4702,23 +7377,20 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
-# una banda ristretta, anche se in alcuni lag questo valore esce dall'intervallo; 
-# quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.15246, df = 1, p-value = 0.6962
+# X-squared = 2.4481, df = 1, p-value = 0.1177
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q1_p1_lm, alternative="two.sided")
-# DW = 2.0078, p-value = 0.7036
+# DW = 2.1382, p-value = 0.1329
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q1_p1_lm, order=5, type="Chisq")
-# LM test = 0.50115, df = 5, p-value = 0.9921
+# LM test = 5.8816, df = 5, p-value = 0.3179
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
@@ -4732,31 +7404,146 @@ df_Xt_t_student_asymmetric_garch_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q1_p1_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q1_p1)
 summary(Xt_t_student_asymmetric_garch_q1_p1_lm)
+summary(Xt_t_student_asymmetric_garch_q1_p1_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q1_p1_res <- Xt_t_student_asymmetric_garch_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q1_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q1_p1_res)                  # theoretical value 3.
-# La skew è pari a -1.996125; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -1.510915; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 9.864798; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 6.257641; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p1_sp)
+
 plot(Xt_t_student_asymmetric_garch_q1_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q1_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q1_p1_df <- adf.test(Xt)
+show(Xt_t_student_asymmetric_garch_q1_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p1_sp)
+
+plot(Xt_t_student_asymmetric_garch_q1_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p1)
 show(Xt_t_student_asymmetric_garch_q1_p1_bp)
-# Si ha un p-value di 0.5487 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01295 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p1)
 show(Xt_t_student_asymmetric_garch_q1_p1_w)
-# Si ha un p-value di 0.4272 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.02366 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -4792,23 +7579,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
-# una banda ristretta, anche se in alcuni lag questo valore esce dall'intervallo.
+# una banda ristretta.
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.0063287, df = 1, p-value = 0.9366
+# X-squared = 2.5459, df = 1, p-value = 0.1106
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_garch_q1_p1_lm, alternative="two.sided")
-# DW = 1.9983, p-value = 0.9254
+# DW = 1.8527, p-value = 0.09001
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_garch_q1_p1_lm, order=5, type="Chisq")
-# LM test = 14.539, df = 5, p-value = 0.01252
+# LM test = 5.7675, df = 5, p-value = 0.3295
 
-# Solo per il test di Breusch-Godfrey si ha n p-value < 0.05, ciò significa che 
-# c'è un'evidenza di autocorrelazione.
+# I risultati dei tre test hanno un p-value < 0.05, ciò significa che possiamo rigettare
+# l'ipotesi nulla di no autocorrelazione.
 
 ##########################################
 ##########################################
@@ -4820,30 +7607,143 @@ df_Xt_normal_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_normal_garch_q1_p2)
 summary(Xt_normal_garch_q1_p2_lm)
+summary(Xt_normal_garch_q1_p2_lm$fitted.values)
 
 Xt_normal_garch_q1_p2_res <- Xt_normal_garch_q1_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q1_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q1_p2_res)                  # theoretical value 3.
-# La skew è pari a 0.007070471; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# La skew è pari a -0.04768591; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica con una coda negativa.
-# La kurtosi è pari a 3.005916; questo indica che la distribuzione è leggermenete leptocurtica.
+# La kurtosi è pari a 3.961628; questo indica che la distribuzione è leggermenete platykurtic.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p2_sp)
 
 plot(Xt_normal_garch_q1_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q1_p2_df <- adf.test(Xt)
+show(Xt_normal_garch_q1_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q1_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q1_p2_sp)
+
 plot(Xt_normal_garch_q1_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q1_p2)
 show(Xt_normal_garch_q1_p2_bp)
-# Si ha un p-value di 0.02233 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q1_p2)
 show(Xt_normal_garch_q1_p2_w)
-# Si ha un p-value di 0.03758 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -4879,25 +7779,22 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta, eccetto nel lag 12
 
 # Test Ljiung-box
 y <- Xt_normal_garch_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.32231, df = 1, p-value = 0.5702
+# X-squared = 1.4881, df = 1, p-value = 0.2225
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q1_p2_lm, alternative="two.sided")
-# DW = 1.9886, p-value = 0.5635
+# DW = 1.8879, p-value = 0.1935
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q1_p2_lm, order=5, type="Chisq")
-# LM test = 2.6767, df = 5, p-value = 0.7497
+# LM test = 2.8348, df = 5, p-value = 0.7254LM test = 3.9654, df = 5, p-value = 0.5544
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che c'è una assenza di autocorrelazione, poichè il p-value > 0.05.
 
 ##########################################
 
@@ -4908,31 +7805,144 @@ df_Xt_t_student_symmetric_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q1_p2)
 summary(Xt_t_student_symmetric_garch_q1_p2_lm)
+summary(Xt_t_student_symmetric_garch_q1_p2_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q1_p2_res <- Xt_t_student_symmetric_garch_q1_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q1_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q1_p2_res)                  # theoretical value 3.
-# La skew è pari a 0.05554356; il suo valore è positivo e vicino allo zero; quindi, la sua distribuzione
+# La skew è pari a 0.3928971; il suo valore è positivo e vicino allo zero; quindi, la sua distribuzione
 # è vicina alla simmetria.
-# La kurtosi è pari a 6.013424; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 8.048424; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p2_sp)
+
 plot(Xt_t_student_symmetric_garch_q1_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q1_p2_df <- adf.test(Xt)
+show(Xt_t_student_symmetric_garch_q1_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q1_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q1_p2_sp)
+
 plot(Xt_t_student_symmetric_garch_q1_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p2)
 show(Xt_t_student_symmetric_garch_q1_p2_bp)
-# Si ha un p-value di 0.4921 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q1_p2)
 show(Xt_t_student_symmetric_garch_q1_p2_w)
-# Si ha un p-value di 0.7898 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -4976,53 +7986,166 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.92027, df = 1, p-value = 0.3374
+# X-squared = 0.91573, df = 1, p-value = 0.3386
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q1_p2_lm, alternative="two.sided")
-# DW = 1.9804, p-value = 0.3224
+# DW = 1.9131, p-value = 0.3085
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q1_p2_lm, order=5, type="Chisq")
-# LM test = 2.3954, df = 5, p-value = 0.7922
+# LM test = 1.9301, df = 5, p-value = 0.8587
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di no autocorrelazione.
 
 ##########################################
 
-# Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,2)
+# Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_asymmetric_garch_q1_p2_new
 df_Xt_t_student_asymmetric_garch_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q1_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q1_p2)
 summary(Xt_t_student_asymmetric_garch_q1_p2_lm)
+summary(Xt_t_student_asymmetric_garch_q1_p2_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q1_p2_res <- Xt_t_student_asymmetric_garch_q1_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q1_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q1_p2_res)                  # theoretical value 3.
-# La skew è pari a -2.059226; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -1.81205; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 10.88637; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 8.243205; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,2) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p2_sp)
+
 plot(Xt_t_student_asymmetric_garch_q1_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q1_p2_df <- adf.test(Xt)
+show(Xt_t_student_asymmetric_garch_q1_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q1_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,2) of a asymmetricc t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q1_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q1_p2_sp)
+
 plot(Xt_t_student_asymmetric_garch_q1_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q1_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
 show(Xt_t_student_asymmetric_garch_q1_p2_bp)
-# Si ha un p-value di 0.9756 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.000104 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q1_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q1_p2)
 show(Xt_t_student_asymmetric_garch_q1_p2_w)
-# Si ha un p-value di 0.9108 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.0005358 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5035,7 +8158,7 @@ ci_95 <- qnorm((1+0.95)/2)/sqrt(length)
 ci_99 <- qnorm((1+0.99)/2)/sqrt(length)
 Plot_Aut_Fun_y <- data.frame(lag=Aut_Fun_y$lag, acf=Aut_Fun_y$acf)
 title_content <- bquote(atop(.(content), paste("Plot of the Autocorrelogram of the Residuals in the Linear Model for the model GARCH(1,2)")))
-subtitle_content <- bquote(paste("t-student asymmetric distribution, path length ", .(length), " sample points,   ", "lags ", .(maxlag)))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points,   ", "lags ", .(maxlag)))
 caption_content <- author_content
 ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) + 
   geom_segment(aes(x=lag, y=rep(0,length(lag)), xend=lag, yend=acf), size = 1, col="black") +
@@ -5057,24 +8180,25 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori nei primi lag 
-# tendono a eseguire un trend; mentre dal lag 10 i valori oscillano all'interno dell'intervallo 
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta.
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.9846, df = 1, p-value = 0.1589
+# X-squared = 4.0259, df = 1, p-value = 0.04481
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_garch_q1_p2_lm, alternative="two.sided")
-# DW = 1.9716, p-value = 0.1529
+# DW = 1.8178, p-value = 0.03695
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_garch_q1_p2_lm, order=5, type="Chisq")
-# LM test = 4.7722, df = 5, p-value = 0.4443
+# LM test = 4.5353, df = 5, p-value = 0.4752
 
-# I risultati dei tre test indicano un p-value > 0.05; ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# Per i test di Ljung-Box e Durbin-Watson si ha un p-value < 0.05, ciò significa che ci sono prove
+# di autocorrelazione nei residui del modello; mentre, nel test di Breusch-Godfrey si ha un 
+# p-value > 0.05, ciò significa che non c'è una correlazione seriale nella serie.
 
 ##########################################
 ##########################################
@@ -5086,32 +8210,145 @@ df_Xt_normal_arch_q2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_arch_q2_lm <- lm(Xt~t, data=df_Xt_normal_arch_q2)
 summary(Xt_normal_arch_q2_lm)
+summary(Xt_normal_arch_q2_lm$fitted.values)
 
 Xt_normal_arch_q2_res <- Xt_normal_arch_q2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_arch_q2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_arch_q2_res)                  # theoretical value 3.
-# La skew è pari a 0.003987338; questo indica una leggera asimmetria, tuttavia,
-# il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
+# La skew è pari a -0.05283273; il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
 # considerata approssimativamente simmetrica.
-# La kurtosi è pari a 3.018151; questo indica che la distribuzione è leggermenete leptocurtica.
+# La kurtosi è pari a 2.685138; questo indica che la distribuzione è leggermenete platykurtic.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q2_sp)
 
 plot(Xt_normal_arch_q2_lm,1) # Residuals vs Fitted
-plot(Xt_normal_arch_q2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
-# Dal grafico "Scale-Location" possiamo notare omoschedasticità nei residui.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_arch_q2_df <- adf.test(Xt)
+show(Xt_normal_arch_q2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch_q2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_arch_q2_sp)
+
+plot(Xt_normal_arch_q2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_arch_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_arch_q2)
 show(Xt_normal_arch_q2_bp)
-# Si ha un p-value di 0.02121 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01246 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_arch_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_arch_q2)
 show(Xt_normal_arch_q2_w)
-# Si ha un p-value di 0.03522 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.04176 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5146,26 +8383,24 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta eccetto in due lag.
 
 # Test Ljiung-box
 y <- Xt_normal_arch_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.41513, df = 1, p-value = 0.5194
+# X-squared = 3.0555, df = 1, p-value = 0.08046
 
 # Test Durbin-Watson
 dwtest(Xt_normal_arch_q2_lm, alternative="two.sided")
-# DW = 1.9871, p-value = 0.5129
+# DW = 1.8422, p-value = 0.06978
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_arch_q2_lm, order=5, type="Chisq")
-# LM test = 2.7347, df = 5, p-value = 0.7408
+# LM test = 3.3176, df = 5, p-value = 0.6511 
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano che c'è una assenza di autocorrelazione nei residui del modello 
+# poichè il p-value > 0.05 e non possiamo rigettare l'ipotesi nulla.
 
 ##########################################
 
@@ -5176,33 +8411,144 @@ df_Xt_t_student_symmetric_arch_q2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_arch_q2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_arch_q2)
 summary(Xt_t_student_symmetric_arch_q2_lm)
+summary(Xt_t_student_symmetric_arch_q2_lm$fitted.values)
 
 Xt_t_student_symmetric_arch_q2_res <- Xt_t_student_symmetric_arch_q2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_arch_q2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_arch_q2_res)                  # theoretical value 3.
-# La skew è pari a 0.106602; questo indica una leggermente asimmetria, tuttavia,
-# il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
+# La skew è pari a -0.0182491; il suo valore è prossimo a zero, quindi la sua distribuzione potrebbe essere
 # considerata approssimativamente simmetrica.
-# La kurtosi è pari a 5.993665; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 5.294106; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch_q2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q2_sp)
+
 plot(Xt_t_student_symmetric_arch_q2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_arch_q2_df <- adf.test(Xt)
+show(Xt_t_student_symmetric_arch_q2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch_q2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_arch_q2_sp)
+
 plot(Xt_t_student_symmetric_arch_q2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
-# Dal grafico "Scale-Location" possiamo notare omoschedasticità nei residui.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_arch_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q2)
 show(Xt_t_student_symmetric_arch_q2_bp)
-# Si ha un p-value di 0.7034 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.08707 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_arch_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_arch_q2)
 show(Xt_t_student_symmetric_arch_q2_w)
-# Si ha un p-value di 0.9232 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.1964 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5237,26 +8583,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
+# una banda ristretta, eccetto per il lag 15.
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_arch_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.2739, df = 1, p-value = 0.259
+# X-squared = 0.29774, df = 1, p-value = 0.5853
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_arch_q2_lm, alternative="two.sided")
-# DW = 2.0225, p-value = 0.2649
+# DW = 2.0484, p-value = 0.6188
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_arch_q2_lm, order=5, type="Chisq")
-# LM test = 6.5868, df = 5, p-value = 0.2532
+# LM test = 0.75102, df = 5, p-value = 0.9801
 
-# Per tutti e tre i test si ha un p-value > 0.05; ciò significa che non è possibile rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati dei test hanno un p-value > 0.05; questo, significa che c'è assenza di autocorrelazione.
 
 ##########################################
 
@@ -5267,32 +8610,144 @@ df_Xt_t_student_asymmetric_arch_q2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_arch_q2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_arch_q2)
 summary(Xt_t_student_asymmetric_arch_q2_lm)
+summary(Xt_t_student_asymmetric_arch_q2_lm$fitted.values)
 
 Xt_t_student_asymmetric_arch_q2_res <- Xt_t_student_asymmetric_arch_q2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_arch_q2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_arch_q2_res)                  # theoretical value 3.
-# La skew è pari a -2.060575; questo indica una forte asimmetria verso sinistra
+# La skew è pari a -1.714677; questo indica una forte asimmetria verso sinistra
 # con una coda lunga negativa.
-# La kurtosi è pari a 10.89774; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 7.430318; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Arch(2) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q2_sp)
+
 plot(Xt_t_student_asymmetric_arch_q2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_arch_q2_df <- adf.test(Xt)
+show(Xt_t_student_asymmetric_arch_q2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch_q2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Arch(21) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_arch_q2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_arch_q2_sp)
+
 plot(Xt_t_student_asymmetric_arch_q2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari e omoschedastici.
-# Dal grafico "Scale-Location" possiamo notare omoschedasticità nei residui.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q2)
 show(Xt_t_student_asymmetric_arch_q2_bp)
-# Si ha un p-value di  0.9809 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di  0.01755 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_arch_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_arch_q2)
 show(Xt_t_student_asymmetric_arch_q2_w)
-# Si ha un p-value di 0.9121 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.05526 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5332,18 +8787,18 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_arch_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 2.235, df = 1, p-value = 0.1349
+# X-squared = 2.968, df = 1, p-value = 0.08493
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_asymmetric_arch_q2_lm, alternative="two.sided")
-# DW = 1.9699, p-value = 0.1296
+# DW = 1.843, p-value = 0.07132
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_asymmetric_arch_q2_lm, order=5, type="Chisq")
-# LM test = 5.0192, df = 5, p-value = 0.4135
+# LM test = 3.7472, df = 5, p-value = 0.5864
 
 # Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# l'ipotesi nulla di assenza autocorrelazione.
 
 ##########################################
 ##########################################
@@ -5355,35 +8810,144 @@ df_Xt_normal_garch_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q2_p1_lm <- lm(Xt~t, data=df_Xt_normal_garch_q2_p1)
 summary(Xt_normal_garch_q2_p1_lm)
+summary(Xt_normal_garch_q2_p1_lm$fitted.values)
 
 Xt_normal_garch_q2_p1_res <- Xt_normal_garch_q2_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q2_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q2_p1_res)                  # theoretical value 3.
-# La skew è pari a 0.008723595; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# La skew è pari a -0.03480568; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica con una coda negativa.
-# La kurtosi è pari a 3.033011; questo indica che la distribuzione è leggermenete leptocurtica.
+# La kurtosi è pari a 3.787901; questo indica che la distribuzione è leggermenete platykurtic.
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p1_sp)
 
 plot(Xt_normal_garch_q2_p1_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q2_p1_df <- adf.test(Xt)
+show(Xt_normal_garch_q2_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,1) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p1_sp)
+
 plot(Xt_normal_garch_q2_p1_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q2_p1)
 show(Xt_normal_garch_q2_p1_bp)
-# Si ha un p-value di 0.06454 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di  2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q2_p1)
 show(Xt_normal_garch_q2_p1_w)
-# Si ha un p-value di 0.006058 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di  2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
-
-# Il test di Breusch-Pagan suggerisce l'assenza di eteroschedasticità nei residui, 
-# mentre il test di White suggerisce la presenza di eteroschedasticità quando viene 
-# considerata una variabile quadratica nel modello. 
 
 # Plot of the autocorrelogram.
 y <- Xt_normal_garch_q2_p1_lm$residuals
@@ -5418,25 +8982,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
-# una banda ristretta, quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta.
 
 # Test Ljiung-box
 y <- Xt_normal_garch_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.19789, df = 1, p-value = 0.6564
+# X-squared = 1.6778, df = 1, p-value = 0.1952
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q2_p1_lm, alternative="two.sided")
-# DW = 1.9911, p-value = 0.6492
+# DW = 1.8813, p-value = 0.1693
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q2_p1_lm, order=5, type="Chisq")
-# LM test = 2.6132, df = 5, p-value = 0.7594
+# LM test = 2.8145, df = 5, p-value = 0.7286
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati hanno un p-value > 0.05, quindi, non possiamo rigettare l'ipotesi
+# nulla di assenza di autocorrelazione.
 
 ##########################################
 
@@ -5447,31 +9009,144 @@ df_Xt_t_student_symmetric_garch_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q2_p1_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q2_p1)
 summary(Xt_t_student_symmetric_garch_q2_p1_lm)
+summary(Xt_t_student_symmetric_garch_q2_p1_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q2_p1_res <- Xt_t_student_symmetric_garch_q2_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q2_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q2_p1_res)                  # theoretical value 3.
-# La skew è pari a 0.1260426; il suo valore è e vicino allo zero; quindi, la sua distribuzione
+# La skew è pari a -0.254513; il suo valore è vicino allo zero; quindi, la sua distribuzione
 # è vicina alla simmetria.
-# La kurtosi è pari a 6.060478; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 4.981316; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,1) of a symmetic t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p1_sp)
+
 plot(Xt_t_student_symmetric_garch_q2_p1_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q2_p1_df <- adf.test(Xt)
+show(Xt_t_student_symmetric_garch_q2_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,1) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p1_sp)
+
 plot(Xt_t_student_symmetric_garch_q2_p1_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p1)
 show(Xt_t_student_symmetric_garch_q2_p1_bp)
-# Si ha un p-value di 0.01085 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 8.935e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p1)
 show(Xt_t_student_symmetric_garch_q2_p1_w)
-# Si ha un p-value di 0.0008214 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 1.682e-06 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5507,26 +9182,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano entro 
-# una banda ristretta, anche se in alcuni lag questo valore esce dall'intervallo; 
-# quindi, possiamo dire che che la serie non è significativamente 
-# correlata con le serie ritardate, ovvero che il passato non "spiega" il presente e che le 
-# variazioni da un istante o periodo ad un altro sono sostanzialmente casuali
+# una banda ristretta, eccetto per il lag 15
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.1205, df = 1, p-value = 0.2898
+# X-squared = 0.45221, df = 1, p-value = 0.5013
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q2_p1_lm, alternative="two.sided")
-# DW = 2.0211, p-value = 0.2962
+# DW = 2.0594, p-value = 0.5347
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q2_p1_lm, order=5, type="Chisq")
-# LM test = 6.4375, df = 5, p-value = 0.2659
+# LM test = 1.7281, df = 5, p-value = 0.8853
 
-# Per tutti e tre i test si ha un p-value > 0.05; ciò significa che non è possibile rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati indicano un p-value > 0.05; ciò indica
+# un'assenza di autocorrelazione nei residui del modello.
 
 ##########################################
 
@@ -5537,31 +9209,146 @@ df_Xt_t_student_asymmetric_garch_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q2_p1_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q2_p1)
 summary(Xt_t_student_asymmetric_garch_q2_p1_lm)
+summary(Xt_t_student_asymmetric_garch_q2_p1_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q2_p1_res <- Xt_t_student_asymmetric_garch_q2_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q2_p1_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q2_p1_res)                  # theoretical value 3.
-# La skew è pari a -2.13415; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -1.812047; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 11.67513; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 8.243179; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p1_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p1_sp)
+
 plot(Xt_t_student_asymmetric_garch_q2_p1_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q2_p1_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q2_p1_df <- adf.test(Xt)
+show(Xt_t_student_asymmetric_garch_q2_p1_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p1_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,1) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p1_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p1_sp)
+
+plot(Xt_t_student_asymmetric_garch_q2_p1_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p1)
 show(Xt_t_student_asymmetric_garch_q2_p1_bp)
-# Si ha un p-value di 5.025e-06 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.000104 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p1)
 show(Xt_t_student_asymmetric_garch_q2_p1_w)
-# Si ha un p-value di 1.006e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.000536 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5600,20 +9387,21 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # un trend; mentre, dal lag 8 i valori oscillano all'interno dell'intervallo.
 
 # Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_q2_p1_res
+y <- Xt_t_student_asymmetric_garch_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.1205, df = 1, p-value = 0.2898
+# X-squared = 4.0259, df = 1, p-value = 0.04481
 
 # Test Durbin-Watson
-dwtest(Xt_t_student_symmetric_garch_q2_p1_lm, alternative="two.sided")
-# DW = 2.0211, p-value = 0.2962
+dwtest(Xt_t_student_asymmetric_garch_q2_p1_lm, alternative="two.sided")
+# DW = 1.8178, p-value = 0.03695
 
 # Test Breusch-Godfrey
-bgtest(Xt_t_student_symmetric_garch_q2_p1_lm, order=5, type="Chisq")
-# LM test = 6.4375, df = 5, p-value = 0.2659
+bgtest(Xt_t_student_asymmetric_garch_q2_p1_lm, order=5, type="Chisq")
+# LM test = 4.5354, df = 5, p-value = 0.4752
 
-# Per tutti e tre i test si ha un p-value > 0.05; ciò significa che non è possibile
-# rigettare l'ipotesi nulla di no autocorrelazione.
+# I risultati dei test di Ljung-Box e Durbin-Wtason hanno un p-value < 0.05; ciò indica
+# un'evidenza di autocorrelazione nei residui del modello; mentre, nel test di 
+# Breusch-Godfrey si ha un p-value > 0.05, quindi, non si ha una correlazione seriale.
 
 ##########################################
 ##########################################
@@ -5625,31 +9413,143 @@ df_Xt_normal_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_normal_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_normal_garch_q2_p2)
 summary(Xt_normal_garch_q2_p2_lm)
+summary(Xt_normal_garch_q2_p2_lm$fitted.values)
 
 Xt_normal_garch_q2_p2_res <- Xt_normal_garch_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_normal_garch_q2_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_normal_garch_q2_p2_res)                  # theoretical value 3.
-# La skew è pari a 0.007071132; il suo valore è prossimo a zero, quindi la sua distribuzione 
+# La skew è pari a -0.0476863; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica.
-# La kurtosi è pari a 3.005915; questo indica che la distribuzione è leptocurtica, 
-# cioè ha code più pesanti rispetto ad una normale.
+# La kurtosi è pari a 3.961629; questo indica che la distribuzione è leptocurtica
+
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p2_sp)
 
 plot(Xt_normal_garch_q2_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_normal_garch_q2_p2_df <- adf.test(Xt)
+show(Xt_normal_garch_q2_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,2) of a normal distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_normal_garch_q2_p2_sp)
+
 plot(Xt_normal_garch_q2_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q2_p2)
 show(Xt_normal_garch_q2_p2_bp)
-# Si ha un p-value di 0.02233 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q2_p2)
 show(Xt_normal_garch_q2_p2_w)
-# Si ha un p-value di 0.03758 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.2e-16 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5689,18 +9589,17 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_normal_garch_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# LM test = 2.6767, df = 5, p-value = 0.7497
+# X-squared = 1.4881, df = 1, p-value = 0.2225
 
 # Test Durbin-Watson
 dwtest(Xt_normal_garch_q2_p2_lm, alternative="two.sided")
-# DW = 1.9886, p-value = 0.5635
+# DW = 1.8879, p-value = 0.1935
 
 # Test Breusch-Godfrey
 bgtest(Xt_normal_garch_q2_p2_lm, order=5, type="Chisq")
-# X-squared = 0.32231, df = 1, p-value = 0.5702
+# LM test = 2.8348, df = 5, p-value = 0.7254
 
-# Per tutti e tre i test il valore del p-value > 0.05, ciò significa che non possiamo rigettare
-# l'ipotesi nulla di no autocorrelazione.
+# I risultati del test hanno un p-value < 0.05 indicando una assenza di autocorrelazione
 
 ##########################################
 
@@ -5711,31 +9610,144 @@ df_Xt_t_student_symmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_symmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q2_p2)
 summary(Xt_t_student_symmetric_garch_q2_p2_lm)
+summary(Xt_t_student_symmetric_garch_q2_p2_lm$fitted.values)
 
 Xt_t_student_symmetric_garch_q2_p2_res <- Xt_t_student_symmetric_garch_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 3.
-# La skew è pari a 0.116828; il suo valore è prossima allo zero, quindi possiamo dire 
-# che la sua distribuzione è simmetrica con una coda negativa.
-# La kurtosi è pari a 5.900613; questo indica che la distribuzione è leptocurtica, 
+# La skew è pari a -0.254695; il suo valore è prossima allo zero, quindi possiamo dire 
+# che la sua distribuzione è simmetrica.
+# La kurtosi è pari a 5.050407; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_symmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_symmetric_garch_q2_p2_df <- adf.test(Xt)
+show(Xt_t_student_symmetric_garch_q2_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_symmetric_garch_q2_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
 show(Xt_t_student_symmetric_garch_q2_p2_bp)
-# Si ha un p-value di 0.7811 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 3.22e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
 show(Xt_t_student_symmetric_garch_q2_p2_w)
-# Si ha un p-value di 0.9479 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 8.154e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5771,22 +9783,23 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano all'interno dell'intervallo
+# eccetto nel lag 15
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.0917, df = 1, p-value = 0.2961
+# X-squared = 0.46171, df = 1, p-value = 0.4968
 
 # Test Durbin-Watson
 dwtest(Xt_t_student_symmetric_garch_q2_p2_lm, alternative="two.sided")
-# DW = 2.0208, p-value = 0.3025
+# DW = 2.06, p-value = 0.5303
 
 # Test Breusch-Godfrey
 bgtest(Xt_t_student_symmetric_garch_q2_p2_lm, order=5, type="Chisq")
-# LM test = 6.4213, df = 5, p-value = 0.2674
+# LM test = 1.7896, df = 5, p-value = 0.8774
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non è possibile
-# rigettare l'ipotesi nulla di no autocorrelazione.
+# Per i test di Ljiung-box e Burbin-Wtason si ha un p-value > 0.05, ciò significa che c'è assenza
+# autocorrelazione nei residui del modello
 
 ##########################################
 
@@ -5797,31 +9810,144 @@ df_Xt_t_student_asymmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 # Consideriamo un modello lineare
 Xt_t_student_asymmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q2_p2)
 summary(Xt_t_student_asymmetric_garch_q2_p2_lm)
+summary(Xt_t_student_asymmetric_garch_q2_p2_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch_q2_p2_res <- Xt_t_student_asymmetric_garch_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
 moments::skewness(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 0.
 moments::kurtosis(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 3.
-# La skew è pari a -2.059226; il suo valore è negativo e la sua distribuzione è
+# La skew è pari a -1.812057; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
-# La kurtosi è pari a 10.88636; questo indica che la distribuzione è leptocurtica, 
+# La kurtosi è pari a 8.243387; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
+# Scatter plot - Residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(2,2) of a asymmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Linear Model Residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_asymmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
+
+# Stazionarietà
+# Test Dickey-Fuller 
+Xt_t_student_asymmetric_garch_q2_p2_df <- adf.test(Xt)
+show(Xt_t_student_asymmetric_garch_q2_p2_df)
+# Si ha un p-value < 0.05, quindi possiamo rigettare l'ipotesi nulla di non stazionarietà.
+
+# Scatter plot - Square root of absolute residuals
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+Data_df$X <- sqrt(abs(Data_df$X))
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1])
+Last_Day <- paste(Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(2,2) of a symmetric t-student distribution")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Square root of absolute residuals")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Samples")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+  geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                      guide=guide_legend(override.aes=list(shape=c(19,NA,NA), 
+                                                           linetype=c("blank", "dashed", "solid")))) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+
 plot(Xt_t_student_asymmetric_garch_q2_p2_lm,3) # Scale-location
-# Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
-# omogeneo intorno alla linea rossa LOESS; questo indica che i residui sono stazionari.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
 show(Xt_t_student_asymmetric_garch_q2_p2_bp)
-# Si ha un p-value di 0.9757 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.0001036 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
 show(Xt_t_student_asymmetric_garch_q2_p2_w)
-# Si ha un p-value di 0.9108 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.000534 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -5856,22 +9982,27 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         plot.subtitle=element_text(hjust =  0.5),
         plot.caption = element_text(hjust = 1.0),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-# nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano all'interno dell'intervallo
 
 # Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_q2_p2_res
+y <- Xt_t_student_asymmetric_garch_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.0917, df = 1, p-value = 0.2961
+# X-squared = 4.0227, df = 1, p-value = 0.04489
 
 # Test Durbin-Watson
-dwtest(Xt_t_student_symmetric_garch_q2_p2_lm, alternative="two.sided")
-# DW = 2.0208, p-value = 0.3025
+dwtest(Xt_t_student_asymmetric_garch_q2_p2_lm, alternative="two.sided")
+# DW = 1.8179, p-value = 0.03702
 
 # Test Breusch-Godfrey
-bgtest(Xt_t_student_symmetric_garch_q2_p2_lm, order=5, type="Chisq")
-# LM test = 6.4213, df = 5, p-value = 0.2674
+bgtest(Xt_t_student_asymmetric_garch_q2_p2_lm, order=5, type="Chisq")
+# LM test = 4.5314, df = 5, p-value = 0.4757
 
-# Per tutti e tre i test si ha un p-value > 0.05, ciò significa che non è possibile
-# rigettare l'ipotesi nulla di no autocorrelazione.
+# I risultati dei test di Ljung-Box e Durbin-Watson hanno un p-value < 0.05, ciò significa che è possibile rigettare l'ipotesi nulla
+# di assenza di autocorrelazione; mentre, nel test di Breusch-Godfrey ha un p-value > 0.05, ciò indica
+# assenza di correlazione seriale.
+
+#############################################################################################################
+#############################################################################################################
+#############################################################################################################
+#############################################################################################################
 
 
