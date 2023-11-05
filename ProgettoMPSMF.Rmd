@@ -19,9 +19,9 @@ if (!requireNamespace("skewtDist", quietly = TRUE)) {
   devtools::install_github("dan9401/skewtDist")
 }
 
-" Librerie necessarie"
 library(stats)
-library(skewtDist) # libreria utilizzata per latttgfdistribuzione t-student asimmetrica
+library(zoo)
+library(skewtDist) # libreria utilizzata per la distribuzione t-student asimmetrica
 library(ggplot2)
 library(gridExtra)
 library(cowplot)
@@ -285,7 +285,15 @@ model_garch <- function(a0, aq, bp, X0, sigmasquared0, W_t, q, p){
 ##########################################################################################################################
 ##########################################################################################################################
 
-# Definiamo valori iniziali 
+" Definiamo valori iniziali di X0, sigmasquared0, a0.
+  Definiamo parametri a1, a2, b1, b2 in modo tale da soddisfare la condizione di stazionarietà: 
+  - Modello Arch: 1 - a1*σ^2 > 0 -> 1 > a1*σ^2 con q=1
+  - Modello Arch: 1 - (a1 + a2)*σ^2 > 0 -> 1 > (a1 + a2)*σ^2 con q=2
+  - Modello Garch: 1 - a1*σ^2 - b1 > 0 -> 1 > a1*σ^2 + b1 con q=1 & p=1
+  - Modello Garch: 1 - a1*σ^2 - b1 - b2 > 0 -> 1 > a1*σ^2 + b1 + b2 con q=1 & p=2
+  - Modello Garch: 1 - (a1 + a2)*σ^2 - b1 > 0 -> 1 > (a1 + a2)*σ^2 + b1 con q=2 & p=1
+  - Modello Garch: 1 - (a1 + a2)*σ^2 - b1 - b2 > 0 -> 1 > (a1 + a2) *σ^2 + b1 + b2 con q=2 & p=2
+"
 ```{r}
 X0 <- 0
 sigmasquared0 <- 0
@@ -296,13 +304,9 @@ b1 <- 0.3
 aq <- c(0.1, 0.2)
 bp <- c(0.1, 0.2)
 ```
-
 ##########################################################################################################################
 "Costruisco un processo ARCH e GARCH per ogni distribuzione considerando q=1 e p=1 (solo per il modello GARCH)
- Definiamo parametri in modo tale da soddisfare la condizione di stazionarietà: 
-  - Modello Arch: 1 - a1*σ^2 > 0 -> 1 > a1*σ^2
-  - Modello Garch: 1 - a1*σ^2 - b1 > 0 -> 1 > a1*σ^2 + b1 "
-
+ 
 ```{r}
 q <- 1
 p <- 1 # utilizzato solo per Garch
@@ -360,7 +364,7 @@ plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_norm
 plots <- plots_dist_norm +
   ggtitle(title_content) +
   labs(subtitle=subtitle_content, caption=author_content) +
-  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(plots)
@@ -400,7 +404,7 @@ plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_ar
 # creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_arch2_q1, index = seq_along(Xt_t_student_symmetric_arch2_q1)), aes(x = index, y = value)) +
   geom_line() +
-  xlab("Time") + ylab("") +
+  xlab("t") + ylab("") +
   labs(caption=author_content) +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
@@ -414,7 +418,7 @@ plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_stu
 plots <- plots_dist_t_student_symmetric +
   ggtitle(title_content) +
   labs(subtitle=subtitle_content, caption=author_content) +
-  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(plots)
@@ -436,9 +440,6 @@ Xt_t_student_asymmetric_arch1_q1 <- model_arch(a0, a1, X0, dist_t_student_asymme
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(a1*sigmasquaredW)
 Xt_t_student_asymmetric_arch2_q1 <- model_arch(a0, a1, X0, dist_t_student_asymmetric2, q)
-
-type_dist = "Asymmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
 
 # creo il primo plot del modello Arch(1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_arch_q1, index = seq_along(Xt_t_student_asymmetric_arch_q1)), aes(x = index, y = value)) + 
@@ -462,10 +463,19 @@ plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Asymmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_asymmetric <- plot_grid(plot_t_student_asymmetric, plot_t_student_asymmetric1, plot_t_student_asymmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-arch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_asymmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_asymmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 ############################################## " MODELLO GARCH "
 
@@ -489,9 +499,6 @@ sigmasquaredW <- var(dist_normal)
 print(a1*sigmasquaredW + b1)
 Xt_normal_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_normal2, q, p)
 
-type_dist = "Normal Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
-
 # creo il primo plot del modello Garch(1,1) con la distribuzione normale
 plot_dist_normal <- ggplot(data.frame(value = Xt_normal_garch_q1_p1, index = seq_along(Xt_normal_garch_q1_p1)), aes(x = index, y = value)) + 
   geom_line() +
@@ -514,10 +521,19 @@ plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q1_p1, index = s
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Normal Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_normal2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_norm +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ##########  DISTRUBUZIONE T-STUDENT  SIMMETRICA
@@ -538,24 +554,21 @@ sigmasquaredW <- var(dist_t_student_symmetric2)
 print(a1*sigmasquaredW + b1)
 Xt_t_student_symmetric_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il primo plot del modello Garch(1,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch_q1_p1, index = seq_along(Xt_t_student_symmetric_garch_q1_p1)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il secondo plot del modello Garch(1,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q1_p1, index = seq_along(Xt_t_student_symmetric_garch1_q1_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il terzo plot del modello Garch(1,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q1_p1, index = seq_along(Xt_t_student_symmetric_garch2_q1_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -563,10 +576,19 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ga
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Symmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
@@ -586,24 +608,21 @@ sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(a1*sigmasquaredW + b1)
 Xt_t_student_asymmetric_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-type_dist = "Asymmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il primo plot del modello Garch(1,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch_q1_p1, index = seq_along(Xt_t_student_asymmetric_garch_q1_p1)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il secondo plot del modello Garch(1,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q1_p1, index = seq_along(Xt_t_student_asymmetric_garch1_q1_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il terzo plot del modello Garch(1,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch2_q1_p1, index = seq_along(Xt_t_student_asymmetric_garch2_q1_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -611,16 +630,23 @@ plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Asymmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_asymmetric <- plot_grid(plot_t_student_asymmetric, plot_t_student_asymmetric1, plot_t_student_asymmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_asymmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_asymmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ##########################################################################################################################
-"Costruisco un processo GARCH per ogni distribuzione considerando q=1 e p=2 (solo per il modello GARCH)
- Definiamo parametri in modo tale da soddisfare la condizione di stazionarietà: 
-  - Modello Garch: 1 - a1*σ^2 - b1 - b2 > 0 -> 1 > a1*σ^2 + b1 + b2"
+"Costruisco un processo GARCH per ogni distribuzione considerando q=1 e p=2 (solo per il modello GARCH)"
 ```{r}
 q <- 1
 p <- 2 # utilizzato solo per Garch
@@ -648,24 +674,21 @@ sigmasquaredW <- var(dist_normal2)
 print(a1*sigmasquaredW + bp[1] + bp[2])
 Xt_normal_garch2_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_normal2, q, p)
 
-type_dist = "Normal Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
-
-# creo il primo plot del modello Garch(1,1) con la distribuzione normale
+# creo il primo plot del modello Garch(1,2) con la distribuzione normale
 plot_dist_normal <- ggplot(data.frame(value = Xt_normal_garch_q1_p2, index = seq_along(Xt_normal_garch_q1_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Garch(1,1) con la distribuzione normale
+# creo il secondo plot del modello Garch(1,2) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q1_p2, index = seq_along(Xt_normal_garch1_q1_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Garch(1,1) con la distribuzione normale
+# creo il terzo plot del modello Garch(1,2) con la distribuzione normale
 plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q1_p2, index = seq_along(Xt_normal_garch2_q1_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -673,10 +696,19 @@ plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q1_p2, index = s
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Normal Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_normal2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_norm +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 ##########  DISTRUBUZIONE T-STUDENT  SIMMETRICA
 ```{r echo=TRUE, fig.width=14, fig.height=8}
@@ -696,24 +728,21 @@ sigmasquaredW <- var(dist_t_student_symmetric2)
 print(a1*sigmasquaredW + bp[1] + bp[2])
 Xt_t_student_symmetric_garch2_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il primo plot del modello Garch(1,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch_q1_p2, index = seq_along(Xt_t_student_symmetric_garch_q1_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il secondo plot del modello Garch(1,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q1_p2, index = seq_along(Xt_t_student_symmetric_garch1_q1_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il terzo plot del modello Garch(1,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q1_p2, index = seq_along(Xt_t_student_symmetric_garch2_q1_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -721,11 +750,21 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ga
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Symmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
+
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
 ```{r echo=TRUE, fig.width=14, fig.height=8}
 
@@ -744,24 +783,21 @@ sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(a1*sigmasquaredW + bp[1] + bp[2])
 Xt_t_student_asymmetric_garch2_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-type_dist = "Asymmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il primo plot del modello Garch(1,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch_q1_p2, index = seq_along(Xt_t_student_asymmetric_garch_q1_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il secondo plot del modello Garch(1,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q1_p2, index = seq_along(Xt_t_student_asymmetric_garch1_q1_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il terzo plot del modello Garch(1,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch2_q1_p2, index = seq_along(Xt_t_student_asymmetric_garch2_q1_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -769,16 +805,22 @@ plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Asymmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_asymmetric <- plot_grid(plot_t_student_asymmetric, plot_t_student_asymmetric1, plot_t_student_asymmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_asymmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_asymmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 ##########################################################################################################################
-"Costruisco un processo ARCH e GARCH per ogni distribuzione considerando q=2 e p=1 (solo per il modello GARCH)
- Definiamo parametri in modo tale da soddisfare la condizione di stazionarietà: 
-  - Modello Arch: 1 - a1*σ^2 - a2*σ^2 -> 0 -> 1 > a1*σ^2 + a2*σ^2
-  - Modello Garch: 1 - a1*σ^2 - a2*σ^2 - b1 > 0 -> 1 > a1*σ^2 + a2*σ^2+ b1"
+"Costruisco un processo ARCH e GARCH per ogni distribuzione considerando q=2 e p=1 (solo per il modello GARCH)"
 ```{r}
 q <- 2
 p <- 1 # utilizzato solo per Garch
@@ -805,24 +847,21 @@ sigmasquaredW <- var(dist_normal2)
 print((aq[1]+aq[2])*sigmasquaredW)
 Xt_normal_arch2_q2 <- model_arch(a0, aq, X0, dist_normal2, q)
 
-type_dist = "Normal Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione normale
+# creo il primo plot del modello Arch(2) con la distribuzione normale
 plot_dist_normal <- ggplot(data.frame(value = Xt_normal_arch_q2, index = seq_along(Xt_normal_arch_q2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione normale
+# creo il secondo plot del modello Arch(2) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_arch1_q2, index = seq_along(Xt_normal_arch_q2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione normale
+# creo il terzo plot del modello Arch(2) con la distribuzione normale
 plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_arch2_q2, index = seq_along(Xt_normal_arch_q2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -830,11 +869,19 @@ plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_arch2_q2, index = seq_a
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Normal Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_normal2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-arch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
-
+plots <- plots_dist_norm +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 ##########  DISTRUBUZIONE T-STUDENT SIMMETRICA
 ```{r echo=TRUE, fig.width=14, fig.height=8}
@@ -854,24 +901,21 @@ sigmasquaredW <- var(dist_t_student_symmetric2)
 print((aq[1]+aq[2])*sigmasquaredW)
 Xt_t_student_symmetric_arch2_q2 <- model_arch(a0, aq, X0, dist_t_student_symmetric2, q)
 
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il primo plot del modello Arch(2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_arch_q2, index = seq_along(Xt_t_student_symmetric_arch_q2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il secondo plot del modello Arch(2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_arch1_q2, index = seq_along(Xt_t_student_symmetric_arch1_q2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il terzo plot del modello Arch(2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_arch2_q2, index = seq_along(Xt_t_student_symmetric_arch2_q2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -879,10 +923,19 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ar
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Symmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-arch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
 ```{r echo=TRUE, fig.width=14, fig.height=8}
@@ -902,24 +955,21 @@ sigmasquaredW <- var(dist_t_student_asymmetric2)
 print((aq[1]+aq[2])*sigmasquaredW)
 Xt_t_student_asymmetric_arch2_q2 <- model_arch(a0, aq, X0, dist_t_student_asymmetric2, q)
 
-type_dist = "Asymmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il primo plot del modello Arch(2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_arch_q2, index = seq_along(Xt_t_student_asymmetric_arch_q2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il secondo plot del modello Arch(2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_arch1_q2, index = seq_along(Xt_t_student_asymmetric_arch1_q2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il terzo plot del modello Arch(2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_arch2_q2, index = seq_along(Xt_t_student_asymmetric_arch2_q2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -927,10 +977,19 @@ plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Asymmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_asymmetric <- plot_grid(plot_t_student_asymmetric, plot_t_student_asymmetric1, plot_t_student_asymmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-arch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_asymmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 ############################################## " MODELLO GARCH "
 
@@ -953,24 +1012,21 @@ sigmasquaredW <- var(dist_normal2)
 print((aq[1]+aq[2])*sigmasquaredW + b1)
 Xt_normal_garch2_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_normal2, q, p)
 
-type_dist = "Normal Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
-
-# creo il primo plot del modello Garch(1,1) con la distribuzione normale
+# creo il primo plot del modello Garch(2,1) con la distribuzione normale
 plot_dist_normal <- ggplot(data.frame(value = Xt_normal_garch_q2_p1, index = seq_along(Xt_normal_garch_q2_p1)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Garch(1,1) con la distribuzione normale
+# creo il secondo plot del modello Garch(2,1) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q2_p1, index = seq_along(Xt_normal_garch_q2_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Garch(1,1) con la distribuzione normale
+# creo il terzo plot del modello Garch(2,1) con la distribuzione normale
 plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q2_p1, index = seq_along(Xt_normal_garch_q2_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -978,10 +1034,19 @@ plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q2_p1, index = s
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Normal Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_normal2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_norm +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 
 ```
 
@@ -1003,24 +1068,21 @@ sigmasquaredW <- var(dist_t_student_symmetric2)
 print((aq[1]+aq[2])*sigmasquaredW + b1)
 Xt_t_student_symmetric_garch2_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il primo plot del modello Garch(2,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch_q2_p1, index = seq_along(Xt_t_student_symmetric_garch_q2_p1)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il secondo plot del modello Garch(2,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q2_p1, index = seq_along(Xt_t_student_symmetric_garch1_q2_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il terzo plot del modello Garch(2,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q2_p1, index = seq_along(Xt_t_student_symmetric_garch2_q2_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -1028,10 +1090,19 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ga
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Symmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
@@ -1051,24 +1122,21 @@ sigmasquaredW <- var(dist_t_student_asymmetric2)
 print((aq[1]+aq[2])*sigmasquaredW + b1)
 Xt_t_student_asymmetric_garch2_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-type_dist = "Asymmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il primo plot del modello Garch(2,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch_q2_p1, index = seq_along(Xt_t_student_asymmetric_garch_q2_p1)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il secondo plot del modello Garch(2,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q2_p1, index = seq_along(Xt_t_student_asymmetric_garch1_q2_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il terzo plot del modello Garch(2,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch2_q2_p1, index = seq_along(Xt_t_student_asymmetric_garch2_q2_p1)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -1076,17 +1144,23 @@ plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Asymmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_asymmetric <- plot_grid(plot_t_student_asymmetric, plot_t_student_asymmetric1, plot_t_student_asymmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_asymmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_asymmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ###########################################################################################################
-"Costruisco un processo GARCH per ogni distribuzione considerando q=2 e p=2 (solo per il modello GARCH)
- Definiamo parametri in modo tale da soddisfare la condizione di stazionarietà: 
-  - Modello Arch: 1 - a1*σ^2 - a2*σ^2 > 0 -> 1 > a1*σ^2 + a2*σ^2
-  - Modello Garch: 1 - a1*σ^2 - a2*σ^2 - b1 - b2 > 0 -> 1 > a1*σ^2 + a2*σ^2 + b1 + b2"
+"Costruisco un processo GARCH per ogni distribuzione considerando q=2 e p=2 (solo per il modello GARCH)"
 ```{r}
 q <- 2
 p <- 2 # utilizzato solo per Garch
@@ -1114,24 +1188,21 @@ sigmasquaredW <- var(dist_normal2)
 print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
 Xt_normal_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal2, q, p)
 
-type_dist = "Normal Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
-
-# creo il primo plot del modello Garch(1,1) con la distribuzione normale
+# creo il primo plot del modello Garch(2,2) con la distribuzione normale
 plot_dist_normal <- ggplot(data.frame(value = Xt_normal_garch_q2_p2, index = seq_along(Xt_normal_garch_q2_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Garch(1,1) con la distribuzione normale
+# creo il secondo plot del modello Garch(2,2) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q2_p2, index = seq_along(Xt_normal_garch1_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Garch(1,1) con la distribuzione normale
+# creo il terzo plot del modello Garch(2,2) con la distribuzione normale
 plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q2_p2, index = seq_along(Xt_normal_garch2_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -1139,10 +1210,19 @@ plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q2_p2, index = s
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Normal Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)), " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_norm <- plot_grid(plot_dist_normal, plot_dist_normal1, plot_dist_normal2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_norm +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ##########  DISTRUBUZIONE T-STUDENT  SIMMETRICA
@@ -1163,24 +1243,21 @@ sigmasquaredW <- var(dist_t_student_symmetric2)
 print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
 Xt_t_student_symmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il primo plot del modello Garch(2,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch_q2_p2, index = seq_along(Xt_t_student_symmetric_garch_q2_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il secondo plot del modello Garch(2,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q2_p2, index = seq_along(Xt_t_student_symmetric_garch1_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
+# creo il terzo plot del modello Garch(2,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q2_p2, index = seq_along(Xt_t_student_symmetric_garch2_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -1188,10 +1265,19 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ga
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Symmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_symmetric <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_symmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_symmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
@@ -1212,24 +1298,21 @@ sigmasquaredW <- var(dist_t_student_asymmetric2)
 print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
 Xt_t_student_asymmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-type_dist = "Asymmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-
-# creo il primo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il primo plot del modello Garch(2,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch_q2_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il secondo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il secondo plot del modello Garch(2,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch1_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo il terzo plot del modello Arch(1) con la distribuzione t-student asimmetrica
+# creo il terzo plot del modello Garch(2,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch2_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch2_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
@@ -1237,10 +1320,19 @@ plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
-# creo la figura utilizzando una griglia con i tre plot generati 
+# Grid plot
+# creo la figura utilizzando una griglia con i tre plot generati
+type_dist = "Asymmetric t-student Distribution"
+title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
+subtitle_content <- (paste("path length ", (samples), " sample points"))
 plots_dist_t_student_asymmetric <- plot_grid(plot_t_student_asymmetric, plot_t_student_asymmetric1, plot_t_student_asymmetric2, nrow = 3)
-title_content_gtable <- ggdraw() + draw_label(title_content)
-garch_plot_dist_t_student_asymmetric <- grid.arrange(title_content_gtable, plots_dist_t_student_asymmetric, ncol = 1, heights = c(0.2, 1))
+plots <- plots_dist_t_student_asymmetric +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=author_content) +
+  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(plots)
 ```
 #############################################################################################################
 #############################################################################################################
@@ -1275,10 +1367,67 @@ Se il p-value del test è minore di 0.05 allora possiamo rigettare l'ipotesi nul
 concludere che che ci sia presenza di autocorrelazione nei residui del modello. "
 ##########################################
 
+###### MODELLO ARCH(1)
+
+### DISTRIBUZIONE NORMALE
 ```{r}
 # Consideriamo una traiettoia con distribuzione normale di un modello ARCH(1)
 Xt <- Xt_normal_arch_q1
 df_Xt_normal_arch_q1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Line plot.
+```{r echo=TRUE,  fig.width=14, fig.height=8}
+
+Data_df <- df_Xt_normal_arch_q1
+length <- nrow(Data_df)
+First_Day <- paste(Data_df$t[1],Data_df$t[1])
+Last_Day <- paste(Data_df$t[length],Data_df$t[length])
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Master in Data Science - Essentials of Time Series", paste("Line Plot of Model Arch(1)")))
+subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
+caption_content <- author_content
+x_name <- bquote("t")
+x_breaks_num <- 30
+x_breaks_low <- Data_df$t[1]
+x_breaks_up <- Data_df$t[length]
+x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
+x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
+if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
+x_labs <- paste(Data_df$t[x_breaks],Data_df$t[x_breaks])
+J <- 0
+x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
+y_name <- bquote("Monthly Deaths")
+y_breaks_num <- 10
+y_binwidth <- round((max(Data_df$X)-min(Data_df$X))/y_breaks_num, digits=3)
+y_breaks_low <- floor((min(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks_up <- ceiling((max(Data_df$X)/y_binwidth))*y_binwidth
+y_breaks <- round(seq(from=y_breaks_low, to=y_breaks_up, by=y_binwidth),3)
+y_labs <- format(y_breaks, scientific=FALSE)
+k <- 1
+y_lims <- c((y_breaks_low-k*y_binwidth), (y_breaks_up+k*y_binwidth))
+y1_col <- bquote("Monthly Deaths")
+y2_col <- bquote("LOESS curve")
+y3_col <- bquote("regression line")
+leg_labs   <- c(y1_col, y2_col, y3_col)
+leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
+leg_breaks <- c("y1_col", "y2_col", "y3_col")
+flu_sp <- ggplot(Data_df) +
+  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
+  geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
+              method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
+  geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
+              method = "loess", formula = y ~ x, se=FALSE) +
+  scale_x_continuous(name=x_name, breaks=x_breaks, label=x_labs, limits=x_lims) +
+  scale_y_continuous(name=y_name, breaks=y_breaks, labels=NULL, limits=y_lims,
+                     sec.axis = sec_axis(~., breaks=y_breaks, labels=y_labs)) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  scale_colour_manual(name="Legend", labels=leg_labs, values=leg_cols, breaks=leg_breaks,
+                     guide=guide_legend(override.aes=list(linetype=c("solid", "dashed", "solid")))) +
+   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
+        axis.text.x = element_text(angle=-45, vjust=1),
+        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
+plot(flu_sp)
+```
 
 # Consideriamo un modello lineare
 Xt_normal_arch_q1_lm <- lm(Xt~t, data=df_Xt_normal_arch_q1)
@@ -1294,6 +1443,9 @@ moments::kurtosis(Xt_normal_arch_q1_res)                  # theoretical value 3.
 # è molto vicina alla simmetria con una coda negativa.
 # La kurtosi è pari a 2.835148; questo indica che la distribuzione è leggermenete  platykurtic, 
 # cioè ha code più sottili rispetto ad una normale.
+
+
+# Dall'analisi del line plot, non abbiamo un'evidenza di un trend e confrontandolo con la LOESS, quest'ultima oscilla intorno alla line orizzontale,
 
 # Scatter plot - Residuals
 ```{r echo=TRUE, fig.width=14, fig.height=8}
@@ -1332,7 +1484,6 @@ leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
 Xt_normal_arch_q1_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
-  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
   geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
