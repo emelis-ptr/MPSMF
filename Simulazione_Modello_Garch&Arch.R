@@ -95,7 +95,7 @@ dist_t_student_symmetric1 <- rt(n = n, df = df)
 set.seed(20)
 dist_t_student_symmetric2 <- rt(n = n, df = df)
 set.seed(30)
-dist_t_student_symmetric13 <- rt(n = n, df = df)
+dist_t_student_symmetric3 <- rt(n = n, df = df)
 
 type_dist = "Symmetric t-student Distribution"
 title_content <- bquote(atop(.(content), paste("Histogram of ", .(n) ," samples generated from the ", .(type_dist))))
@@ -504,21 +504,21 @@ sigmasquaredW <- var(dist_normal1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_normal_garch1_q1_p1  <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_normal1, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['normale']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']], '1'=list('Xt'=Xt_normal_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW))
+modello[['simulazione']][['garch_q1_p1']][['normale']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']], list('1'=list('Xt'=Xt_normal_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_normal2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_normal_garch2_q1_p1  <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_normal2, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['normale']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']], '2'=list('Xt'=Xt_normal_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW))
+modello[['simulazione']][['garch_q1_p1']][['normale']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']], list('2'=list('Xt'=Xt_normal_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Terza traiettoria
 sigmasquaredW <- var(dist_normal3)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_normal_garch3_q1_p1  <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_normal3, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['normale']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']], '3'=list('Xt'=Xt_normal_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW))
+modello[['simulazione']][['garch_q1_p1']][['normale']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']], list('3'=list('Xt'=Xt_normal_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # creo il primo plot del modello Garch(1,1) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q1_p1 , index = seq_along(Xt_normal_garch1_q1_p1 )), aes(x = index, y = value)) + 
@@ -564,17 +564,21 @@ sigmasquaredW <- var(dist_t_student_symmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_symmetric_garch1_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
 
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_symmetric_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
+
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric13)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_symmetric_garch3_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric13, q, p)
 
-modello[['simulazione']][['garch_q1_p1']] <- append(modello[['simulazione']][['garch_q1_p1']], list('simmetrico'=list('1'=list(Xt_t_student_symmetric_garch1_q1_p1), '2'=list(Xt_t_student_symmetric_garch2_q1_p1), '3'=list(Xt_t_student_symmetric_garch3_q1_p1))))
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # creo il primo plot del modello Garch(1,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q1_p1, index = seq_along(Xt_t_student_symmetric_garch1_q1_p1)), aes(x = index, y = value)) + 
@@ -613,22 +617,27 @@ plots <- plots_dist_t_student_symmetric1 +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
+modello[['simulazione']][['garch_q1_p1']] <- append(modello[['simulazione']][['garch_q1_p1']], list('asimmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_garch1_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
+
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric1, q, p)
 
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_garch3_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-modello[['simulazione']][['garch_q1_p1']] <- append(modello[['simulazione']][['garch_q1_p1']], list('asimmetrico'=list('1'=list(Xt_t_student_asymmetric_garch1_q1_p1), '2'=list(Xt_t_student_asymmetric_garch2_q1_p1), '3'=list(Xt_t_student_asymmetric_garch3_q1_p1))))
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # creo il primo plot del modello Garch(1,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q1_p1, index = seq_along(Xt_t_student_asymmetric_garch1_q1_p1)), aes(x = index, y = value)) + 
@@ -678,22 +687,28 @@ modello[['simulazione']] <- append(modello[['simulazione']], list('garch_q1_p2'=
 type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 
 ##########  DISTRUBUZIONE NORMALE
+modello[['simulazione']][['garch_q1_p2']] <- append(modello[['simulazione']][['garch_q1_p2']], list('normale'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_normal1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_normal_garch1_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_normal1, q, p)
+
+modello[['simulazione']][['garch_q1_p2']][['normale']] <- append(modello[['simulazione']][['garch_q1_p2']][['normale']], list('1'=list('Xt'=Xt_normal_garch1_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_normal2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_normal_garch2_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_normal2, q, p)
 
+modello[['simulazione']][['garch_q1_p2']][['normale']] <- append(modello[['simulazione']][['garch_q1_p2']][['normale']], list('2'=list('Xt'=Xt_normal_garch2_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_normal3)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_normal_garch3_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_normal3, q, p)
 
-modello[['simulazione']][['garch_q1_p2']] <- append(modello[['simulazione']][['garch_q1_p2']], list('normale'=list('1'=list(Xt_normal_garch1_q1_p2), '2'=list(Xt_normal_garch2_q1_p2), '3'=list(Xt_normal_garch3_q1_p2))))
+modello[['simulazione']][['garch_q1_p2']][['normale']] <- append(modello[['simulazione']][['garch_q1_p2']][['normale']], list('3'=list('Xt'=Xt_normal_garch3_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
 
 # creo il primo plot del modello Garch(1,2) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q1_p2, index = seq_along(Xt_normal_garch1_q1_p2)), aes(x = index, y = value)) + 
@@ -732,22 +747,28 @@ plots <- plots_dist_norm +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  SIMMETRICA
+modello[['simulazione']][['garch_q1_p2']] <- append(modello[['simulazione']][['garch_q1_p2']], list('simmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_t_student_symmetric_garch1_q1_p2<- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
+
+modello[['simulazione']][['garch_q1_p2']][['simmetrico']] <- append(modello[['simulazione']][['garch_q1_p2']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_garch1_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_t_student_symmetric_garch2_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
+modello[['simulazione']][['garch_q1_p2']][['simmetrico']] <- append(modello[['simulazione']][['garch_q1_p2']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_garch2_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric13)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_t_student_symmetric_garch3_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_symmetric13, q, p)
 
-modello[['simulazione']][['garch_q1_p2']] <- append(modello[['simulazione']][['garch_q1_p2']], list('simmetrico'=list('1'=list(Xt_t_student_symmetric_garch1_q1_p2), '2'=list(Xt_t_student_symmetric_garch2_q1_p2), '3'=list(Xt_t_student_symmetric_garch3_q1_p2))))
+modello[['simulazione']][['garch_q1_p2']][['simmetrico']] <- append(modello[['simulazione']][['garch_q1_p2']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
 
 # creo il primo plot del modello Garch(1,2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q1_p2, index = seq_along(Xt_t_student_symmetric_garch1_q1_p2)), aes(x = index, y = value)) + 
@@ -786,22 +807,28 @@ plots <- plots_dist_t_student_symmetric1 +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
+modello[['simulazione']][['garch_q1_p2']] <- append(modello[['simulazione']][['garch_q1_p2']], list('asimmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_t_student_asymmetric_garch1_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
+
+modello[['simulazione']][['garch_q1_p2']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q1_p2']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_garch1_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_t_student_asymmetric_garch2_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_asymmetric1, q, p)
 
+modello[['simulazione']][['garch_q1_p2']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q1_p2']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW + bp[1] + bp[2]))
 Xt_t_student_asymmetric_garch3_q1_p2 <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-modello[['simulazione']][['garch_q1_p2']] <- append(modello[['simulazione']][['garch_q1_p2']], list('asimmetrico'=list('1'=list(Xt_t_student_asymmetric_garch1_q1_p2), '2'=list(Xt_t_student_asymmetric_garch2_q1_p2), '3'=list(Xt_t_student_asymmetric_garch3_q1_p2))))
+modello[['simulazione']][['garch_q1_p2']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q1_p2']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_garch3_q1_p2, 'stazionarietà'=a1*sigmasquaredW + bp[1] + bp[2])))
 
 # creo il primo plot del modello Garch(1,2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q1_p2, index = seq_along(Xt_t_student_asymmetric_garch1_q1_p2)), aes(x = index, y = value)) + 
@@ -851,22 +878,28 @@ modello[['simulazione']] <- append(modello[['simulazione']], list('arch_q2'=list
 type_model = substitute(paste0("Model ARCH(", q, ")"))
 
 ##########  DISTRIBUZIONE NORMALE
+modello[['simulazione']][['arch_q2']] <- append(modello[['simulazione']][['arch_q2']], list('normale'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_normal1)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_normal_arch1_q2 <- model_arch(a0, aq, X0, dist_normal1, q)
+
+modello[['simulazione']][['arch_q2']][['normale']] <- append(modello[['simulazione']][['arch_q2']][['normale']], list('1'=list('Xt'=Xt_normal_arch1_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_normal2)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_normal_arch2_q2 <- model_arch(a0, aq, X0, dist_normal2, q)
 
+modello[['simulazione']][['arch_q2']][['normale']] <- append(modello[['simulazione']][['arch_q2']][['normale']], list('2'=list('Xt'=Xt_normal_arch2_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_normal3)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_normal_arch3_q2 <- model_arch(a0, aq, X0, dist_normal3, q)
 
-modello[['simulazione']][['arch_q2']] <- append(modello[['simulazione']][['arch_q2']], list('normale'=list('1'=list(Xt_normal_arch1_q2), '2'=list(Xt_normal_arch2_q2), '3'=list(Xt_normal_arch3_q2))))
+modello[['simulazione']][['arch_q2']][['normale']] <- append(modello[['simulazione']][['arch_q2']][['normale']], list('3'=list('Xt'=Xt_normal_arch3_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
 
 # creo il primo plot del modello Arch(2) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_arch1_q2, index = seq_along(Xt_normal_arch1_q2)), aes(x = index, y = value)) + 
@@ -905,22 +938,28 @@ plots <- plots_dist_norm +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT SIMMETRICA
+modello[['simulazione']][['arch_q2']] <- append(modello[['simulazione']][['arch_q2']], list('simmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric1)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_t_student_symmetric_arch1_q2 <- model_arch(a0, aq, X0, dist_t_student_symmetric1, q)
+
+modello[['simulazione']][['arch_q2']][['simmetrico']] <- append(modello[['simulazione']][['arch_q2']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_arch1_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric2)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_t_student_symmetric_arch2_q2 <- model_arch(a0, aq, X0, dist_t_student_symmetric2, q)
 
+modello[['simulazione']][['arch_q2']][['simmetrico']] <- append(modello[['simulazione']][['arch_q2']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_arch2_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric13)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_t_student_symmetric_arch3_q2 <- model_arch(a0, aq, X0, dist_t_student_symmetric13, q)
 
-modello[['simulazione']][['arch_q2']] <- append(modello[['simulazione']][['arch_q2']], list('simmetrico'=list('1'=list(Xt_t_student_symmetric_arch1_q2), '2'=list(Xt_t_student_symmetric_arch2_q2), '3'=list(Xt_t_student_symmetric_arch3_q2))))
+modello[['simulazione']][['arch_q2']][['simmetrico']] <- append(modello[['simulazione']][['arch_q2']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_arch3_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
 
 # creo il primo plot del modello Arch(2) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_arch1_q2, index = seq_along(Xt_t_student_symmetric_arch1_q2)), aes(x = index, y = value)) + 
@@ -959,22 +998,28 @@ plots <- plots_dist_t_student_symmetric1 +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
+modello[['simulazione']][['arch_q2']] <- append(modello[['simulazione']][['arch_q2']], list('asimmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_t_student_asymmetric_arch1_q2 <- model_arch(a0, aq, X0, dist_t_student_asymmetric, q)
+
+modello[['simulazione']][['arch_q2']][['asimmetrico']] <- append(modello[['simulazione']][['arch_q2']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_arch1_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_t_student_asymmetric_arch2_q2 <- model_arch(a0, aq, X0, dist_t_student_asymmetric1, q)
 
+modello[['simulazione']][['arch_q2']][['asimmetrico']] <- append(modello[['simulazione']][['arch_q2']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_arch2_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(paste("Verifico condizione di stazionerietà: ",(aq[1]+aq[2])*sigmasquaredW))
 Xt_t_student_asymmetric_arch3_q2 <- model_arch(a0, aq, X0, dist_t_student_asymmetric2, q)
 
-modello[['simulazione']][['arch_q2']] <- append(modello[['simulazione']][['arch_q2']], list('asimmetrico'=list('1'=list(Xt_t_student_asymmetric_arch1_q2), '2'=list(Xt_t_student_asymmetric_arch2_q2), '3'=list(Xt_t_student_asymmetric_arch3_q2))))
+modello[['simulazione']][['arch_q2']][['asimmetrico']] <- append(modello[['simulazione']][['arch_q2']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_arch3_q2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW)))
 
 # creo il primo plot del modello Arch(2) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_arch1_q2, index = seq_along(Xt_t_student_asymmetric_arch1_q2)), aes(x = index, y = value)) + 
@@ -1018,21 +1063,28 @@ modello[['simulazione']] <- append(modello[['simulazione']], list('garch_q2_p1'=
 type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 
 ##########  DISTRUBUZIONE NORMALE
+modello[['simulazione']][['garch_q2_p1']] <- append(modello[['simulazione']][['garch_q2_p1']], list('normale'=list()))
+
+# Prima traiettoria
 sigmasquaredW <- var(dist_normal1)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_normal_garch1_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_normal1, q, p)
+
+modello[['simulazione']][['garch_q2_p1']][['normale']] <- append(modello[['simulazione']][['garch_q2_p1']][['normale']], list('1'=list('Xt'=Xt_normal_garch1_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_normal2)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_normal_garch2_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_normal2, q, p)
 
+modello[['simulazione']][['garch_q2_p1']][['normale']] <- append(modello[['simulazione']][['garch_q2_p1']][['normale']], list('2'=list('Xt'=Xt_normal_garch2_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_normal3)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_normal_garch3_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_normal3, q, p)
 
-modello[['simulazione']][['garch_q2_p1']] <- append(modello[['simulazione']][['garch_q2_p1']], list('normale'=list('1'=list(Xt_normal_garch1_q2_p1), '2'=list(Xt_normal_garch2_q2_p1), '3'=list(Xt_normal_garch3_q2_p1))))
+modello[['simulazione']][['garch_q2_p1']][['normale']] <- append(modello[['simulazione']][['garch_q2_p1']][['normale']], list('3'=list('Xt'=Xt_normal_garch3_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
 
 # creo il primo plot del modello Garch(2,1) con la distribuzione normale
 plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q2_p1, index = seq_along(Xt_normal_garch1_q2_p1)), aes(x = index, y = value)) + 
@@ -1071,22 +1123,28 @@ plots <- plots_dist_norm +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  SIMMETRICA
+modello[['simulazione']][['garch_q2_p1']] <- append(modello[['simulazione']][['garch_q2_p1']], list('simmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric1)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_t_student_symmetric_garch1_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
+
+modello[['simulazione']][['garch_q2_p1']][['simmetrico']] <- append(modello[['simulazione']][['garch_q2_p1']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_garch1_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric2)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_t_student_symmetric_garch2_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
+modello[['simulazione']][['garch_q2_p1']][['simmetrico']] <- append(modello[['simulazione']][['garch_q2_p1']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_garch2_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric3)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_t_student_symmetric_garch3_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_symmetric3, q, p)
 
-modello[['simulazione']][['garch_q2_p1']] <- append(modello[['simulazione']][['garch_q2_p1']], list('simmetrico'=list('1'=list(Xt_t_student_symmetric_garch1_q2_p1), '2'=list(Xt_t_student_symmetric_garch2_q2_p1), '3'=list(Xt_t_student_symmetric_garch3_q2_p1))))
+modello[['simulazione']][['garch_q2_p1']][['simmetrico']] <- append(modello[['simulazione']][['garch_q2_p1']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_garch3_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
 
 # creo il primo plot del modello Garch(2,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q2_p1, index = seq_along(Xt_t_student_symmetric_garch1_q2_p1)), aes(x = index, y = value)) + 
@@ -1125,22 +1183,28 @@ plots <- plots_dist_t_student_symmetric1 +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
+modello[['simulazione']][['garch_q2_p1']] <- append(modello[['simulazione']][['garch_q2_p1']], list('asimmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_t_student_asymmetric_garch1_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
+
+modello[['simulazione']][['garch_q2_p1']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q2_p1']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_t_student_asymmetric_garch2_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_asymmetric1, q, p)
 
+modello[['simulazione']][['garch_q2_p1']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q2_p1']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_garch2_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
+
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + b1))
 Xt_t_student_asymmetric_garch3_q2_p1 <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-modello[['simulazione']][['garch_q2_p1']] <- append(modello[['simulazione']][['garch_q2_p1']], list('asimmetrico'=list('1'=list(Xt_t_student_asymmetric_garch1_q2_p1), '2'=list(Xt_t_student_asymmetric_garch2_q2_p1), '3'=list(Xt_t_student_asymmetric_garch3_q2_p1))))
+modello[['simulazione']][['garch_q2_p1']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q2_p1']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_garch3_q2_p1, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + b1)))
 
 # creo il primo plot del modello Garch(2,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q2_p1, index = seq_along(Xt_t_student_asymmetric_garch1_q2_p1)), aes(x = index, y = value)) + 
@@ -1185,41 +1249,49 @@ q <- 2
 p <- 2 # utilizzato solo per Garch
 
 ############################################## " MODELLO GARCH "
-
+modello[['simulazione']] <- append(modello[['simulazione']], list('garch_q2_p2'=list('a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p)))
 type_model = substitute(paste0("Model GARCH(", q, ",", p, ")"))
 
-##########  DISTRUBUZIONE NORMALE
+##########  DISTRUBUZIONE 
+modello[['simulazione']][['garch_q2_p2']] <- append(modello[['simulazione']][['garch_q2_p2']], list('normale'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_normal1)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_normal_garch_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal1, q, p)
+Xt_normal_garch1_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal1, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['normale']] <- append(modello[['simulazione']][['garch_q2_p2']][['normale']], list('1'=list('Xt'=Xt_normal_garch1_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_normal2)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_normal_garch1_q2_p2<- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal2, q, p)
+Xt_normal_garch2_q2_p2<- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal2, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['normale']] <- append(modello[['simulazione']][['garch_q2_p2']][['normale']], list('2'=list('Xt'=Xt_normal_garch2_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # Terza traiettoria
 sigmasquaredW <- var(dist_normal3)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_normal_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal3, q, p)
+Xt_normal_garch3_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_normal3, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['normale']] <- append(modello[['simulazione']][['garch_q2_p2']][['normale']], list('3'=list('Xt'=Xt_normal_garch3_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # creo il primo plot del modello Garch(2,2) con la distribuzione normale
-plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch_q2_p2, index = seq_along(Xt_normal_garch_q2_p2)), aes(x = index, y = value)) + 
+plot_dist_normal1 <- ggplot(data.frame(value = Xt_normal_garch1_q2_p2, index = seq_along(Xt_normal_garch1_q2_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il secondo plot del modello Garch(2,2) con la distribuzione normale
-plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch1_q2_p2, index = seq_along(Xt_normal_garch1_q2_p2)), aes(x = index, y = value)) +
+plot_dist_normal2 <- ggplot(data.frame(value = Xt_normal_garch2_q2_p2, index = seq_along(Xt_normal_garch2_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il terzo plot del modello Garch(2,2) con la distribuzione normale
-plot_dist_normal3 <- ggplot(data.frame(value = Xt_normal_garch2_q2_p2, index = seq_along(Xt_normal_garch2_q2_p2)), aes(x = index, y = value)) +
+plot_dist_normal3 <- ggplot(data.frame(value = Xt_normal_garch3_q2_p2, index = seq_along(Xt_normal_garch3_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
   labs(caption=author_content) +
@@ -1241,43 +1313,49 @@ plots <- plots_dist_norm +
 plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  SIMMETRICA
+modello[['simulazione']][['garch_q2_p2']] <- append(modello[['simulazione']][['garch_q2_p2']], list('simmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric1)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_t_student_symmetric_garch_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
-Xt_t_student_symmetric_garch_q2_p2
+Xt_t_student_symmetric_garch1_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['simmetrico']] <- append(modello[['simulazione']][['garch_q2_p2']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_garch1_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric2)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_t_student_symmetric_garch1_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
-Xt_t_student_symmetric_garch1_q2_p2
+Xt_t_student_symmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['simmetrico']] <- append(modello[['simulazione']][['garch_q2_p2']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_garch2_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric13)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_t_student_symmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric13, q, p)
-Xt_t_student_symmetric_garch2_q2_p2
+Xt_t_student_symmetric_garch3_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric13, q, p)
+Xt_t_student_symmetric_garch3_q2_p2
+
+modello[['simulazione']][['garch_q2_p2']][['simmetrico']] <- append(modello[['simulazione']][['garch_q2_p2']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_garch3_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 type_dist = "Symmetric t-student Distribution"
 title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
 
 # creo il primo plot del modello Arch(1) con la distribuzione t-student simmetrica
-plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch_q2_p2, index = seq_along(Xt_t_student_symmetric_garch_q2_p2)), aes(x = index, y = value)) + 
+plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q2_p2, index = seq_along(Xt_t_student_symmetric_garch1_q2_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il secondo plot del modello Arch(1) con la distribuzione t-student simmetrica
-plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q2_p2, index = seq_along(Xt_t_student_symmetric_garch1_q2_p2)), aes(x = index, y = value)) +
+plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q2_p2, index = seq_along(Xt_t_student_symmetric_garch2_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il terzo plot del modello Arch(1) con la distribuzione t-student simmetrica
-plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q2_p2, index = seq_along(Xt_t_student_symmetric_garch2_q2_p2)), aes(x = index, y = value)) +
+plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch3_q2_p2, index = seq_along(Xt_t_student_symmetric_garch3_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
   labs(caption=author_content) +
@@ -1288,89 +1366,47 @@ plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_ga
 plots_dist_t_student_symmetric1 <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
 title_content_gtable <- ggdraw() + draw_label(title_content)
 garch_plot_dist_t_student_symmetric1 <- grid.arrange(title_content_gtable, plots_dist_t_student_symmetric1, ncol = 1, heights = c(0.2, 1))
-# Prima traiettoria
-sigmasquaredW <- var(dist_t_student_symmetric1)
-print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
-Xt_t_student_symmetric_garch_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
-
-# Seconda traiettoria
-sigmasquaredW <- var(dist_t_student_symmetric2)
-print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
-Xt_t_student_symmetric_garch1_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
-
-# Terza traiettoria
-sigmasquaredW <- var(dist_t_student_symmetric13)
-print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
-Xt_t_student_symmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_symmetric13, q, p)
-
-# creo il primo plot del modello Garch(2,2) con la distribuzione t-student simmetrica
-plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch_q2_p2, index = seq_along(Xt_t_student_symmetric_garch_q2_p2)), aes(x = index, y = value)) + 
-  geom_line() +
-  xlab("") + ylab("") +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
-        axis.text.x = element_text(angle = 0, vjust = 1))
-
-# creo il secondo plot del modello Garch(2,2) con la distribuzione t-student simmetrica
-plot_t_student_symmetric1 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q2_p2, index = seq_along(Xt_t_student_symmetric_garch1_q2_p2)), aes(x = index, y = value)) +
-  geom_line() +
-  xlab("") + ylab("") +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
-        axis.text.x = element_text(angle = 0, vjust = 1))
-
-# creo il terzo plot del modello Garch(2,2) con la distribuzione t-student simmetrica
-plot_t_student_symmetric2 <- ggplot(data.frame(value = Xt_t_student_symmetric_garch2_q2_p2, index = seq_along(Xt_t_student_symmetric_garch2_q2_p2)), aes(x = index, y = value)) +
-  geom_line() +
-  xlab("Time") + ylab("") +
-  labs(caption=author_content) +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
-        axis.text.x = element_text(angle = 0, vjust = 1))
-
-# Grid plot
-# creo la figura utilizzando una griglia con i tre plot generati
-type_dist = "Symmetric t-student Distribution"
-title_content <- bquote(atop(.(content), paste("Plots of the ", .(eval(type_model)) , " of a ", .(type_dist))))
-subtitle_content <- (paste("path length ", (samples), " sample points"))
-plots_dist_t_student_symmetric1 <- plot_grid(plot_t_student_symmetric, plot_t_student_symmetric1, plot_t_student_symmetric2, nrow = 3)
-plots <- plots_dist_t_student_symmetric1 +
-  ggtitle(title_content) +
-  labs(subtitle=subtitle_content, caption=author_content) +
-  theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5, size = 10),
-        axis.text.x = element_text(angle=-45, vjust=1),
-        legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(plots)
 
 ##########  DISTRUBUZIONE T-STUDENT  ASIMMETRICA
+modello[['simulazione']][['garch_q2_p2']] <- append(modello[['simulazione']][['garch_q2_p2']], list('asimmetrico'=list()))
+
 # Prima traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_t_student_asymmetric_garch_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
+Xt_t_student_asymmetric_garch1_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q2_p2']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_t_student_asymmetric_garch1_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric1, q, p)
+Xt_t_student_asymmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric1, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q2_p2']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_garch2_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(paste("Verifico condizione di stazionerietà: ", (aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2]))
-Xt_t_student_asymmetric_garch2_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
+Xt_t_student_asymmetric_garch3_q2_p2 <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
+
+modello[['simulazione']][['garch_q2_p2']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q2_p2']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_garch3_q2_p2, 'stazionarietà'=(aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])))
 
 # creo il primo plot del modello Garch(2,2) con la distribuzione t-student asimmetrica
-plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch_q2_p2)), aes(x = index, y = value)) + 
+plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch1_q2_p2)), aes(x = index, y = value)) + 
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il secondo plot del modello Garch(2,2) con la distribuzione t-student asimmetrica
-plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch1_q2_p2)), aes(x = index, y = value)) +
+plot_t_student_asymmetric1 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch2_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch2_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("") + ylab("") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 0, vjust = 1))
 
 # creo il terzo plot del modello Garch(2,2) con la distribuzione t-student asimmetrica
-plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch2_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch2_q2_p2)), aes(x = index, y = value)) +
+plot_t_student_asymmetric2 <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch3_q2_p2, index = seq_along(Xt_t_student_asymmetric_garch3_q2_p2)), aes(x = index, y = value)) +
   geom_line() +
   xlab("Time") + ylab("") +
   labs(caption=author_content) +
@@ -1430,7 +1466,7 @@ per garantire assenza di autocorrelazione."
 
 ##### DISTRIBUZIONE NORMALE
 # Consideriamo una traiettoia con distribuzione normale di un modello ARCH(1)
-Xt <- Xt_normal_arch1_q1
+Xt <- modello[['simulazione']][['arch_q1']][['normale']][['1']][['Xt']]
 df_Xt_normal_arch1_q1 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Line plot
@@ -1493,22 +1529,17 @@ summary(Xt_normal_arch1_q1_lm$fitted.values)
 
 Xt_normal_arch1_q1_res <- Xt_normal_arch1_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_normal_arch1_q1_res)                  # theoretical value 0.
-moments::kurtosis(Xt_normal_arch1_q1_res)                  # theoretical value 3.
-# La skew è pari a -0.08652625; questo indica che la sua distribuzione dei dati nei resdui
-# è molto vicina alla simmetria con una coda negativa.
-# La kurtosi è pari a 2.835148; questo indica che la distribuzione è leggermenete  platykurtic, 
-# cioè ha code più sottili rispetto ad una normale.
-
-DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew <- DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew
 #       skew      lwr.ci      upr.ci 
 # -0.08678682 -0.24846259  0.04388842 
-DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt <- DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt
 #      kurt     lwr.ci     upr.ci 
 # -0.1544153 -0.3911550  0.2348151 
 
 # Cullen-Frey
-descdist(Xt, discrete=FALSE, boot=500)
+cf <- descdist(Xt, discrete=FALSE, boot=500)
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch1_q1_res)
@@ -1655,10 +1686,12 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
-LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
+Xt_normal_arch1_q1_bt <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
+show(Xt_normal_arch1_q1_bt)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag considerati.
-
 # I risultati indicano assenza di autocorrelazione nei resisui.
+
+modello[['simulazione']][['arch_q1']][['normale']][['1']] <- append(modello[['simulazione']][['arch_q1']][['normale']][['1']], list('lm'=Xt_normal_arch_q1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_arch1_q1_bp, 'test-white'=Xt_normal_arch1_q1_w, 'test-ljiung-box'=Xt_normal_arch1_q1_bt))
 
 # Possiamo concludere che la prima traiettoria della distribuzione normale di un modello ARCH(1) ha evidenza di eteroschedasticità
 # e assenza di autocorrelazione nei residui del modello.
@@ -1674,7 +1707,8 @@ show(intconf)
 a0 <- coef(fit)[['omega']] 
 a1 <- coef(fit)[['alpha1']] 
 sigmasquaredW <- var(dist_normal1)
-print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
+stazionaietà <- a1*sigmasquaredW
+print(paste("Verifico condizione di stazionerietà: ", stazionaietà))
 Xt_normal_arch1_q1_new <- model_arch(a0, a1, X0, dist_normal1, q)
 
 Xt <- Xt_normal_arch1_q1_new
@@ -1738,15 +1772,17 @@ summary(Xt_normal_arch1_q1_lm$fitted.values)
 
 Xt_normal_arch1_q1_res <- Xt_normal_arch1_q1_lm$residuals
 
-DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew <- DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+show(skew)
 #  skew          lwr.ci      upr.ci 
 # -0.04892516 -0.15903750  0.05665529 
-DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt <- DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+show(kurt)
 #      kurt      lwr.ci      upr.ci 
 # -0.32278623 -0.47849072 -0.09394918
 
 # Cullen-Frey
-descdist(Xt, discrete=FALSE, boot=500)
+cf <- descdist(Xt, discrete=FALSE, boot=500)
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch1_q1_res)
@@ -1893,10 +1929,12 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
-LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
+lbt <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag considerati.
 
 # I risultati indicano assenza di autocorrelazione nei resisui.
+
+modello[['stimati']] <- append(modello[['stimati']], list('arch_q1'=list('normal'=list('Xt'=Xt_normal_arch_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q, 'stazionarietà'=stazionaietà, 'lm'=Xt_normal_arch_q1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_arch1_q1_bp, 'test-white'=Xt_normal_arch1_q1_w, 'test-ljiung-box'=Xt_normal_arch1_q1_bt))))
 
 # Possiamo concludere che la prima traiettoria della distribuzione normale di un modello ARCH(1) ha evidenza di eteroschedasticità
 # nel test di Breusch-Pagan e presenza di omochedasticità nel test di White
@@ -9009,11 +9047,11 @@ LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 ##########################################
 
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(2,2)
-Xt <- Xt_normal_garch_q2_p2
-df_Xt_normal_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+Xt <- Xt_normal_garch1_q2_p2
+df_Xt_normal_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Line plot
-Data_df<- df_Xt_normal_garch_q2_p2
+Data_df<- df_Xt_normal_garch1_q2_p2
 lenh <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9045,7 +9083,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-df_Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+df_Xt_normal_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9061,23 +9099,23 @@ df_Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(df_Xt_normal_garch_q2_p2_sp)
+plot(df_Xt_normal_garch1_q2_p2_sp)
 
 # Consideriamo un modello lineare
-Xt_normal_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_normal_garch_q2_p2)
-summary(Xt_normal_garch_q2_p2_lm)
-summary(Xt_normal_garch_q2_p2_lm$fitted.values)
+Xt_normal_garch1_q2_p2_lm <- lm(Xt~t, data=df_Xt_normal_garch1_q2_p2)
+summary(Xt_normal_garch1_q2_p2_lm)
+summary(Xt_normal_garch1_q2_p2_lm$fitted.values)
 
-Xt_normal_garch_q2_p2_res <- Xt_normal_garch_q2_p2_lm$residuals
+Xt_normal_garch1_q2_p2_res <- Xt_normal_garch1_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_normal_garch_q2_p2_res)                  # theoretical value 0.
-moments::kurtosis(Xt_normal_garch_q2_p2_res)                  # theoretical value 3.
+moments::skewness(Xt_normal_garch1_q2_p2_res)                  # theoretical value 0.
+moments::kurtosis(Xt_normal_garch1_q2_p2_res)                  # theoretical value 3.
 # La skew è pari a -0.07990184; il suo valore è prossimo a zero, quindi la sua distribuzione 
 # viene considerata simmetrica.
 # La kurtosi è pari a 2.925623; questo indica che la distribuzione è platykurtic
 
 # Scatter plot - Residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q2_p2_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9109,7 +9147,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_normal_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9126,10 +9164,10 @@ Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_normal_garch_q2_p2_sp)
+plot(Xt_normal_garch1_q2_p2_sp)
 
 # Scatter plot - Square root of absolute residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q2_p2_res)
 Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
@@ -9162,7 +9200,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_normal_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9179,26 +9217,26 @@ Xt_normal_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_normal_garch_q2_p2_sp)
+plot(Xt_normal_garch1_q2_p2_sp)
 
-plot(Xt_normal_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_normal_garch_q2_p2_lm,2) # Q-Q Residuals
-plot(Xt_normal_garch_q2_p2_lm,3) # Scale-location
+plot(Xt_normal_garch1_q2_p2_lm,1) # Residuals vs Fitted
+plot(Xt_normal_garch1_q2_p2_lm,2) # Q-Q Residuals
+plot(Xt_normal_garch1_q2_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_normal_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch_q2_p2)
-show(Xt_normal_garch_q2_p2_bp)
+Xt_normal_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch1_q2_p2)
+show(Xt_normal_garch1_q2_p2_bp)
 # Si ha un p-value di 0.0005444 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
-Xt_normal_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch_q2_p2)
-show(Xt_normal_garch_q2_p2_w)
+Xt_normal_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch1_q2_p2)
+show(Xt_normal_garch1_q2_p2_w)
 # Si ha un p-value di 0.00252 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
-y <- Xt_normal_garch_q2_p2_lm$residuals
+y <- Xt_normal_garch1_q2_p2_lm$residuals
 length <- length(y)
 maxlag <- ceiling(10*log10(length))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
@@ -9231,7 +9269,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 
 # Test Ljiung-box
-y <- Xt_normal_garch_q2_p2_res
+y <- Xt_normal_garch1_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 4.4317, df = 1, p-value = 0.03528
 # Consideriamo la forma estesa:
@@ -9248,11 +9286,11 @@ LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 ##########################################
 
 # Consideriamo la seconda traiettoia con distribuzione t-student simmetrica di un modello GARCH(2,2)
-Xt <- Xt_t_student_symmetric_garch1_q2_p2
-df_Xt_t_student_symmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+Xt <- Xt_t_student_symmetric_garch2_q2_p2
+df_Xt_t_student_symmetric_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Line plot
-Data_df<- df_Xt_t_student_symmetric_garch_q2_p2
+Data_df<- df_Xt_t_student_symmetric_garch1_q2_p2
 lenh <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9284,7 +9322,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-df_Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+df_Xt_t_student_symmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9300,24 +9338,24 @@ df_Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(df_Xt_t_student_symmetric_garch_q2_p2_sp)
+plot(df_Xt_t_student_symmetric_garch1_q2_p2_sp)
 
 # Consideriamo un modello lineare
-Xt_t_student_symmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q2_p2)
-summary(Xt_t_student_symmetric_garch_q2_p2_lm)
-summary(Xt_t_student_symmetric_garch_q2_p2_lm$fitted.values)
+Xt_t_student_symmetric_garch1_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch1_q2_p2)
+summary(Xt_t_student_symmetric_garch1_q2_p2_lm)
+summary(Xt_t_student_symmetric_garch1_q2_p2_lm$fitted.values)
 
-Xt_t_student_symmetric_garch_q2_p2_res <- Xt_t_student_symmetric_garch_q2_p2_lm$residuals
+Xt_t_student_symmetric_garch1_q2_p2_res <- Xt_t_student_symmetric_garch1_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 0.
-moments::kurtosis(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 3.
+moments::skewness(Xt_t_student_symmetric_garch1_q2_p2_res)                  # theoretical value 0.
+moments::kurtosis(Xt_t_student_symmetric_garch1_q2_p2_res)                  # theoretical value 3.
 # La skew è pari a 0.3197632; il suo valore è prossima allo zero, quindi possiamo dire 
 # che la sua distribuzione è simmetrica.
 # La kurtosi è pari a 10.48433; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
 # Scatter plot - Residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch1_q2_p2_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9349,7 +9387,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_symmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9366,10 +9404,10 @@ Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+plot(Xt_t_student_symmetric_garch1_q2_p2_sp)
 
 # Scatter plot - Square root of absolute residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch1_q2_p2_res)
 Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
@@ -9402,7 +9440,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_symmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9419,25 +9457,25 @@ Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+plot(Xt_t_student_symmetric_garch1_q2_p2_sp)
 
-plot(Xt_t_student_symmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q2_p2_lm,3) # Scale-location
+plot(Xt_t_student_symmetric_garch1_q2_p2_lm,1) # Residuals vs Fitted
+plot(Xt_t_student_symmetric_garch1_q2_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_t_student_symmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
-show(Xt_t_student_symmetric_garch_q2_p2_bp)
+Xt_t_student_symmetric_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch1_q2_p2)
+show(Xt_t_student_symmetric_garch1_q2_p2_bp)
 # Si ha un p-value di 0.08959 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
-Xt_t_student_symmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
-show(Xt_t_student_symmetric_garch_q2_p2_w)
+Xt_t_student_symmetric_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch1_q2_p2)
+show(Xt_t_student_symmetric_garch1_q2_p2_w)
 # Si ha un p-value di 0.08332 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
-y <- Xt_t_student_symmetric_garch_q2_p2_lm$residuals
+y <- Xt_t_student_symmetric_garch1_q2_p2_lm$residuals
 length <- length(y)
 maxlag <- ceiling(10*log10(length))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
@@ -9472,7 +9510,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # dell'intervallo eccetto nel lag 15
 
 # Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_q2_p2_res
+y <- Xt_t_student_symmetric_garch1_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.0338, df = 1, p-value = 0.3093
 # Consideriamo la forma estesa:
@@ -9500,14 +9538,14 @@ aq <- c(coef(fit)[['alpha1']] - tasso_di_errore, coef(fit)[['alpha2']])
 bp <- c(coef(fit)[['beta1']], coef(fit)[['beta2']])
 sigmasquaredW <- var(distribution)
 print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
-Xt_t_student_symmetric_garch_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasquared0, distribution, q, p)
+Xt_t_student_symmetric_garch1_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasquared0, distribution, q, p)
 
 # Consideriamo una traiettoia con distribuzione t-student simmetrica di un modello GARCH(2,2)
-Xt <- Xt_t_student_symmetric_garch_q2_p2_new
-df_Xt_t_student_symmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+Xt <- Xt_t_student_symmetric_garch1_q2_p2_new
+df_Xt_t_student_symmetric_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Line plot
-Data_df<- df_Xt_t_student_symmetric_garch_q2_p2
+Data_df<- df_Xt_t_student_symmetric_garch1_q2_p2
 lenh <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9539,7 +9577,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-df_Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+df_Xt_t_student_symmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9555,24 +9593,24 @@ df_Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(df_Xt_t_student_symmetric_garch_q2_p2_sp)
+plot(df_Xt_t_student_symmetric_garch1_q2_p2_sp)
 
 # Consideriamo un modello lineare
-Xt_t_student_symmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch_q2_p2)
-summary(Xt_t_student_symmetric_garch_q2_p2_lm)
-summary(Xt_t_student_symmetric_garch_q2_p2_lm$fitted.values)
+Xt_t_student_symmetric_garch1_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_symmetric_garch1_q2_p2)
+summary(Xt_t_student_symmetric_garch1_q2_p2_lm)
+summary(Xt_t_student_symmetric_garch1_q2_p2_lm$fitted.values)
 
-Xt_t_student_symmetric_garch_q2_p2_res <- Xt_t_student_symmetric_garch_q2_p2_lm$residuals
+Xt_t_student_symmetric_garch1_q2_p2_res <- Xt_t_student_symmetric_garch1_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 0.
-moments::kurtosis(Xt_t_student_symmetric_garch_q2_p2_res)                  # theoretical value 3.
+moments::skewness(Xt_t_student_symmetric_garch1_q2_p2_res)                  # theoretical value 0.
+moments::kurtosis(Xt_t_student_symmetric_garch1_q2_p2_res)                  # theoretical value 3.
 # La skew è pari a -0.2358238; il suo valore è prossima allo zero, quindi possiamo dire 
 # che la sua distribuzione è simmetrica.
 # La kurtosi è pari a 4.609185; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
 # Scatter plot - Residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch1_q2_p2_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9604,7 +9642,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_symmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9621,10 +9659,10 @@ Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+plot(Xt_t_student_symmetric_garch1_q2_p2_sp)
 
 # Scatter plot - Square root of absolute residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch1_q2_p2_res)
 Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
@@ -9657,7 +9695,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_symmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9674,26 +9712,26 @@ Xt_t_student_symmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_symmetric_garch_q2_p2_sp)
+plot(Xt_t_student_symmetric_garch1_q2_p2_sp)
 # Si nota una evidenza di eteroschedasticità nei residui del modello
 
-plot(Xt_t_student_symmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_symmetric_garch_q2_p2_lm,3) # Scale-location
+plot(Xt_t_student_symmetric_garch1_q2_p2_lm,1) # Residuals vs Fitted
+plot(Xt_t_student_symmetric_garch1_q2_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_t_student_symmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
-show(Xt_t_student_symmetric_garch_q2_p2_bp)
+Xt_t_student_symmetric_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch1_q2_p2)
+show(Xt_t_student_symmetric_garch1_q2_p2_bp)
 # Si ha un p-value di 0.0001872 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
-Xt_t_student_symmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch_q2_p2)
-show(Xt_t_student_symmetric_garch_q2_p2_w)
+Xt_t_student_symmetric_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch1_q2_p2)
+show(Xt_t_student_symmetric_garch1_q2_p2_w)
 # Si ha un p-value di 9.667e-05 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
-y <- Xt_t_student_symmetric_garch_q2_p2_lm$residuals
+y <- Xt_t_student_symmetric_garch1_q2_p2_lm$residuals
 length <- length(y)
 maxlag <- ceiling(10*log10(length))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
@@ -9728,7 +9766,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # dell'intervallo eccetto nel lag 15
 
 # Test Ljiung-box
-y <- Xt_t_student_symmetric_garch_q2_p2_res
+y <- Xt_t_student_symmetric_garch1_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.39836, df = 1, p-value = 0.5279
 # Consideriamo la forma estesa:
@@ -9744,11 +9782,11 @@ LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 ##########################################
 
 # Consideriamo la prima traiettoia con distribuzione t-student asimmetrica di un modello GARCH(2,2)
-Xt <- Xt_t_student_asymmetric_garch_q2_p2
-df_Xt_t_student_asymmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+Xt <- Xt_t_student_asymmetric_garch1_q2_p2
+df_Xt_t_student_asymmetric_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Line plot
-Data_df<- df_Xt_t_student_asymmetric_garch_q2_p2
+Data_df<- df_Xt_t_student_asymmetric_garch1_q2_p2
 lenh <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9780,7 +9818,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-df_Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+df_Xt_t_student_asymmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -9796,24 +9834,24 @@ df_Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(df_Xt_t_student_asymmetric_garch_q2_p2_sp)
+plot(df_Xt_t_student_asymmetric_garch1_q2_p2_sp)
 
 # Consideriamo un modello lineare
-Xt_t_student_asymmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q2_p2)
-summary(Xt_t_student_asymmetric_garch_q2_p2_lm)
-summary(Xt_t_student_asymmetric_garch_q2_p2_lm$fitted.values)
+Xt_t_student_asymmetric_garch1_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
+summary(Xt_t_student_asymmetric_garch1_q2_p2_lm)
+summary(Xt_t_student_asymmetric_garch1_q2_p2_lm$fitted.values)
 
-Xt_t_student_asymmetric_garch_q2_p2_res <- Xt_t_student_asymmetric_garch_q2_p2_lm$residuals
+Xt_t_student_asymmetric_garch1_q2_p2_res <- Xt_t_student_asymmetric_garch1_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 0.
-moments::kurtosis(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 3.
+moments::skewness(Xt_t_student_asymmetric_garch1_q2_p2_res)                  # theoretical value 0.
+moments::kurtosis(Xt_t_student_asymmetric_garch1_q2_p2_res)                  # theoretical value 3.
 # La skew è pari a -1.959105; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
 # La kurtosi è pari a 8.887091; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
 # Scatter plot - Residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p2_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -9822,7 +9860,7 @@ subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
 y_name <- bquote("Linear Model Residuals")
-Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_asymmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
@@ -9840,10 +9878,10 @@ Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+plot(Xt_t_student_asymmetric_garch1_q2_p2_sp)
 
 # Scatter plot - Square root of absolute residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p2_res)
 Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
@@ -9876,7 +9914,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_asymmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
@@ -9894,27 +9932,27 @@ Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+plot(Xt_t_student_asymmetric_garch1_q2_p2_sp)
 
-plot(Xt_t_student_asymmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q2_p2_lm,3) # Scale-location
+plot(Xt_t_student_asymmetric_garch1_q2_p2_lm,1) # Residuals vs Fitted
+plot(Xt_t_student_asymmetric_garch1_q2_p2_lm,3) # Scale-location
 # Dal grafico "Residuals vs Fitted" possiamo notare che i residui del modello sono distribuiti in modo
 # omogeneo intorno alla linea rossa LOESS
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_t_student_asymmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
-show(Xt_t_student_asymmetric_garch_q2_p2_bp)
+Xt_t_student_asymmetric_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
+show(Xt_t_student_asymmetric_garch1_q2_p2_bp)
 # Si ha un p-value di 0.01213 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
-Xt_t_student_asymmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
-show(Xt_t_student_asymmetric_garch_q2_p2_w)
+Xt_t_student_asymmetric_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
+show(Xt_t_student_asymmetric_garch1_q2_p2_w)
 # Si ha un p-value di 0.04304 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
-y <- Xt_t_student_asymmetric_garch_q2_p2_lm$residuals
+y <- Xt_t_student_asymmetric_garch1_q2_p2_lm$residuals
 length <- length(y)
 maxlag <- ceiling(10*log10(length))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
@@ -9948,7 +9986,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # nel grafico dell'autocorrelogramma possiamo notare che i valori tendono a seguire un trend iniziale
 
 # Test Ljiung-box
-y <- Xt_t_student_asymmetric_garch_q2_p2_res
+y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 22.226, df = 1, p-value = 2.423e-06
 # Consideriamo la forma estesa:
@@ -9975,14 +10013,14 @@ aq <- c(coef(fit)[['alpha1']], coef(fit)[['alpha2']])
 bp <- c(coef(fit)[['beta1']], coef(fit)[['beta2']])
 sigmasquaredW <- var(dist_t_student_asymmetric)
 print((aq[1]+aq[2])*sigmasquaredW + bp[1] + bp[2])
-Xt_t_student_asymmetric_garch_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
+Xt_t_student_asymmetric_garch1_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_t_student_asymmetric, q, p)
 
 # Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(2,2)
-Xt <- Xt_t_student_asymmetric_garch_q2_p2_new
-df_Xt_t_student_asymmetric_garch_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+Xt <- Xt_t_student_asymmetric_garch1_q2_p2_new
+df_Xt_t_student_asymmetric_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
 
 # Line plot
-Data_df<- df_Xt_t_student_asymmetric_garch_q2_p2
+Data_df<- df_Xt_t_student_asymmetric_garch1_q2_p2
 lenh <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -10014,7 +10052,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-df_Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+df_Xt_t_student_asymmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -10030,24 +10068,24 @@ df_Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(df_Xt_t_student_asymmetric_garch_q2_p2_sp)
+plot(df_Xt_t_student_asymmetric_garch1_q2_p2_sp)
 
 # Consideriamo un modello lineare
-Xt_t_student_asymmetric_garch_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch_q2_p2)
-summary(Xt_t_student_asymmetric_garch_q2_p2_lm)
-summary(Xt_t_student_asymmetric_garch_q2_p2_lm$fitted.values)
+Xt_t_student_asymmetric_garch1_q2_p2_lm <- lm(Xt~t, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
+summary(Xt_t_student_asymmetric_garch1_q2_p2_lm)
+summary(Xt_t_student_asymmetric_garch1_q2_p2_lm$fitted.values)
 
-Xt_t_student_asymmetric_garch_q2_p2_res <- Xt_t_student_asymmetric_garch_q2_p2_lm$residuals
+Xt_t_student_asymmetric_garch1_q2_p2_res <- Xt_t_student_asymmetric_garch1_q2_p2_lm$residuals
 # Calcoliamo la skew e la kurtosi
-moments::skewness(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 0.
-moments::kurtosis(Xt_t_student_asymmetric_garch_q2_p2_res)                  # theoretical value 3.
+moments::skewness(Xt_t_student_asymmetric_garch1_q2_p2_res)                  # theoretical value 0.
+moments::kurtosis(Xt_t_student_asymmetric_garch1_q2_p2_res)                  # theoretical value 3.
 # La skew è pari a -1.812057; il suo valore è negativo e la sua distribuzione è
 # asimmetrica verso sinistra con una coda lunga negativa.
 # La kurtosi è pari a 8.243387; questo indica che la distribuzione è leptocurtica, 
 # cioè ha code più pesanti rispetto ad una normale.
 
 # Scatter plot - Residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p2_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
@@ -10056,7 +10094,7 @@ subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
 y_name <- bquote("Linear Model Residuals")
-Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_asymmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -10073,10 +10111,10 @@ Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+plot(Xt_t_student_asymmetric_garch1_q2_p2_sp)
 
 # Scatter plot - Square root of absolute residuals
-Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch_q2_p2_res)
+Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p2_res)
 Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
@@ -10109,7 +10147,7 @@ y3_col <- bquote("regression line")
 leg_labs   <- c(y1_col, y2_col, y3_col)
 leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
-Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
+Xt_t_student_asymmetric_garch1_q2_p2_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
@@ -10126,26 +10164,26 @@ Xt_t_student_asymmetric_garch_q2_p2_sp <- ggplot(Data_df) +
   theme(plot.title=element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5),
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
-plot(Xt_t_student_asymmetric_garch_q2_p2_sp)
+plot(Xt_t_student_asymmetric_garch1_q2_p2_sp)
 # Dal rafico è possibile notare evidenza di eteroschedasticità nei residui de modello
 
-plot(Xt_t_student_asymmetric_garch_q2_p2_lm,1) # Residuals vs Fitted
-plot(Xt_t_student_asymmetric_garch_q2_p2_lm,3) # Scale-location
+plot(Xt_t_student_asymmetric_garch1_q2_p2_lm,1) # Residuals vs Fitted
+plot(Xt_t_student_asymmetric_garch1_q2_p2_lm,3) # Scale-location
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
-Xt_t_student_asymmetric_garch_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
-show(Xt_t_student_asymmetric_garch_q2_p2_bp)
+Xt_t_student_asymmetric_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
+show(Xt_t_student_asymmetric_garch1_q2_p2_bp)
 # Si ha un p-value di 0.0001036 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
-Xt_t_student_asymmetric_garch_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch_q2_p2)
-show(Xt_t_student_asymmetric_garch_q2_p2_w)
+Xt_t_student_asymmetric_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
+show(Xt_t_student_asymmetric_garch1_q2_p2_w)
 # Si ha un p-value di 0.000534 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
-y <- Xt_t_student_asymmetric_garch_q2_p2_lm$residuals
+y <- Xt_t_student_asymmetric_garch1_q2_p2_lm$residuals
 length <- length(y)
 maxlag <- ceiling(10*log10(length))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
@@ -10179,7 +10217,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Adesso, possiamo notare che i valori rientrano dentro l'intervallo di confidenza
 
 # Test Ljiung-box
-y <- Xt_t_student_asymmetric_garch_q2_p2_res
+y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 4.0227, df = 1, p-value = 0.04489
 # Consideriamo la forma estesa:
