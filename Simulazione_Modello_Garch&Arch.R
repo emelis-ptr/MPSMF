@@ -36,6 +36,7 @@ library(FitAR)
 library(crayon)
 library(DescTools)
 library(fitdistrplus)
+library(urca)
 
 ##########################################################################################################################
 #################################ff#########################################################################################
@@ -439,7 +440,7 @@ sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_arch1_q1 <- model_arch(a0, a1, X0, dist_t_student_asymmetric1, q)
 
-modello[['simulazione']][['arch_q1']][['asimmetrico']] <- append(modello[['simulazione']][['arch_q1']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_arch1_q1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['arch_q1']][['asimmetrico']] <- append(modello[['simulazione']][['arch_q1']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_arch1_q1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
@@ -564,21 +565,21 @@ sigmasquaredW <- var(dist_t_student_symmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_symmetric_garch1_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric1, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['garch_q1_p1']][['simmetrico']], list('1'=list('Xt'=Xt_t_student_symmetric_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_symmetric_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric2, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['garch_q1_p1']][['simmetrico']], list('2'=list('Xt'=Xt_t_student_symmetric_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_symmetric3)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_symmetric_garch3_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_symmetric3, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']] <- append(modello[['simulazione']][['garch_q1_p1']][['garch_q1_p1']][['simmetrico']], list('3'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # creo il primo plot del modello Garch(1,1) con la distribuzione t-student simmetrica
 plot_t_student_symmetric <- ggplot(data.frame(value = Xt_t_student_symmetric_garch1_q1_p1, index = seq_along(Xt_t_student_symmetric_garch1_q1_p1)), aes(x = index, y = value)) + 
@@ -624,20 +625,20 @@ sigmasquaredW <- var(dist_t_student_asymmetric1)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_garch1_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric1, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q1_p1']][['asimmetrico']], list('1'=list('Xt'=Xt_t_student_asymmetric_garch1_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # Seconda traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric2)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_garch2_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric2, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q1_p1']][['asimmetrico']], list('2'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 # Terza traiettoria
 sigmasquaredW <- var(dist_t_student_asymmetric3)
 print(paste("Verifico condizione di stazionerietà: ", a1*sigmasquaredW))
 Xt_t_student_asymmetric_garch3_q1_p1 <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_t_student_asymmetric3, q, p)
 
-modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']] <- append(modello[['simulazione']][['garch_q1_p1']][['asimmetrico']], list('3'=list('Xt'=Xt_t_student_asymmetric_garch3_q1_p1, 'stazionarietà'=a1*sigmasquaredW)))
 
 # creo il primo plot del modello Garch(1,1) con la distribuzione t-student asimmetrica
 plot_t_student_asymmetric <- ggplot(data.frame(value = Xt_t_student_asymmetric_garch1_q1_p1, index = seq_along(Xt_t_student_asymmetric_garch1_q1_p1)), aes(x = index, y = value)) + 
@@ -1434,11 +1435,21 @@ plot(plots)
 "Per verificare la correttezza del modello si studiano:
 - Omoschedasticità:  significa che i residui sono equamente distribuiti lungo la linea di regressione;
 - Assenza di autocorrelazione: si verifica quando i residui non sono indipendenti l'uno dall'altro;
-
-Non studiamo i casi di:
 - Stazionarietà**: un modello di predizione con residui stazionari garantisce che le previsioni future
-    siano affidabili e non influenzate da fluttuazioni casuali o tendenze temporal;
+    siano affidabili e non influenzate da fluttuazioni casuali o tendenze temporali;
+    
+Non studiamo i casi di:
 - Gaussianità: se i residui seguono una distribuzione normale;
+
+I test computazionali che vengono solitamente applicati per rilevare la stazionarietà dei residui, 
+sono il test di Augmented Dickey-Fuller (ADF) e il test di Kwiatowski-Phillips-Schmidt-Shin (KPSS). 
+Il test ADF assume l'ipotesi nulla di non stazionarietà; assume che la serie temporale sia generata 
+da un processo stocastico con un componente di random walk.
+Al contrario, il test KPSS assume l'ipotesi nulla di stazionarietà; assume che la serie temporale 
+sia generata da un processo autoregressivo. 
+- Quando il test ADF respinge l'ipotesi nulla e KPSS no, abbiamo prove di stazionarietà 
+nella serie temporale. 
+- Quando il test ADF non respinge l'ipotesi nulla e KPSS sì, abbiamo prove di non stazionarietà. 
 
 I test computazionali che vengono solitamente applicati per rilevare l'eteroschedasticità nelle serie 
 temporali sono i test di Breusch-Pagan (BP) e White (W). 
@@ -1542,7 +1553,25 @@ kurt
 # -0.1544153 -0.3911550  0.2348151 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_arch1_q1_res
+num_lags <- 3                  # Setting the lag parameter for the test.
+Xt_normal_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_arch1_q1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_arch1_q1_res   
+Xt_normal_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_arch1_q1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch1_q1_res)
@@ -1687,14 +1716,18 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_arch1_q1_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag considerati.
 # I risultati indicano assenza di autocorrelazione nei resisui.
 
-modello[['simulazione']][['arch_q1']][['normale']][['1']] <- append(modello[['simulazione']][['arch_q1']][['normale']][['1']], list('lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_arch1_q1_bp, 'test-white'=Xt_normal_arch1_q1_w, 'test-ljiung-box'=Xt_normal_arch1_q1_lb))
+modello[['simulazione']][['arch_q1']][['normale']][['1']] <- append(modello[['simulazione']][['arch_q1']][['normale']][['1']], 
+                                                                    list('lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_normal_arch1_q1_cf, 
+                                                                         'Breusch-Pagan'=Xt_normal_arch1_q1_bp, 'White'=Xt_normal_arch1_q1_w, 
+                                                                         'Ljiung-Box'=Xt_normal_arch1_q1_lb, 'Dickey-Fuller'=Xt_normal_arch1_q1_adf, 
+                                                                         'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q1_kpss))
 
 # Possiamo concludere che la prima traiettoria della distribuzione normale di un modello ARCH(1) ha evidenza di eteroschedasticità
 # e assenza di autocorrelazione nei residui del modello.
@@ -1785,7 +1818,25 @@ show(kurt)
 # -0.32278623 -0.47849072 -0.09394918
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_arch1_q1_res
+num_lags <- 3                  # Setting the lag parameter for the test.
+Xt_normal_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_arch1_q1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_arch1_q1_res   
+Xt_normal_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_arch1_q1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch1_q1_res)
@@ -1930,7 +1981,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # Si ha un p-value > 0.05, quindi non è possibile rifiutare l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_arch1_q1_lb)
@@ -1938,7 +1989,12 @@ show(Xt_normal_arch1_q1_lb)
 
 # I risultati indicano assenza di autocorrelazione nei resisui.
 
-modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], list('normal'=list('Xt'=Xt_normal_arch1_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q, 'stazionarietà'=stazionaietà, 'lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_arch1_q1_bp, 'test-white'=Xt_normal_arch1_q1_w, 'test-ljiung-box'=Xt_normal_arch1_q1_lb)))
+modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], 
+                                            list('normale'=list('Xt'=Xt_normal_arch1_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q, 'stazionarietà'=stazionaietà, 
+                                                               'lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_normal_arch1_q1_cf, 
+                                                               'Breusch-Pagan'=Xt_normal_arch1_q1_bp, 'White'=Xt_normal_arch1_q1_w, 
+                                                               'Ljiung-Box'=Xt_normal_arch1_q1_lb, 'Dickey-Fuller'=Xt_normal_arch1_q1_adf, 
+                                                               'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q1_kpss)))
 
 # Possiamo concludere che la prima traiettoria della distribuzione normale di un modello ARCH(1) ha evidenza di eteroschedasticità
 # nel test di Breusch-Pagan e presenza di omochedasticità nel test di White
@@ -2022,7 +2078,25 @@ show(kurt)
 # 1.861238 1.276939 2.867688
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_arch1_q1_res
+num_lags <- 3                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_arch1_q1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_arch1_q1_res   
+Xt_t_student_symmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_arch1_q1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X =Xt_t_student_symmetric_arch1_q1_res)
@@ -2165,13 +2239,18 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
-Xt_t_student_symmetric_arch1__q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
-show(Xt_t_student_symmetric_arch1__q1_lb)
+Xt_t_student_symmetric_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
+show(Xt_t_student_symmetric_arch1_q1_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag considerati.
 
-modello[['simulazione']][['arch_q1']][['simmetrico']][['1']] <- append(modello[['simulazione']][['arch_q1']][['simmetrico']][['1']], list('lm'=Xt_t_student_symmetric_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_arch1_q1_bp, 'test-white'=Xt_t_student_symmetric_arch1_q1_w, 'test-ljiung-box'=Xt_t_student_symmetric_arch1__q1_lb))
+modello[['simulazione']][['arch_q1']][['simmetrico']][['1']] <- append(modello[['simulazione']][['arch_q1']][['simmetrico']][['1']], 
+                                                                       list('lm'=Xt_t_student_symmetric_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                            'Cullen-Frey'=Xt_t_student_symmetric_arch1_q1_cf, 
+                                                                            'Breusch-Pagan'=Xt_t_student_symmetric_arch1_q1_bp,'White'=Xt_t_student_symmetric_arch1_q1_w, 
+                                                                            'Ljiung-Box'=Xt_t_student_symmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch1_q1_adf, 
+                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss))
 
 # In questo modello Arch(1) con una distribuzione t-student simmetrica si ha evidenza di eteroschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -2266,7 +2345,25 @@ show(kurt)
 # 1.861238 1.196812 2.765069 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_arch1_q1_res
+num_lags <- 3                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_arch1_q1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_arch1_q1_res   
+Xt_t_student_symmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_arch1_q1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X =Xt_t_student_symmetric_arch1_q1_res)
@@ -2409,7 +2506,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_arch1_q1_lb)
@@ -2417,8 +2514,10 @@ show(Xt_t_student_symmetric_arch1_q1_lb)
 
 modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], list('simmetrico'=list('Xt'=Xt_t_student_symmetric_arch1_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q, 
                                                                                            'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_arch1_q1_lm, 
-                                                                                           'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_arch1_q1_bp, 
-                                                                                           'test-white'=Xt_t_student_symmetric_arch1_q1_w, 'test-ljiung-box'=Xt_t_student_symmetric_arch1_q1_lb)))
+                                                                                           'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_t_student_symmetric_arch1_q1_cf, 
+                                                                                           'Breusch-Pagan'=Xt_t_student_symmetric_arch1_q1_bp,'White'=Xt_t_student_symmetric_arch1_q1_w, 
+                                                                                           'Ljiung-Box'=Xt_t_student_symmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch1_q1_adf, 
+                                                                                           'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss)))
 
 # In questo modello Arch(1) con una distribuzione t-student simmetrica si ha evidenza di eteroschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -2502,7 +2601,25 @@ show(kurt)
 #4.210131 3.024145 5.978218 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_arch1_q1_res
+num_lags <- 3                 # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_arch1_q1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_arch1_q1_res   
+Xt_t_student_asymmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_arch1_q1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch1_q1_res)
@@ -2622,18 +2739,24 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_arch1_q1_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è presenza di correlazione nei lag 1 al 9
 # e nel lag 13.
 
-modello[['simulazione']][['arch_q1']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['arch_q1']][['asimmetrico']][['1']], list('lm'=Xt_t_student_asymmetric_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_arch1_q1_bp, 'test-white'=Xt_t_student_asymmetric_arch1_q1_w, 'test-ljiung-box'=Xt_t_student_asymmetric_arch1_q1_lb))
+modello[['simulazione']][['arch_q1']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['arch_q1']][['asimmetrico']][['1']], 
+                                                                        list('lm'=Xt_t_student_asymmetric_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                             'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q1_cf, 
+                                                                             'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q1_bp, 'White'=Xt_t_student_asymmetric_arch1_q1_w, 
+                                                                             'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q1_adf, 
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q1_kpss))
 
 # In questo modello Arch(1) si ha presenza di eteroschedasticità e presenza di autocorrelazione.
 # Quindi, proviamo a stimare i migliori parametri per il modello:
-uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,0)), distribution.model= "sstd")
+q <- 1
+uspec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(q,0)), distribution.model= "sstd")
 fit = ugarchfit(spec = uspec, data = dist_t_student_asymmetric1)
 print(fit)
 intconf = confint(fit)
@@ -2719,7 +2842,25 @@ show(kurt)
 # 4.210131 3.024145 5.978218 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_arch1_q1_res
+num_lags <- 3                  # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_arch1_q1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_arch1_q1_res   
+Xt_t_student_asymmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_arch1_q1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch1_q1_res)
@@ -2801,15 +2942,18 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag.
 
-modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_arch1_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q, 
-                                                                                                      'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_arch1_q1_lm, 
-                                                                                                      'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_arch1_q1_bp, 
-                                                                                                      'test-white'=Xt_t_student_asymmetric_arch1_q1_w, 'test-ljiung-box'=Xt_t_student_asymmetric_arch1_q1_lb)))
+modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], 
+                                            list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_arch1_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q,
+                                                                    'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_arch1_q1_lm, 
+                                                                    'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q1_cf, 
+                                                                    'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q1_bp, 'White'=Xt_t_student_asymmetric_arch1_q1_w, 
+                                                                    'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q1_adf, 
+                                                                    'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q1_kpss)))
 
 # In questo modello ARCH(1) con una distribuzione t-student asimmetrica, con i parametri stimati,
 # si ha un'assenza di correlazione e presenza di eteroschedasticità nel test di Breusch-Pagan, a 
@@ -2899,7 +3043,25 @@ show(kurt)
 # -0.1692899 -0.3993812  0.1749151    
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_normal_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch2_q1_p1_res   
+Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch2_q1_p1_res)
@@ -3021,12 +3183,17 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
-Xt_normal_garch2_q1_p1_bt <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
-show(Xt_normal_garch2_q1_p1_bt)
+Xt_normal_garch2_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
+show(Xt_normal_garch2_q1_p1_lb)
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['simulazione']][['garch_q1_p1']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']][['1']], list('lm'=Xt_normal_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_garch2_q1_p1_bp, 'test-white'=Xt_normal_garch2_q1_p1_w, 'test-ljiung-box'=Xt_normal_garch2_q1_p1_bt))
+modello[['simulazione']][['garch_q1_p1']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q1_p1']][['normale']][['1']], 
+                                                                        list('lm'=Xt_normal_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                             'Cullen-Frey'=Xt_normal_garch2_q1_p1_cf, 
+                                                                             'Breusch-Pagan'=Xt_normal_garch2_q1_p1_bp, 'White'=Xt_normal_garch2_q1_p1_w, 
+                                                                             'Ljiung-Box'=Xt_normal_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_normal_garch2_q1_p1_adf, 
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch2_q1_p1_kpss))
 
 # Questo modello Garch(1,1) con una distribuzione normale ha assenza di autocorrelazione
 # ma presenza di omoschedasticità. 
@@ -3123,7 +3290,25 @@ show(kurt)
 # 0.7551241 0.4687479 1.1888544
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_normal_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch2_q1_p1_res   
+Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch2_q1_p1_res)
@@ -3243,15 +3428,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 5  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_garch2_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_garch2_q1_p1_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag.
 
-modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], list('normal'=list('Xt'=Xt_normal_garch2_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p,
-                                                                                                          'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 
-                                                                                                          'test-breusch-pagan'=Xt_normal_garch2_q1_p1_bp, 'test-white'=Xt_normal_garch2_q1_p1_w, 'test-ljiung-box'=Xt_normal_garch2_q1_p1_bt)))
+modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], 
+                                                list('normale'=list('Xt'=Xt_normal_garch2_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p,
+                                                                   'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                   'Cullen-Frey'=Xt_normal_garch2_q1_p1_cf, 
+                                                                   'Breusch-Pagan'=Xt_normal_garch2_q1_p1_bp, 'White'=Xt_normal_garch2_q1_p1_w, 
+                                                                   'Ljiung-Box'=Xt_normal_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_normal_garch2_q1_p1_adf, 
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch2_q1_p1_kpss)))
 
 # In questo modello Garch(1,1) con distribuzione normale risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -3333,7 +3522,25 @@ show(kurt)
 #    2.285842 1.510861 3.472128
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch3_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch3_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch3_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res   
+Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch3_q1_p1_res)
@@ -3457,7 +3664,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 5  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch3_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch3_q1_p1_lb)
@@ -3465,7 +3672,12 @@ show(Xt_t_student_symmetric_garch3_q1_p1_lb)
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['simulazione']][['garch_q1_p1']][['simmetrico']][['3']] <- append(modello[['simulazione']][['garch_q1_p1']][['simmetrico']][['3']], list('lm'=Xt_t_student_symmetric_garch3_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'test-white'=Xt_t_student_symmetric_garch3_q1_p1_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch3_q1_p1_lb))
+modello[['simulazione']][['garch_q1_p1']][['simmetrico']][['3']] <- append(modello[['simulazione']][['garch_q1_p1']][['simmetrico']][['3']], 
+                                                                           list('lm'=Xt_t_student_symmetric_garch3_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf, 
+                                                                                'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
+                                                                                'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss))
 
 # Il modello Garch(1,1) con distribuzione t-student simmetrica ha presenza di omoschedasticità.
 # Dato che la serie è omoschedastico, proviamo a stimare i migliori parametri per il modello.
@@ -3559,7 +3771,25 @@ show(kurt)
 # 2.285842 1.510861 3.472128
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch3_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch3_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch3_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res   
+Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch3_q1_p1_res)
@@ -3700,16 +3930,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 5  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch3_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch3_q1_p1_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag.
 
-modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p, 
-                                                                                                      'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch3_q1_p1_lm, 
-                                                                                                      'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 
-                                                                                                      'test-white'=Xt_t_student_symmetric_garch3_q1_p1_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch3_q1_p1_lb)))
+modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], 
+                                                list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p, 
+                                                                       'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch3_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                       'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf,
+                                                                       'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
+                                                                       'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student simmetrica, con i nuovi parametri stimati,
 # si ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -3791,7 +4024,25 @@ show(kurt)
 #4.371883 3.127511 6.223429  
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res   
+Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch2_q1_p1_res)
@@ -3932,14 +4183,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 12.535, df = 1, p-value = 0.0003994
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 5  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch2_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch2_q1_p1_lb)
 # I risultati hanno un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['simulazione']][['garch_q1_p1']][['asimmetrico']][['2']] <- append(modello[['simulazione']][['garch_q1_p1']][['asimmetrico']][['2']], list('lm'=Xt_t_student_asymmetric_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'test-white'=Xt_t_student_asymmetric_garch2_q1_p1_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch2_q1_p1_lb))
+modello[['simulazione']][['garch_q1_p1']][['asimmetrico']][['2']] <- append(modello[['simulazione']][['garch_q1_p1']][['asimmetrico']][['2']], 
+                                                                            list('lm'=Xt_t_student_asymmetric_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                 'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
+                                                                                 'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
+                                                                                 'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss))
 
 # Questo modello Garch(1,1) con una distribuzione normale ha presenza di autocorrelazione
 # e presenza di eteroschedasticità. 
@@ -4035,7 +4291,25 @@ show(kurt)
 # 4.371883 3.127511 6.223429
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res   
+Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch2_q1_p1_res)
@@ -4177,16 +4451,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 5  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch2_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch2_q1_p1_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione.
 
-modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p,
-                                                                                                       'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch2_q1_p1_lm, 
-                                                                                                       'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 
-                                                                                                       'test-white'=Xt_t_student_asymmetric_garch2_q1_p1_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch2_q1_p1_lb)))
+modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], 
+                                                list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p,
+                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                        'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
+                                                                        'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
+                                                                        'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student asimmetrica, con i
 # i miglior parametri stimati la serie ha presenza di eteroschedasticità e
@@ -4271,7 +4548,25 @@ show(kurt)
 # -0.1701762 -0.3900903  0.1612521  
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch1_q1_p2_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_normal_garch1_q1_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch1_q1_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch1_q1_p2_res   
+Xt_normal_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch1_q1_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q1_p2_res)
@@ -4415,14 +4710,18 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_garch1_q1_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_garch1_q1_p2_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag.
 # I risultati indicano che c'è assenza di correlazione nella serie.
 
-modello[['simulazione']][['garch_q1_p2']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q1_p2']][['normale']][['1']], list('lm'=Xt_normal_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_garch1_q1_p2_bp, 'test-white'=Xt_normal_garch1_q1_p2_w, 'test-ljiung-box'=Xt_normal_garch1_q1_p2_lb))
+modello[['simulazione']][['garch_q1_p2']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q1_p2']][['normale']][['1']], 
+                                                                        list('lm'=Xt_normal_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                             'Cullen-Frey'=Xt_normal_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_normal_garch1_q1_p2_bp, 'White'=Xt_normal_garch1_q1_p2_w, 
+                                                                             'Ljiung-Box'=Xt_normal_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q1_p2_adf, 
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q1_p2_kpss))
 
 # In questo modello Garch(1,2) con una distribuzione normale possiamo affermare che la serie 
 # ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -4519,7 +4818,25 @@ show(kurt)
 # 0.7790380 0.4872084 1.2193013 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch1_q1_p2_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_normal_garch1_q1_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch1_q1_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch1_q1_p2_res   
+Xt_normal_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch1_q1_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q1_p2_res)
@@ -4663,18 +4980,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # assenza di autocorrelazione.
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_garch1_q1_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_garch1_q1_p2_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag.
 # I risultati indicano che c'è assenza di correlazione nella serie.
 
-modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_p2']], list('normal'=list('Xt'=Xt_normal_garch1_q1_p2_new, 
-                                                                                                          'a0'=a0, 'a1'=a1, 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
-                                                                                                          'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q1_p2_lm, 
-                                                                                                          'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 
-                                                                                                          'test-breusch-pagan'=Xt_normal_garch1_q1_p2_bp, 'test-white'=Xt_normal_garch1_q1_p2_w, 'test-ljiung-box'=Xt_normal_garch1_q1_p2_lb)))
+modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_p2']], 
+                                                list('normale'=list('Xt'=Xt_normal_garch1_q1_p2_new, 'a0'=a0, 'a1'=a1, 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
+                                                                   'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                   'Cullen-Frey'=Xt_normal_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_normal_garch1_q1_p2_bp, 'White'=Xt_normal_garch1_q1_p2_w, 
+                                                                   'Ljiung-Box'=Xt_normal_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q1_p2_adf, 
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q1_p2_kpss)))
 
 # In questo modello Garch(1,1) con distribuzione normale risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -4755,7 +5073,25 @@ show(kurt)
 #    2.531558 1.586253 3.976148
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch1_q1_p2_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch1_q1_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch1_q1_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch1_q1_p2_res   
+Xt_t_student_symmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch1_q1_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch1_q1_p2_res)
@@ -4895,7 +5231,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.40705, df = 1, p-value = 0.5235
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch1_q1_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch1_q1_p2_lb)
@@ -4903,7 +5239,11 @@ show(Xt_t_student_symmetric_garch1_q1_p2_lb)
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['simulazione']][['garch_q1_p2']][['simmetrico']][['1']] <- append(modello[['simulazione']][['garch_q1_p2']][['simmetrico']][['1']], list('lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'test-white'=Xt_t_student_symmetric_garch1_q1_p2_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch1_q1_p2_lb))
+modello[['simulazione']][['garch_q1_p2']][['simmetrico']][['1']] <- append(modello[['simulazione']][['garch_q1_p2']][['simmetrico']][['1']], 
+                                                                           list('lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt,
+                                                                                'Cullen-Frey'=Xt_t_student_symmetric_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_symmetric_garch1_q1_p2_w, 
+                                                                                'Ljiung-Box'=Xt_t_student_symmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch1_q1_p2_adf, 
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss))
 
 # Questo modello Garch(1,2) con distribuzione t-student simmetrica ha un'evidenza di 
 # eteroschedasticità nella serie e assenza di autocorrelazione nei residui.
@@ -4998,7 +5338,25 @@ show(kurt)
 #    5.202500 3.906953 7.276112
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch1_q1_p2_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch1_q1_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch1_q1_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch1_q1_p2_res   
+Xt_t_student_symmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch1_q1_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch1_q1_p2_res)
@@ -5138,7 +5496,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.91573, df = 1, p-value = 0.3386
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch1_q1_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch1_q1_p2_lb)
@@ -5146,10 +5504,12 @@ show(Xt_t_student_symmetric_garch1_q1_p2_lb)
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_p2']], list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch1_q1_p2_new, 'a0'=a0, 'a1'=a1, 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
-                                                                                                              'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 
-                                                                                                              'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 
-                                                                                                              'test-white'=Xt_t_student_symmetric_garch1_q1_p2_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch1_q1_p2_lb)))
+modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_p2']], 
+                                                list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch1_q1_p2_new, 'a0'=a0, 'a1'=a1, 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
+                                                                       'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                       'Cullen-Frey'=Xt_t_student_symmetric_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_symmetric_garch1_q1_p2_w, 
+                                                                       'Ljiung-Box'=Xt_t_student_symmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch1_q1_p2_adf, 
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student simmetrica, con i nuovi parametri stimati,
 # si ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -5231,7 +5591,25 @@ show(kurt)
 #4.600950 3.186499 6.708246 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch1_q1_p2_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch1_q1_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch1_q1_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch1_q1_p2_res   
+Xt_t_student_asymmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch1_q1_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q1_p2_res)
@@ -5370,7 +5748,7 @@ y <- Xt_t_student_asymmetric_garch1_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 13.422, df = 1, p-value = 0.0002487
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q1_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q1_p2_lb)
@@ -5379,7 +5757,12 @@ show(Xt_t_student_asymmetric_garch1_q1_p2_lb)
 # I risultati mostrano un p-value < 0.05, ciò significa che ci sono prove
 # di autocorrelazione nei residui del modello.
 
-modello[['simulazione']][['garch_q1_p2']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['garch_q1_p2']][['asimmetrico']][['1']], list('lm'=Xt_t_student_asymmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'test-white'=Xt_t_student_asymmetric_garch1_q1_p2_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch1_q1_p2_lb))
+modello[['simulazione']][['garch_q1_p2']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['garch_q1_p2']][['asimmetrico']][['1']], 
+                                                                            list('lm'=Xt_t_student_asymmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                 'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q1_p2_cf, 
+                                                                                 'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q1_p2_w, 
+                                                                                 'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q1_p2_adf, 
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss))
 
 # Questo modello Garch(1,2) con una distribuzione t-student asimmetrica ha presenza di autocorrelazione
 # e presenza di omoschedasticità nel test di White. 
@@ -5475,7 +5858,25 @@ show(kurt)
 #4.600950 3.186499 6.708246 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch1_q1_p2_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch1_q1_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch1_q1_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch1_q1_p2_res   
+Xt_t_student_asymmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch1_q1_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q1_p2_res)
@@ -5614,7 +6015,7 @@ y <- Xt_t_student_asymmetric_garch1_q1_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 13.422, df = 1, p-value = 0.0002487
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q1_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q1_p2_lb)
@@ -5623,10 +6024,13 @@ show(Xt_t_student_asymmetric_garch1_q1_p2_lb)
 # I risultati mostrano un p-value < 0.05, ciò significa che ci sono prove
 # di autocorrelazione nei residui del modello.
 
-modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_p2']], list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q1_p2_new, 'a0'=a0, 'a1'=a1, 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
-                                                                                                               'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch1_q1_p2_lm, 
-                                                                                                               'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 
-                                                                                                               'test-white'=Xt_t_student_asymmetric_garch1_q1_p2_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch1_q1_p2_lb)))
+modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_p2']], 
+                                                list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q1_p2_new, 'a0'=a0, 'a1'=a1, 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
+                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch1_q1_p2_lm,'skew'=skew, 'kurt'=kurt, 
+                                                                        'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q1_p2_cf, 
+                                                                        'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q1_p2_w, 
+                                                                        'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q1_p2_adf, 
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss)))
 
 # In questo modello Garch(1,2) con una distribuzione t-student asimmetrica, con i nuovi parametri stimati,
 # presenta eteroschedasticità nella serie e assenza di autocorrelazione.
@@ -5710,7 +6114,25 @@ kurt
 # -0.1544153 -0.3911550  0.2348151
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_arch1_q2_res
+num_lags <- 4                   # Setting the lag parameter for the test.
+Xt_normal_arch1_q2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_arch1_q2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_arch1_q2_res   
+Xt_normal_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_arch1_q2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch1_q2_res)
@@ -5858,7 +6280,12 @@ show(Xt_normal_arch1_q2_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è presenza di correlazione.
 # Il risultato indica che c'è presenza di autocorrelazione nei residui del modello.
 
-modello[['simulazione']][['arch_q2']][['normale']][['1']] <- append(modello[['simulazione']][['arch_q2']][['normale']][['1']], list('lm'=Xt_normal_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_arch1_q2_bp, 'test-white'=Xt_normal_arch1_q2_w, 'test-ljiung-box'=Xt_normal_arch1_q2_lb))
+modello[['simulazione']][['arch_q2']][['normale']][['1']] <- append(modello[['simulazione']][['arch_q2']][['normale']][['1']], 
+                                                                    list('lm'=Xt_normal_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                         'Cullen-Frey'=Xt_normal_arch1_q2_cf, 
+                                                                         'Breusch-Pagan'=Xt_normal_arch1_q2_bp, 'White'=Xt_normal_arch1_q2_w, 
+                                                                         'Ljiung-Box'=Xt_normal_arch1_q2_lb, 'Dickey-Fuller'=Xt_normal_arch1_q2_adf, 
+                                                                         'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q2_kpss))
 
 # Questo modello Arch(2) con una distribuzione normale ha presenza di autocorrelazione
 # e presenza di eteroschedasticità. 
@@ -5953,7 +6380,25 @@ kurt
 # -0.1544153 -0.3911550  0.2348151
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_arch1_q2_res
+num_lags <- 4                   # Setting the lag parameter for the test.
+Xt_normal_arch1_q2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_arch1_q2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_arch1_q2_res   
+Xt_normal_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_arch1_q2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_arch1_q2_res)
@@ -6101,7 +6546,13 @@ show(Xt_normal_arch1_q2_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione.
 # Il risultato indica che c'è assenza di autocorrelazione nei residui del modello.
 
-modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], list('normal'=list('Xt'=Xt_normal_arch1_q2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'q'=q, 'stazionarietà'=stazionaietà, 'lm'=Xt_normal_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_arch1_q2_bp, 'test-white'=Xt_normal_arch1_q2_w, 'test-ljiung-box'=Xt_normal_arch1_q2_lb)))
+modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], 
+                                            list('normale'=list('Xt'=Xt_normal_arch1_q2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'q'=q, 
+                                                               'stazionarietà'=stazionaietà, 'lm'=Xt_normal_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                               'Cullen-Frey'=Xt_normal_arch1_q2_cf, 
+                                                               'Breusch-Pagan'=Xt_normal_arch1_q2_bp, 'White'=Xt_normal_arch1_q2_w, 
+                                                               'Ljiung-Box'=Xt_normal_arch1_q2_lb, 'Dickey-Fuller'=Xt_normal_arch1_q2_adf, 
+                                                               'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q2_kpss)))
 
 # In questo modello Arch(2) con distribuzione normale, risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -6183,7 +6634,25 @@ show(kurt)
 #     6.405644  3.595817 10.055224
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_arch2_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_arch2_q2_res
+num_lags <- 4                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_arch2_q2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_arch2_q2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_arch2_q2_res   
+Xt_t_student_symmetric_arch2_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_arch2_q2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch2_q2_res)
@@ -6323,7 +6792,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.1745, df = 1, p-value = 0.2785
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_arch2_q2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_arch2_q2_lb)
@@ -6331,7 +6800,12 @@ show(Xt_t_student_symmetric_arch2_q2_lb)
 # I risultati dei test hanno un p-value > 0.05; questo, significa che c'è assenza di autocorrelazione,
 # poichè non possiamo rigettare l'ipotesi nulla.
 
-modello[['simulazione']][['arch_q2']][['simmetrico']][['2']] <- append(modello[['simulazione']][['arch_q2']][['simmetrico']][['2']], list('lm'=Xt_t_student_symmetric_arch2_q2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'test-white'=Xt_t_student_symmetric_arch2_q2_w, 'test-ljiung-box'=Xt_t_student_symmetric_arch2_q2_lb))
+modello[['simulazione']][['arch_q2']][['simmetrico']][['2']] <- append(modello[['simulazione']][['arch_q2']][['simmetrico']][['2']], 
+                                                                       list('lm'=Xt_t_student_symmetric_arch2_q2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                            'Cullen-Frey'=Xt_t_student_symmetric_arch2_q2_cf, 
+                                                                            'Breusch-Pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'White'=Xt_t_student_symmetric_arch2_q2_w, 
+                                                                            'Ljiung-Box'=Xt_t_student_symmetric_arch2_q2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch2_q2_adf, 
+                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss))
 
 # Il modello Arch(2) con distribuzione t-student simmetrica ha presenza di omoschedasticità
 # nella serie e assenza di autocorrelazione.
@@ -6423,7 +6897,25 @@ show(kurt)
 #     6.405644  3.595817 10.055224
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_arch2_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_arch2_q2_res
+num_lags <- 4                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_arch2_q2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_arch2_q2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_arch2_q2_res   
+Xt_t_student_symmetric_arch2_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_arch2_q2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_arch2_q2_res)
@@ -6563,7 +7055,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.29774, df = 1, p-value = 0.5853
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_arch2_q2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_arch2_q2_lb)
@@ -6572,9 +7064,11 @@ show(Xt_t_student_symmetric_arch2_q2_lb)
 # poichè non possiamo rigettare l'ipotesi nulla.
 
 modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], list('simmetrico'=list('Xt'=Xt_t_student_symmetric_arch2_q2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'q'=q, 
-                                                                                                      'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_arch2_q2_lm, 
-                                                                                                      'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_arch2_q2_bp, 
-                                                                                                      'test-white'=Xt_t_student_symmetric_arch2_q2_w, 'test-ljiung-box'=Xt_t_student_symmetric_arch2_q2_lb)))
+                                                                                                      'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_arch2_q2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                                      'Cullen-Frey'=Xt_t_student_symmetric_arch2_q2_cf, 
+                                                                                                      'Breusch-Pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'White'=Xt_t_student_symmetric_arch2_q2_w, 
+                                                                                                      'Ljiung-Box'=Xt_t_student_symmetric_arch2_q2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch2_q2_adf, 
+                                                                                                      'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss)))
 
 # In questo modello Arch(2) con una distribuzione t-student simmetrica si ha evidenza di omoschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -6653,6 +7147,27 @@ kurt <- DescTools::Kurt(Xt_t_student_asymmetric_arch1_q2, weights=NULL, na.rm=TR
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
 #5.677547 4.243872 8.020919 
+
+# Cullen-Frey
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_arch1_q2_res
+num_lags <- 4                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_arch1_q2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_arch1_q2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_arch1_q2_res   
+Xt_t_student_asymmetric_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_arch1_q2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch1_q2_res)
@@ -6792,14 +7307,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 18.342, df = 1, p-value = 1.846e-05
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_arch1_q2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_arch1_q2_lb)
 # Il risultato del test haun p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['simulazione']][['arch_q2']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['arch_q2']][['asimmetrico']][['1']], list('lm'=Xt_t_student_asymmetric_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'test-white'=Xt_t_student_asymmetric_arch1_q2_w, 'test-ljiung-box'=Xt_t_student_asymmetric_arch1_q2_lb))
+modello[['simulazione']][['arch_q2']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['arch_q2']][['asimmetrico']][['1']], 
+                                                                        list('lm'=Xt_t_student_asymmetric_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                             'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q2_cf, 
+                                                                             'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'White'=Xt_t_student_asymmetric_arch1_q2_w, 
+                                                                             'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q2_adf, 
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss))
 
 # In questo modello Arch(2) con una distribuzione t-student asimmetrica si ha presenza di eteroschedasticità
 # ma con presenza di autocorrelazione. 
@@ -6891,6 +7411,27 @@ kurt <- DescTools::Kurt(Xt_t_student_asymmetric_arch1_q2_res, weights=NULL, na.r
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
 #4.487039 3.086632 6.572315
+
+# Cullen-Frey
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_arch1_q2_res
+num_lags <- 4                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_arch1_q2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_arch1_q2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_arch1_q2_res   
+Xt_t_student_asymmetric_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_arch1_q2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_arch1_q2_res)
@@ -7030,17 +7571,20 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 2.968, df = 1, p-value = 0.08493
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_arch1_q2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_arch1_q2_lb)
 # Il risultato del test haun p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_arch1_q2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'q'=q, 
-                                                                                                       'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_arch1_q2_lm, 
-                                                                                                       'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 
-                                                                                                       'test-white'=Xt_t_student_asymmetric_arch1_q2_w, 'test-ljiung-box'=Xt_t_student_asymmetric_arch1_q2_lb)))
+modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], 
+                                            list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_arch1_q2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'q'=q, 
+                                                                    'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_arch1_q2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                    'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q2_cf, 
+                                                                    'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'White'=Xt_t_student_asymmetric_arch1_q2_w, 
+                                                                    'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q2_adf, 
+                                                                    'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss)))
 
 # In questo modello Arch(2) con una distribuzione t-student asimmetrica si ha presenza di eteroschedasticità
 # nel test di Breusch-Pagan ma presenza di omoschedasticità con il test di White; con i nuovi
@@ -7125,7 +7669,25 @@ show(kurt)
 # -0.04413334 -0.32341129  0.30455569   
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch1_q2_p1_res
+num_lags <- 6                   # Setting the lag parameter for the test.
+Xt_normal_garch1_q2_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch1_q2_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch1_q2_p1_res   
+Xt_normal_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch1_q2_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q2_p1_res)
@@ -7269,14 +7831,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
-Xt_normal_garch1_q2_p1_bt <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
-show(Xt_normal_garch1_q2_p1_bt)
+Xt_normal_garch1_q2_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
+show(Xt_normal_garch1_q2_p1_lb)
 # I risultati mostrano un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Il risultati indica una presenza di autocorrelazione nei residui del modello con i test Box-Ljung,
 # poichè rifiutiamo l'ipotesi nulla di assenza di autocorrelazione in favore dell'alternatiava.
 
-modello[['simulazione']][['garch_q2_p1']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q2_p1']][['normale']][['2']], list('lm'=Xt_normal_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_garch1_q2_p1_bp, 'test-white'=Xt_normal_garch1_q2_p1_w, 'test-ljiung-box'=Xt_normal_garch1_q2_p1_bt))
+modello[['simulazione']][['garch_q2_p1']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q2_p1']][['normale']][['1']], 
+                                                                        list('lm'=Xt_normal_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                             'Cullen-Frey'=Xt_normal_garch1_q2_p1_cf, 
+                                                                             'Breusch-Pagan'=Xt_normal_garch1_q2_p1_bp, 'White'=Xt_normal_garch1_q2_p1_w, 
+                                                                             'Ljiung-Box'=Xt_normal_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p1_adf, 
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p1_kpss))
 
 # Proviamo a stimare i parametri che si adattano meglio al modello.
 q <- 2
@@ -7371,7 +7938,25 @@ show(kurt)
 # 0.8079337 0.4901407 1.2738097   
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch1_q2_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_normal_garch1_q2_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch1_q2_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch1_q2_p1_res   
+Xt_normal_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch1_q2_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q2_p1_res)
@@ -7522,9 +8107,13 @@ show(Xt_normal_garch1_q2_p1_bt)
 # Il risultati indica una presenza di autocorrelazione nei residui del modello con i test Box-Ljung,
 # poichè rifiutiamo l'ipotesi nulla di assenza di autocorrelazione in favore dell'alternatiava.
 
-modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_p1']], list('normal'=list('Xt'=Xt_normal_garch1_q2_p1_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=b1, 'q'=q, 'p'=p,
-                                                                                                          'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 
-                                                                                                          'test-breusch-pagan'=Xt_normal_garch1_q2_p1_bp, 'test-white'=Xt_normal_garch1_q2_p1_w, 'test-ljiung-box'=Xt_normal_garch1_q2_p1_bt)))
+modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_p1']], 
+                                                list('normale'=list('Xt'=Xt_normal_garch1_q2_p1_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=b1, 'q'=q, 'p'=p,
+                                                                   'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                   'Cullen-Frey'=Xt_normal_garch1_q2_p1_cf, 
+                                                                   'Breusch-Pagan'=Xt_normal_garch1_q2_p1_bp, 'White'=Xt_normal_garch1_q2_p1_w, 
+                                                                   'Ljiung-Box'=Xt_normal_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p1_adf, 
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p1_kpss)))
 
 # In questo modello Garch(2,1) con una distribuzione normale e con i nuovi parametri stimati
 # ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -7605,7 +8194,25 @@ show(kurt)
 #    8.718254  4.774529 13.232193
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch2_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch2_q2_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch2_q2_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch2_q2_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch2_q2_p1_res   
+Xt_t_student_symmetric_garch2_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch2_q2_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch2_q2_p1_res)
@@ -7768,7 +8375,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.5367, df = 1, p-value = 0.2151
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch2_q2_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch2_q2_p1_lb)
@@ -7776,7 +8383,12 @@ show(Xt_t_student_symmetric_garch2_q2_p1_lb)
 # eccetto nel lag 17 e 19.
 # Il risultati indica una presenza di autocorrelazione nei residui del modello.
 
-modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']] <- append(modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']], list('lm'=Xt_t_student_symmetric_garch2_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'test-white'=Xt_t_student_symmetric_garch2_q2_p1_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch2_q2_p1_lb))
+modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']] <- append(modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']], 
+                                                                           list('lm'=Xt_t_student_symmetric_garch2_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p1_cf, 
+                                                                                'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p1_w, 
+                                                                                'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p1_adf, 
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss))
 
 # In questo modello Garch(2,1) con distribuzione simmetrica si ha presenza di 
 # omoschedasticità e assenza di autocorrelazione.
@@ -7871,7 +8483,25 @@ show(kurt)
 #    2.013370 1.344181 3.064797
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch2_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch2_q2_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch2_q2_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch2_q2_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch2_q2_p1_res   
+Xt_t_student_symmetric_garch2_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch2_q2_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch2_q2_p1_res)
@@ -8034,15 +8664,18 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.5367, df = 1, p-value = 0.2151
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch2_q2_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch2_q2_p1_lb)
 
-modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_p1']], list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch2_q2_p1_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=b1, 'q'=q, 'p'=p, 
-                                                                                                              'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch2_q2_p1_lm, 
-                                                                                                              'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 
-                                                                                                              'test-white'=Xt_t_student_symmetric_garch2_q2_p1_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch2_q2_p1_lb)))
+modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_p1']], 
+                                                list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch2_q2_p1_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=b1, 'q'=q, 'p'=p, 
+                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch2_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                       'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p1_cf, 
+                                                                       'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p1_w, 
+                                                                       'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p1_adf, 
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss)))
 
 # Con la stima dei nuovi parametri, il modello Garch(2,1) con distribuzione t-student
 # simmetrica ha presenza di eteroschedasticità nel modello e assenza di autocorrelazione
@@ -8126,7 +8759,25 @@ show(kurt)
 #6.671224 4.830661 9.393460
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch1_q2_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch1_q2_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch1_q2_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch1_q2_p1_res   
+Xt_t_student_asymmetric_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch1_q2_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p1_res)
@@ -8270,14 +8921,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 24.414, df = 1, p-value = 7.771e-07
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q2_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q2_p1_lb)
 # I risultati hanno un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['simulazione']][['garch_q2_p1']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['garch_q2_p1']][['asimmetrico']][['1']], list('lm'=Xt_t_student_asymmetric_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'test-white'=Xt_t_student_asymmetric_garch1_q2_p1_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch1_q2_p1_lb))
+modello[['simulazione']][['garch_q2_p1']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['garch_q2_p1']][['asimmetrico']][['1']], 
+                                                                            list('lm'=Xt_t_student_asymmetric_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                 'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p1_cf, 
+                                                                                 'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p1_w, 
+                                                                                 'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p1_adf, 
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss))
 
 # In questo modello Garch(2,1) con una distribuzione t-student asimmetrica si ha presenza
 # di omoschedasticità nel test di White e presenza di autocorrelazione.
@@ -8375,7 +9031,25 @@ show(kurt)
 #5.308088 3.831570 7.501694
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch1_q2_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch1_q2_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch1_q2_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch1_q2_p1_res   
+Xt_t_student_asymmetric_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch1_q2_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p1_res)
@@ -8515,17 +9189,20 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 4.0259, df = 1, p-value = 0.04481
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q2_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q2_p1_lb)
 # I risultati hanno un p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
-modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_p1']], list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p1_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=b1, 'q'=q, 'p'=p,
-                                                                                                               'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch1_q2_p1_lm, 
-                                                                                                               'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 
-                                                                                                               'test-white'=Xt_t_student_asymmetric_garch1_q2_p1_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch1_q2_p1_lb)))
+modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_p1']], 
+                                                list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p1_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=b1, 'q'=q, 'p'=p,
+                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch1_q2_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                        'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p1_cf, 
+                                                                        'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p1_w, 
+                                                                        'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p1_adf, 
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss)))
 
 # Con i parametri stimati, il modello Garch(2,1) con distribuzione t-student asimmetrica
 # ha presenza di eteroschedasticità nei residui del modello e assenza di autocorrelazione
@@ -8608,7 +9285,25 @@ show(kurt)
 # -0.06302992 -0.33610769  0.32050405
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch1_q2_p2_res
+num_lags <- 7                   # Setting the lag parameter for the test.
+Xt_normal_garch1_q2_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch1_q2_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch1_q2_p2_res   
+Xt_normal_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch1_q2_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q2_p2_res)
@@ -8770,14 +9465,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 4.4317, df = 1, p-value = 0.03528
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_garch1_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_garch1_q2_p2_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag
 # eccetto nel lag 1.
 
-modello[['simulazione']][['garch_q2_p2']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q2_p2']][['normale']][['1']], list('lm'=Xt_normal_garch1_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_normal_garch1_q2_p2_bp, 'test-white'=Xt_normal_garch1_q2_p2_w, 'test-ljiung-box'=Xt_normal_garch1_q2_p2_lb))
+modello[['simulazione']][['garch_q2_p2']][['normale']][['1']] <- append(modello[['simulazione']][['garch_q2_p2']][['normale']][['1']], 
+                                                                        list('lm'=Xt_normal_garch1_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                             'Cullen-Frey'=Xt_normal_garch1_q2_p2_cf, 
+                                                                             'Breusch-Pagan'=Xt_normal_garch1_q2_p2_bp, 'White'=Xt_normal_garch1_q2_p2_w, 
+                                                                             'Ljiung-Box'=Xt_normal_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p2_adf, 
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p2_kpss))
 
 # Il modello Garch(2,2) con una distribuzione normale ha evidenza di eteroschedasticità
 # nei residui del modello e assenza di autocorrelazione eccetto per il lag 1.
@@ -8872,7 +9572,25 @@ show(kurt)
 # 0.9834121 0.6180878 1.5050297
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_normal_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_normal_garch1_q2_p2_res
+num_lags <- 7                   # Setting the lag parameter for the test.
+Xt_normal_garch1_q2_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch1_q2_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_normal_garch1_q2_p2_res   
+Xt_normal_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch1_q2_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch1_q2_p2_res)
@@ -9034,17 +9752,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.4881, df = 1, p-value = 0.2225
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_garch1_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_garch1_q2_p2_lb)
 # La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione
 
-modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], list('normal'=list('Xt'=Xt_normal_garch1_q2_p2_new, 
-                                                                                                          'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
-                                                                                                          'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q2_p2_lm, 
-                                                                                                          'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 
-                                                                                                          'test-breusch-pagan'=Xt_normal_garch1_q2_p2_bp, 'test-white'=Xt_normal_garch1_q2_p2_w, 'test-ljiung-box'=Xt_normal_garch1_q2_p2_lb)))
+modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], 
+                                                list('normale'=list('Xt'=Xt_normal_garch1_q2_p2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
+                                                                    'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q2_p2_lm,'skew'=skew, 'kurt'=kurt, 
+                                                                   'Cullen-Frey'=Xt_normal_garch1_q2_p2_cf, 
+                                                                   'Breusch-Pagan'=Xt_normal_garch1_q2_p2_bp, 'White'=Xt_normal_garch1_q2_p2_w, 
+                                                                   'Ljiung-Box'=Xt_normal_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p2_adf, 
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p2_kpss)))
 
 # In questo modello Garch(1,1) con distribuzione normale risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -9125,7 +9845,25 @@ show(kurt)
 #     7.592470  4.044877 11.725884
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch2_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch2_q2_p2_res
+num_lags <- 7                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch2_q2_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch2_q2_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch2_q2_p2_res   
+Xt_t_student_symmetric_garch2_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch2_q2_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch2_q2_p2_res)
@@ -9288,14 +10026,19 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.0338, df = 1, p-value = 0.3093
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch2_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch2_q2_p2_lb)
 # Nella forma estesa del test di Ljung-Box si hanno alcuni lag con un p-value < 0.05
 # questo indica una possibile presenza di autocorrelazione
 
-modello[['simulazione']][['garch_q2_p2']][['simmetrico']][['2']] <- append(modello[['simulazione']][['garch_q2_p2']][['simmetrico']][['2']], list('lm'=Xt_t_student_symmetric_garch2_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'test-white'=Xt_t_student_symmetric_garch2_q2_p2_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch2_q2_p2_lb))
+modello[['simulazione']][['garch_q2_p2']][['simmetrico']][['2']] <- append(modello[['simulazione']][['garch_q2_p2']][['simmetrico']][['2']], 
+                                                                           list('lm'=Xt_t_student_symmetric_garch2_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p2_cf, 
+                                                                                'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p2_w, 
+                                                                                'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p2_adf, 
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss))
 
 # In questo modello Garch(2,2) con una distribuzione t-student simmetrica
 # si ha presenza di omoschedasticità nei residui del modello e presenza di autocorrelazione.
@@ -9391,7 +10134,25 @@ show(kurt)
 #     2.083156 1.391013 3.136304 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_symmetric_garch2_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_symmetric_garch2_q2_p2_res
+num_lags <- 7                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch2_q2_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch2_q2_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_symmetric_garch2_q2_p2_res   
+Xt_t_student_symmetric_garch2_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch2_q2_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch2_q2_p2_res)
@@ -9554,17 +10315,20 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 1.0338, df = 1, p-value = 0.3093
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch2_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch2_q2_p2_lb)
 # Nella forma estesa del test di Ljung-Box si hanno alcuni lag con un p-value < 0.05
 # questo indica una possibile presenza di autocorrelazione
 
-modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch2_q2_p2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
-                                                                                                              'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch2_q2_p2_lm, 
-                                                                                                              'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 
-                                                                                                              'test-white'=Xt_t_student_symmetric_garch2_q2_p2_w, 'test-ljiung-box'=Xt_t_student_symmetric_garch2_q2_p2_lb)))
+modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], 
+                                                list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch2_q2_p2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
+                                                                       'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch2_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                       'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p2_cf, 
+                                                                       'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p2_w, 
+                                                                       'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p2_adf, 
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss)))
 
 # Con i nuovi parametri stimati, nel modello Garch(2,2) con una distribuzione t-student simmetrica
 # si ha presenza di eteroschedasticità nei residui del modello e assenza di autocorrelazione.
@@ -9645,7 +10409,25 @@ show(kurt)
 #5.958485 4.327387 8.254191 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch1_q2_p2_res
+num_lags <- 7                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch1_q2_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch1_q2_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch1_q2_p2_res   
+Xt_t_student_asymmetric_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch1_q2_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p2_res)
@@ -9788,13 +10570,18 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 22.226, df = 1, p-value = 2.423e-06
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q2_p2_lb)
 # Nella forma estesa del test di Ljung-Box si ha presenza di autocorrelazione
 
-modello[['simulazione']][['garch_q2_p2']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['garch_q2_p2']][['asimmetrico']][['1']], list('lm'=Xt_t_student_asymmetric_garch1_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'test-white'=Xt_t_student_asymmetric_garch1_q2_p2_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch1_q2_p2_lb))
+modello[['simulazione']][['garch_q2_p2']][['asimmetrico']][['1']] <- append(modello[['simulazione']][['garch_q2_p2']][['asimmetrico']][['1']], 
+                                                                            list('lm'=Xt_t_student_asymmetric_garch1_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                                 'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p2_cf, 
+                                                                                 'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p2_w, 
+                                                                                 'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p2_adf, 
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss))
 
 # In questo modello Garch(2,2) con distribuzione t-student asimmetrica si ha presenza di 
 # eteroschedasticità nel modello e presenza di autocorrelazione.
@@ -9890,7 +10677,25 @@ show(kurt)
 #5.308298 3.831205 7.502219 
 
 # Cullen-Frey
-cf <- descdist(Xt, discrete=FALSE, boot=500)
+options(repr.plot.width = 10, repr.plot.height = 6)
+Xt_t_student_asymmetric_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
+
+# ADF Test
+y <- Xt_t_student_asymmetric_garch1_q2_p2_res
+num_lags <- 7                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch1_q2_p2_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch1_q2_p2_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch1_q2_p2_res   
+Xt_t_student_asymmetric_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch1_q2_p2_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch1_q2_p2_res)
@@ -10033,17 +10838,20 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 22.226, df = 1, p-value = 2.423e-06
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 0  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q2_p2_lb)
 # Nella forma estesa del test di Ljung-Box si ha presenza di autocorrelazione con u p-valie nel primo lag
 # < 0.05
 
-modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
-                                                                                                               'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch1_q2_p2_lm, 
-                                                                                                               'skew'=skew, 'kurt'=kurt, 'cullen-frey'=cf, 'test-breusch-pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 
-                                                                                                               'test-white'=Xt_t_student_asymmetric_garch1_q2_p2_w, 'test-ljiung-box'=Xt_t_student_asymmetric_garch1_q2_p2_lb)))
+modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], 
+                                                list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
+                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch1_q2_p2_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                        'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p2_cf, 
+                                                                        'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p2_w, 
+                                                                        'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p2_adf, 
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss)))
 
 # Con i nuovi parametri stimati, rispetto al modello precedente, si ha un modello Garch(2,2)
 # con una distribuzione t-student asimmetrica che ha evidenza di eteroschedasticità nel modello
