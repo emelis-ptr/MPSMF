@@ -1451,6 +1451,10 @@ sia generata da un processo autoregressivo.
 nella serie temporale. 
 - Quando il test ADF non respinge l'ipotesi nulla e KPSS sì, abbiamo prove di non stazionarietà. 
 
+Il test computazionale che viene utilizzato per rilevare che la seria sia normalmente
+distribuito è il test di Shapiro-Wilk (SW).
+Se il p-value del test è maggiore di a=0.05 allora la serie è normalmente distribuito.
+
 I test computazionali che vengono solitamente applicati per rilevare l'eteroschedasticità nelle serie 
 temporali sono i test di Breusch-Pagan (BP) e White (W). 
 Si ha: 
@@ -1654,6 +1658,10 @@ Xt_normal_arch1_q1_sp <- ggplot(Data_df) +
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_normal_arch1_q1_sp)
+
+# Test Shamiro-Wilk 
+Xt_normal_arch1_q1_sw <- shapiro.test(df_Xt_normal_arch1_q1)
+show(Xt_normal_arch1_q1_sw)
 
 plot(Xt_normal_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_arch1_q1_lm,2) # Q-Q Residuals
@@ -1920,6 +1928,10 @@ Xt_normal_arch1_q1_sp <- ggplot(Data_df) +
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_normal_arch1_q1_sp)
 
+# Test Shapiro-Wilk
+Xt_normal_arch1_q1_sw <- shapiro.test(df_Xt_normal_arch1_q1)
+show(Xt_normal_arch1_q1_sw)
+
 plot(Xt_normal_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_arch1_q1_lm,2) # Q-Q Residuals
 plot(Xt_normal_arch1_q1_lm,3) # Scale-location
@@ -2179,6 +2191,10 @@ Xt_t_student_symmetric_arch1_q1_sp <- ggplot(Data_df) +
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_t_student_symmetric_arch1_q1_sp)
+
+# Test Shapiro-Wilk
+Xt_t_student_symmetric_arch1_q1_sw <- shapiro.test(df_Xt_t_student_asymmetric_arch1_q1)
+show(Xt_t_student_symmetric_arch1_q1)
 
 plot(Xt_t_student_symmetric_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_symmetric_arch1_q1_lm,3) # Scale-location
@@ -2447,6 +2463,10 @@ Xt_t_student_symmetric_arch1_q1_sp <- ggplot(Data_df) +
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_t_student_symmetric_arch1_q1_sp)
 
+#Test Shapiro-Wilk
+Xt_t_student_symmetric_arch1_q1 <- shapiro.test(df_Xt_t_student_symmetric_arch1_q1)
+show(Xt_t_student_symmetric_arch1_q1_sw)
+
 plot(Xt_t_student_symmetric_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_symmetric_arch1_q1_lm,3) # Scale-location
 
@@ -2679,6 +2699,10 @@ Xt_t_student_asymmetric_arch1_q1_sp <- ggplot(Data_df) +
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_t_student_asymmetric_arch1_q1_sp)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_arch1_q1_sw <- shapiro.test(df_Xt_t_student_asymmetric_arch1_q1)
+show(Xt_t_student_asymmetric_arch1_q1_sw)
 
 plot(Xt_t_student_asymmetric_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_asymmetric_arch1_q1_lm,3) # Scale-location
@@ -2920,7 +2944,7 @@ Xt_t_student_asymmetric_arch1_q1_sp <- ggplot(Data_df) +
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_t_student_asymmetric_arch1_q1_sp)
-
+ 
 #Determiniamo se la serie è eteroschedastico:
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch1_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch1_q1)
