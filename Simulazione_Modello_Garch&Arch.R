@@ -1660,8 +1660,9 @@ Xt_normal_arch1_q1_sp <- ggplot(Data_df) +
 plot(Xt_normal_arch1_q1_sp)
 
 # Test Shamiro-Wilk 
-Xt_normal_arch1_q1_sw <- shapiro.test(df_Xt_normal_arch1_q1)
+Xt_normal_arch1_q1_sw <- shapiro.test(Xt)
 show(Xt_normal_arch1_q1_sw)
+# Si ha un p-value maggiore di 0.05, quindi, la serie è normalmente distribuito.
 
 plot(Xt_normal_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_arch1_q1_lm,2) # Q-Q Residuals
@@ -1735,7 +1736,7 @@ modello[['simulazione']][['arch_q1']][['normale']][['1']] <- append(modello[['si
                                                                     list('lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_normal_arch1_q1_cf, 
                                                                          'Breusch-Pagan'=Xt_normal_arch1_q1_bp, 'White'=Xt_normal_arch1_q1_w, 
                                                                          'Ljiung-Box'=Xt_normal_arch1_q1_lb, 'Dickey-Fuller'=Xt_normal_arch1_q1_adf, 
-                                                                         'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q1_kpss))
+                                                                         'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_normal_arch1_q1_sw))
 
 # Possiamo concludere che la prima traiettoria della distribuzione normale di un modello ARCH(1) ha evidenza di eteroschedasticità
 # e assenza di autocorrelazione nei residui del modello.
@@ -1929,8 +1930,9 @@ Xt_normal_arch1_q1_sp <- ggplot(Data_df) +
 plot(Xt_normal_arch1_q1_sp)
 
 # Test Shapiro-Wilk
-Xt_normal_arch1_q1_sw <- shapiro.test(df_Xt_normal_arch1_q1)
+Xt_normal_arch1_q1_sw <- shapiro.test(Xt)
 show(Xt_normal_arch1_q1_sw)
+# Si ha un p-value maggiore di 0.05, quindi la serie è normalmente distribuito.
 
 plot(Xt_normal_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_arch1_q1_lm,2) # Q-Q Residuals
@@ -2006,7 +2008,7 @@ modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']],
                                                                'lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_normal_arch1_q1_cf, 
                                                                'Breusch-Pagan'=Xt_normal_arch1_q1_bp, 'White'=Xt_normal_arch1_q1_w, 
                                                                'Ljiung-Box'=Xt_normal_arch1_q1_lb, 'Dickey-Fuller'=Xt_normal_arch1_q1_adf, 
-                                                               'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q1_kpss)))
+                                                               'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_normal_arch1_q1_sw)))
 
 # Possiamo concludere che la prima traiettoria della distribuzione normale di un modello ARCH(1) ha evidenza di eteroschedasticità
 # nel test di Breusch-Pagan e presenza di omochedasticità nel test di White
@@ -2193,8 +2195,10 @@ Xt_t_student_symmetric_arch1_q1_sp <- ggplot(Data_df) +
 plot(Xt_t_student_symmetric_arch1_q1_sp)
 
 # Test Shapiro-Wilk
-Xt_t_student_symmetric_arch1_q1_sw <- shapiro.test(df_Xt_t_student_asymmetric_arch1_q1)
-show(Xt_t_student_symmetric_arch1_q1)
+Xt_t_student_symmetric_arch1_q1_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_arch1_q1_sw)
+# Si ha un p-value minore di 0.05, quindi possiamo rigettare l'ipotesi nulla e
+# dire che la serie non è normalmente distribuito.
 
 plot(Xt_t_student_symmetric_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_symmetric_arch1_q1_lm,3) # Scale-location
@@ -2266,7 +2270,7 @@ modello[['simulazione']][['arch_q1']][['simmetrico']][['1']] <- append(modello[[
                                                                             'Cullen-Frey'=Xt_t_student_symmetric_arch1_q1_cf, 
                                                                             'Breusch-Pagan'=Xt_t_student_symmetric_arch1_q1_bp,'White'=Xt_t_student_symmetric_arch1_q1_w, 
                                                                             'Ljiung-Box'=Xt_t_student_symmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch1_q1_adf, 
-                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss))
+                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch1_q1_sw))
 
 # In questo modello Arch(1) con una distribuzione t-student simmetrica si ha evidenza di eteroschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -2464,8 +2468,10 @@ Xt_t_student_symmetric_arch1_q1_sp <- ggplot(Data_df) +
 plot(Xt_t_student_symmetric_arch1_q1_sp)
 
 #Test Shapiro-Wilk
-Xt_t_student_symmetric_arch1_q1 <- shapiro.test(df_Xt_t_student_symmetric_arch1_q1)
+Xt_t_student_symmetric_arch1_q1 <- shapiro.test(Xt)
 show(Xt_t_student_symmetric_arch1_q1_sw)
+# Si ha un p-value minore di 0.05, quindi possiamo rigettare l'ipotesi nulla e
+# dire che la serie non è normalmente distribuito.
 
 plot(Xt_t_student_symmetric_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_symmetric_arch1_q1_lm,3) # Scale-location
@@ -2537,7 +2543,7 @@ modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], l
                                                                                            'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_t_student_symmetric_arch1_q1_cf, 
                                                                                            'Breusch-Pagan'=Xt_t_student_symmetric_arch1_q1_bp,'White'=Xt_t_student_symmetric_arch1_q1_w, 
                                                                                            'Ljiung-Box'=Xt_t_student_symmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch1_q1_adf, 
-                                                                                           'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss)))
+                                                                                           'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch1_q1_sw)))
 
 # In questo modello Arch(1) con una distribuzione t-student simmetrica si ha evidenza di eteroschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -2548,6 +2554,12 @@ modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], l
 # Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello ARCH(1)
 Xt <- Xt_t_student_asymmetric_arch1_q1
 df_Xt_t_student_asymmetric_arch1_q1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_arch1_q1_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_arch1_q1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_arch1_q1
@@ -2700,10 +2712,6 @@ Xt_t_student_asymmetric_arch1_q1_sp <- ggplot(Data_df) +
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_t_student_asymmetric_arch1_q1_sp)
 
-# Test Shamiro-Wilk
-Xt_t_student_asymmetric_arch1_q1_sw <- shapiro.test(df_Xt_t_student_asymmetric_arch1_q1)
-show(Xt_t_student_asymmetric_arch1_q1_sw)
-
 plot(Xt_t_student_asymmetric_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_asymmetric_arch1_q1_lm,3) # Scale-location
 
@@ -2775,7 +2783,7 @@ modello[['simulazione']][['arch_q1']][['asimmetrico']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q1_cf, 
                                                                              'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q1_bp, 'White'=Xt_t_student_asymmetric_arch1_q1_w, 
                                                                              'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q1_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q1_kpss))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q1_sw))
 
 # In questo modello Arch(1) si ha presenza di eteroschedasticità e presenza di autocorrelazione.
 # Quindi, proviamo a stimare i migliori parametri per il modello:
@@ -2795,6 +2803,12 @@ Xt_t_student_asymmetric_arch1_q1_new <- model_arch(a0, a1, X0, dist_t_student_as
 
 Xt <- Xt_t_student_asymmetric_arch1_q1_new
 df_Xt_t_student_asymmetric_arch1_q1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_arch1_q1_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_arch1_q1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_arch1_q1
@@ -2944,7 +2958,10 @@ Xt_t_student_asymmetric_arch1_q1_sp <- ggplot(Data_df) +
         axis.text.x = element_text(angle=-45, vjust=1),
         legend.key.width = unit(0.8,"cm"), legend.position="bottom")
 plot(Xt_t_student_asymmetric_arch1_q1_sp)
- 
+
+plot(Xt_t_student_asymmetric_arch1_q1_lm,1) # Residuals vs Fitted
+plot(Xt_t_student_asymmetric_arch1_q1_lm,3) # Scale-location
+
 #Determiniamo se la serie è eteroschedastico:
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch1_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch1_q1)
@@ -2994,6 +3011,12 @@ modello[['stimati']] <- append(modello[['stimati']], list('garch_q1_p1'=list()))
 # Consideriamo la seconda traiettoia con distribuzione normale di un modello GARCH(1,1)
 Xt <- Xt_normal_garch2_q1_p1 
 df_Xt_normal_garch2_q1_p1  <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch2_q1_p1_sw <- shapiro.test(Xt)
+show(Xt_normal_garch2_q1_p1_sw)
+# Si ha un p-value maggiore di 0.05 quindi possiamo dire che la serie è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch2_q1_p1 
@@ -3217,7 +3240,7 @@ modello[['simulazione']][['garch_q1_p1']][['normale']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_normal_garch2_q1_p1_cf, 
                                                                              'Breusch-Pagan'=Xt_normal_garch2_q1_p1_bp, 'White'=Xt_normal_garch2_q1_p1_w, 
                                                                              'Ljiung-Box'=Xt_normal_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_normal_garch2_q1_p1_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch2_q1_p1_kpss))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_normal_garch2_q1_p1_sw))
 
 # Questo modello Garch(1,1) con una distribuzione normale ha assenza di autocorrelazione
 # ma presenza di omoschedasticità. 
@@ -3241,6 +3264,12 @@ Xt_normal_garch2_q1_p1_new <- model_garch(a0, a1, b1, X0, sigmasquared0, dist_no
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(1,1)
 Xt <- Xt_normal_garch2_q1_p1_new
 df_Xt_normal_garch2_q1_p1  <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch2_q1_p1_sw <- shapiro.test(Xt)
+show(Xt_normal_garch2_q1_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch2_q1_p1 
@@ -3464,7 +3493,7 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
                                                                    'Cullen-Frey'=Xt_normal_garch2_q1_p1_cf, 
                                                                    'Breusch-Pagan'=Xt_normal_garch2_q1_p1_bp, 'White'=Xt_normal_garch2_q1_p1_w, 
                                                                    'Ljiung-Box'=Xt_normal_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_normal_garch2_q1_p1_adf, 
-                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch2_q1_p1_kpss)))
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_normal_garch2_q1_p1_sw)))
 
 # In questo modello Garch(1,1) con distribuzione normale risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -3475,6 +3504,12 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
 # Consideriamo la terza traiettoia con distribuzione t-student simmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_symmetric_garch3_q1_p1
 df_Xt_t_student_symmetric_garch3_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch3_q1_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch3_q1_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch3_q1_p1
@@ -3701,7 +3736,7 @@ modello[['simulazione']][['garch_q1_p1']][['simmetrico']][['3']] <- append(model
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf, 
                                                                                 'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch3_q1_p1_sw))
 
 # Il modello Garch(1,1) con distribuzione t-student simmetrica ha presenza di omoschedasticità.
 # Dato che la serie è omoschedastico, proviamo a stimare i migliori parametri per il modello.
@@ -3724,6 +3759,12 @@ Xt_t_student_symmetric_garch3_q1_p1_new <- model_garch(a0, a1, b1, X0, sigmasqua
 # Consideriamo una traiettoia con distribuzione t-student simmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_symmetric_garch3_q1_p1_new
 df_Xt_t_student_symmetric_garch3_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch3_q1_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch3_q1_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch3_q1_p1
@@ -3966,7 +4007,7 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf,
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch3_q1_p1_sw)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student simmetrica, con i nuovi parametri stimati,
 # si ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -3976,6 +4017,12 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
 # Consideriamo la seconda traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_asymmetric_garch2_q1_p1
 df_Xt_t_student_asymmetric_garch2_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch2_q1_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch2_q1_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch2_q1_p1
@@ -4219,7 +4266,7 @@ modello[['simulazione']][['garch_q1_p1']][['asimmetrico']][['2']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch2_q1_p1_sw))
 
 # Questo modello Garch(1,1) con una distribuzione normale ha presenza di autocorrelazione
 # e presenza di eteroschedasticità. 
@@ -4243,6 +4290,12 @@ Xt_t_student_asymmetric_garch2_q1_p1_new <- model_garch(a0, a1, b1, X0, sigmasqu
 # Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_asymmetric_garch2_q1_p1_new
 df_Xt_t_student_asymmetric_garch2_q1_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch2_q1_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch2_q1_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch2_q1_p1
@@ -4487,7 +4540,7 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch2_q1_p1_sw)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student asimmetrica, con i
 # i miglior parametri stimati la serie ha presenza di eteroschedasticità e
@@ -4499,6 +4552,12 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(1,2)
 Xt <- Xt_normal_garch1_q1_p2
 df_Xt_normal_garch1_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch1_q1_p2_sw <- shapiro.test(Xt)
+show(Xt_normal_garch1_q1_p2_sw)
+# Si ha un p-value maggiore di 0.05 quindi possiamo dire che la serie è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch1_q1_p2
@@ -4745,7 +4804,7 @@ modello[['simulazione']][['garch_q1_p2']][['normale']][['1']] <- append(modello[
                                                                         list('lm'=Xt_normal_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                              'Cullen-Frey'=Xt_normal_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_normal_garch1_q1_p2_bp, 'White'=Xt_normal_garch1_q1_p2_w, 
                                                                              'Ljiung-Box'=Xt_normal_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q1_p2_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q1_p2_kpss))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_normal_garch1_q1_p2_sw))
 
 # In questo modello Garch(1,2) con una distribuzione normale possiamo affermare che la serie 
 # ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -4769,6 +4828,12 @@ Xt_normal_garch1_q1_p2_new <- model_garch(a0, a1, bp, X0, sigmasquared0, dist_no
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(1,2)
 Xt <- Xt_normal_garch1_q1_p2_new
 df_Xt_normal_garch1_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch1_q1_p2_sw <- shapiro.test(Xt)
+show(Xt_normal_garch1_q1_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch1_q1_p2
@@ -5016,7 +5081,7 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
                                                                    'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                    'Cullen-Frey'=Xt_normal_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_normal_garch1_q1_p2_bp, 'White'=Xt_normal_garch1_q1_p2_w, 
                                                                    'Ljiung-Box'=Xt_normal_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q1_p2_adf, 
-                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q1_p2_kpss)))
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q1_p2_kpss,'Shapiro-Wilk'=Xt_normal_garch1_q1_p2_sw)))
 
 # In questo modello Garch(1,1) con distribuzione normale risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -5026,6 +5091,12 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
 # Consideriamo una traiettoia con distribuzione t-student simmetrica di un modello GARCH(1,2)
 Xt <- Xt_t_student_symmetric_garch1_q1_p2
 df_Xt_t_student_symmetric_garch1_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch1_q1_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch1_q1_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch1_q1_p2
@@ -5267,7 +5338,7 @@ modello[['simulazione']][['garch_q1_p2']][['simmetrico']][['1']] <- append(model
                                                                            list('lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt,
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_symmetric_garch1_q1_p2_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch1_q1_p2_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch1_q1_p2_sw))
 
 # Questo modello Garch(1,2) con distribuzione t-student simmetrica ha un'evidenza di 
 # eteroschedasticità nella serie e assenza di autocorrelazione nei residui.
@@ -5291,6 +5362,12 @@ Xt_t_student_symmetric_garch1_q1_p2_new <- model_garch(a0, a1, bp, X0, sigmasqua
 # Consideriamo una traiettoia con distribuzione t-student simmetrica di un modello GARCH(1,2)
 Xt <- Xt_t_student_symmetric_garch1_q1_p2_new
 df_Xt_t_student_symmetric_garch1_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch1_q1_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch1_q1_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch1_q1_p2
@@ -5533,7 +5610,7 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_symmetric_garch1_q1_p2_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch1_q1_p2_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch1_q1_p2_sw)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student simmetrica, con i nuovi parametri stimati,
 # si ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -5543,6 +5620,12 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
 # Consideriamo la prima traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_asymmetric_garch1_q1_p2
 df_Xt_t_student_asymmetric_garch1_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch1_q1_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch1_q1_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch1_q1_p2
@@ -5786,7 +5869,7 @@ modello[['simulazione']][['garch_q1_p2']][['asimmetrico']][['1']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q1_p2_cf, 
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q1_p2_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q1_p2_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q1_p2_sw))
 
 # Questo modello Garch(1,2) con una distribuzione t-student asimmetrica ha presenza di autocorrelazione
 # e presenza di omoschedasticità nel test di White. 
@@ -5810,6 +5893,12 @@ Xt_t_student_asymmetric_garch1_q1_p2_new <- model_garch(a0, a1, bp, X0, sigmasqu
 # Consideriamo la prima traiettoia con distribuzione t-student asimmetrica di un modello GARCH(1,1)
 Xt <- Xt_t_student_asymmetric_garch1_q1_p2
 df_Xt_t_student_asymmetric_garch1_q1_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch1_q1_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch1_q1_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch1_q1_p2
@@ -6054,7 +6143,7 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q1_p2_cf, 
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q1_p2_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q1_p2_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q1_p2_sw)))
 
 # In questo modello Garch(1,2) con una distribuzione t-student asimmetrica, con i nuovi parametri stimati,
 # presenta eteroschedasticità nella serie e assenza di autocorrelazione.
@@ -6065,6 +6154,12 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
 # Consideriamo la prima traiettoia con distribuzione normale di un modello ARCH(2)
 Xt <- Xt_normal_arch1_q2
 df_Xt_normal_arch1_q2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_arch1_q2_sw <- shapiro.test(Xt)
+show(Xt_normal_arch1_q2_sw)
+# Si ha un p-value maggiore di 0.05 quindi possiamo dire che la serie è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_arch1_q2
@@ -6309,7 +6404,7 @@ modello[['simulazione']][['arch_q2']][['normale']][['1']] <- append(modello[['si
                                                                          'Cullen-Frey'=Xt_normal_arch1_q2_cf, 
                                                                          'Breusch-Pagan'=Xt_normal_arch1_q2_bp, 'White'=Xt_normal_arch1_q2_w, 
                                                                          'Ljiung-Box'=Xt_normal_arch1_q2_lb, 'Dickey-Fuller'=Xt_normal_arch1_q2_adf, 
-                                                                         'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q2_kpss))
+                                                                         'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_normal_arch1_q2_sw))
 
 # Questo modello Arch(2) con una distribuzione normale ha presenza di autocorrelazione
 # e presenza di eteroschedasticità. 
@@ -6331,6 +6426,12 @@ Xt_normal_arch1_q2_new <- model_arch(a0, aq, X0, dist_normal1, q)
 # Consideriamo una traiettoia con distribuzione normale di un modello ARCH(2)
 Xt <- Xt_normal_arch1_q2_new
 df_Xt_normal_arch1_q2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_arch1_q2_sw <- shapiro.test(Xt)
+show(Xt_normal_arch1_q2_sw)
+# Si ha un p-value maggiore di 0.05 quindi possiamo dire che la serie è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_arch1_q2
@@ -6576,7 +6677,7 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']],
                                                                'Cullen-Frey'=Xt_normal_arch1_q2_cf, 
                                                                'Breusch-Pagan'=Xt_normal_arch1_q2_bp, 'White'=Xt_normal_arch1_q2_w, 
                                                                'Ljiung-Box'=Xt_normal_arch1_q2_lb, 'Dickey-Fuller'=Xt_normal_arch1_q2_adf, 
-                                                               'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q2_kpss)))
+                                                               'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_normal_arch1_q2_sw)))
 
 # In questo modello Arch(2) con distribuzione normale, risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -6586,6 +6687,12 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']],
 # Consideriamo la seconda traiettoia con distribuzione t-student simmetrica di un modello ARCH(2)
 Xt <- Xt_t_student_symmetric_arch2_q2
 df_Xt_t_student_symmetric_arch2_q2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_arch2_q2_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_arch2_q2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_arch2_q2
@@ -6829,7 +6936,7 @@ modello[['simulazione']][['arch_q2']][['simmetrico']][['2']] <- append(modello[[
                                                                             'Cullen-Frey'=Xt_t_student_symmetric_arch2_q2_cf, 
                                                                             'Breusch-Pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'White'=Xt_t_student_symmetric_arch2_q2_w, 
                                                                             'Ljiung-Box'=Xt_t_student_symmetric_arch2_q2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch2_q2_adf, 
-                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss))
+                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch2_q2_sw))
 
 # Il modello Arch(2) con distribuzione t-student simmetrica ha presenza di omoschedasticità
 # nella serie e assenza di autocorrelazione.
@@ -6849,6 +6956,12 @@ Xt_t_student_symmetric_arch2_q2_new <- model_arch(a0, aq, X0, dist_t_student_sym
 
 Xt <- Xt_t_student_symmetric_arch2_q2_new
 df_Xt_t_student_symmetric_arch2_q2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_arch2_q2_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_arch2_q2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_arch2_q2
@@ -7092,7 +7205,7 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], l
                                                                                                       'Cullen-Frey'=Xt_t_student_symmetric_arch2_q2_cf, 
                                                                                                       'Breusch-Pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'White'=Xt_t_student_symmetric_arch2_q2_w, 
                                                                                                       'Ljiung-Box'=Xt_t_student_symmetric_arch2_q2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch2_q2_adf, 
-                                                                                                      'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss)))
+                                                                                                      'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch2_q2_sw)))
 
 # In questo modello Arch(2) con una distribuzione t-student simmetrica si ha evidenza di omoschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -7101,6 +7214,12 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], l
 # Consideriamo la prima traiettoia con distribuzione t-student asimmetrica di un modello ARCH(2)
 Xt <- Xt_t_student_asymmetric_arch1_q2
 df_Xt_t_student_asymmetric_arch1_q2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_arch1_q2_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_arch1_q2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_arch1_q2
@@ -7343,7 +7462,7 @@ modello[['simulazione']][['arch_q2']][['asimmetrico']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q2_cf, 
                                                                              'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'White'=Xt_t_student_asymmetric_arch1_q2_w, 
                                                                              'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q2_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q2_sw))
 
 # In questo modello Arch(2) con una distribuzione t-student asimmetrica si ha presenza di eteroschedasticità
 # ma con presenza di autocorrelazione. 
@@ -7365,6 +7484,12 @@ Xt_t_student_asymmetric_arch1_q2_new <- model_arch(a0, aq, X0, dist_t_student_as
 # Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello ARCH(2)
 Xt <- Xt_t_student_asymmetric_arch1_q2_new
 df_Xt_t_student_asymmetric_arch1_q2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_arch1_q2_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_arch1_q2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_arch1_q2
@@ -7608,7 +7733,7 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']],
                                                                     'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q2_cf, 
                                                                     'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'White'=Xt_t_student_asymmetric_arch1_q2_w, 
                                                                     'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q2_adf, 
-                                                                    'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss)))
+                                                                    'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q2_sw)))
 
 # In questo modello Arch(2) con una distribuzione t-student asimmetrica si ha presenza di eteroschedasticità
 # nel test di Breusch-Pagan ma presenza di omoschedasticità con il test di White; con i nuovi
@@ -7620,6 +7745,12 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']],
 # Consideriamo la prima traiettoia con distribuzione normale di un modello GARCH(2,1)
 Xt <- Xt_normal_garch1_q2_p1
 df_Xt_normal_garch1_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch1_q2_p1_sw <- shapiro.test(Xt)
+show(Xt_normal_garch1_q2_p1_sw)
+# Si ha un p-value maggiore di 0.05 quindi possiamo dire che la serie è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch1_q1_p2
@@ -7867,7 +7998,7 @@ modello[['simulazione']][['garch_q2_p1']][['normale']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_normal_garch1_q2_p1_cf, 
                                                                              'Breusch-Pagan'=Xt_normal_garch1_q2_p1_bp, 'White'=Xt_normal_garch1_q2_p1_w, 
                                                                              'Ljiung-Box'=Xt_normal_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p1_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p1_kpss))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_normal_garch1_q2_p1_sw))
 
 # Proviamo a stimare i parametri che si adattano meglio al modello.
 q <- 2
@@ -7889,6 +8020,12 @@ Xt_normal_garch1_q2_p1_new <- model_garch(a0, aq, b1, X0, sigmasquared0, dist_no
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(2,1)
 Xt <- Xt_normal_garch1_q2_p1_new
 df_Xt_normal_garch1_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch1_q2_p1_sw <- shapiro.test(Xt)
+show(Xt_normal_garch1_q2_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch1_q1_p2
@@ -8137,7 +8274,7 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
                                                                    'Cullen-Frey'=Xt_normal_garch1_q2_p1_cf, 
                                                                    'Breusch-Pagan'=Xt_normal_garch1_q2_p1_bp, 'White'=Xt_normal_garch1_q2_p1_w, 
                                                                    'Ljiung-Box'=Xt_normal_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p1_adf, 
-                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p1_kpss)))
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_normal_garch1_q2_p1_sw)))
 
 # In questo modello Garch(2,1) con una distribuzione normale e con i nuovi parametri stimati
 # ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -8147,6 +8284,12 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
 # Consideriamo la seconda traiettoia con distribuzione t-student simmetrica di un modello GARCH(2,1)
 Xt <- Xt_t_student_symmetric_garch2_q2_p1
 df_Xt_t_student_symmetric_garch2_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch2_q2_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch2_q2_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch2_q2_p1
@@ -8412,7 +8555,7 @@ modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']] <- append(model
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p1_cf, 
                                                                                 'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p1_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p1_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p1_sw))
 
 # In questo modello Garch(2,1) con distribuzione simmetrica si ha presenza di 
 # omoschedasticità e assenza di autocorrelazione.
@@ -8436,6 +8579,12 @@ Xt_t_student_symmetric_garch2_q2_p1_new <- model_garch(a0, aq, b1, X0, sigmasqua
 # Consideriamo una traiettoia con distribuzione t-student simmetrica di un modello GARCH(2,1)
 Xt <- Xt_t_student_symmetric_garch2_q2_p1_new
 df_Xt_t_student_symmetric_garch1_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch2_q2_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch2_q2_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch2_q2_p1
@@ -8699,7 +8848,7 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p1_cf, 
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p1_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p1_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p1_sw)))
 
 # Con la stima dei nuovi parametri, il modello Garch(2,1) con distribuzione t-student
 # simmetrica ha presenza di eteroschedasticità nel modello e assenza di autocorrelazione
@@ -8710,6 +8859,12 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
 # Consideriamo la prima traiettoia con distribuzione t-student asimmetrica di un modello GARCH(2,1)
 Xt <- Xt_t_student_asymmetric_garch1_q2_p1
 df_Xt_t_student_asymmetric_garch1_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch1_q2_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch1_q2_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch1_q2_p1
@@ -8957,7 +9112,7 @@ modello[['simulazione']][['garch_q2_p1']][['asimmetrico']][['1']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p1_cf, 
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p1_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p1_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p1_sw))
 
 # In questo modello Garch(2,1) con una distribuzione t-student asimmetrica si ha presenza
 # di omoschedasticità nel test di White e presenza di autocorrelazione.
@@ -8982,6 +9137,12 @@ Xt_t_student_asymmetric_garch1_q2_p1_new <- model_garch(a0, aq, b1, X0, sigmasqu
 # Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(2,1)
 Xt <- Xt_t_student_asymmetric_garch1_q2_p1_new
 df_Xt_t_student_asymmetric_garch1_q2_p1 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch1_q2_p1_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch1_q2_p1_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch1_q2_p1
@@ -9226,7 +9387,7 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p1_cf, 
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p1_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p1_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p1_sw)))
 
 # Con i parametri stimati, il modello Garch(2,1) con distribuzione t-student asimmetrica
 # ha presenza di eteroschedasticità nei residui del modello e assenza di autocorrelazione
@@ -9238,6 +9399,12 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(2,2)
 Xt <- Xt_normal_garch1_q2_p2
 df_Xt_normal_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch1_q2_p2_sw <- shapiro.test(Xt)
+show(Xt_normal_garch1_q2_p2_sw)
+# Si ha un p-value maggiore di 0.05 quindi possiamo dire che la serie è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch1_q2_p2
@@ -9501,7 +9668,7 @@ modello[['simulazione']][['garch_q2_p2']][['normale']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_normal_garch1_q2_p2_cf, 
                                                                              'Breusch-Pagan'=Xt_normal_garch1_q2_p2_bp, 'White'=Xt_normal_garch1_q2_p2_w, 
                                                                              'Ljiung-Box'=Xt_normal_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p2_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p2_kpss))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_normal_garch1_q2_p2_sw))
 
 # Il modello Garch(2,2) con una distribuzione normale ha evidenza di eteroschedasticità
 # nei residui del modello e assenza di autocorrelazione eccetto per il lag 1.
@@ -9525,6 +9692,12 @@ Xt_normal_garch1_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasquared0, dist_no
 # Consideriamo una traiettoia con distribuzione normale di un modello GARCH(2,2)
 Xt <- Xt_normal_garch1_q2_p2_new
 df_Xt_normal_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_normal_garch1_q2_p2_sw <- shapiro.test(Xt)
+show(Xt_normal_garch1_q2_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_normal_garch1_q2_p2
@@ -9788,7 +9961,7 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
                                                                    'Cullen-Frey'=Xt_normal_garch1_q2_p2_cf, 
                                                                    'Breusch-Pagan'=Xt_normal_garch1_q2_p2_bp, 'White'=Xt_normal_garch1_q2_p2_w, 
                                                                    'Ljiung-Box'=Xt_normal_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_normal_garch1_q2_p2_adf, 
-                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p2_kpss)))
+                                                                   'Kwiatowski-Phillips-Schmidt-Shin'=Xt_normal_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_normal_garch1_q2_p2_sw)))
 
 # In questo modello Garch(1,1) con distribuzione normale risulta essere eteroschedastico e con assenza
 # di autocorrelazione con i parametri stimati.
@@ -9798,6 +9971,12 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
 # Consideriamo la seconda traiettoia con distribuzione t-student simmetrica di un modello GARCH(2,2)
 Xt <- Xt_t_student_symmetric_garch2_q2_p2
 df_Xt_t_student_symmetric_garch2_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch2_q2_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch2_q2_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch2_q2_p2
@@ -10062,7 +10241,7 @@ modello[['simulazione']][['garch_q2_p2']][['simmetrico']][['2']] <- append(model
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p2_cf, 
                                                                                 'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p2_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p2_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p2_sw))
 
 # In questo modello Garch(2,2) con una distribuzione t-student simmetrica
 # si ha presenza di omoschedasticità nei residui del modello e presenza di autocorrelazione.
@@ -10087,6 +10266,12 @@ Xt_t_student_symmetric_garch2_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasqua
 # Consideriamo la seconda traiettoia con distribuzione t-student simmetrica di un modello GARCH(2,2)
 Xt <- Xt_t_student_symmetric_garch2_q2_p2_new
 df_Xt_t_student_symmetric_garch2_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_symmetric_garch2_q2_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_symmetric_garch2_q2_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_symmetric_garch2_q2_p2
@@ -10352,7 +10537,7 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p2_cf, 
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p2_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p2_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p2_sw)))
 
 # Con i nuovi parametri stimati, nel modello Garch(2,2) con una distribuzione t-student simmetrica
 # si ha presenza di eteroschedasticità nei residui del modello e assenza di autocorrelazione.
@@ -10362,6 +10547,12 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
 # Consideriamo la prima traiettoia con distribuzione t-student asimmetrica di un modello GARCH(2,2)
 Xt <- Xt_t_student_asymmetric_garch1_q2_p2
 df_Xt_t_student_asymmetric_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch1_q2_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch1_q2_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch1_q2_p2
@@ -10605,7 +10796,7 @@ modello[['simulazione']][['garch_q2_p2']][['asimmetrico']][['1']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p2_cf, 
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p2_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p2_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p2_sw))
 
 # In questo modello Garch(2,2) con distribuzione t-student asimmetrica si ha presenza di 
 # eteroschedasticità nel modello e presenza di autocorrelazione.
@@ -10630,6 +10821,12 @@ Xt_t_student_asymmetric_garch1_q2_p2_new <- model_garch(a0, aq, bp, X0, sigmasqu
 # Consideriamo una traiettoia con distribuzione t-student asimmetrica di un modello GARCH(2,2)
 Xt <- Xt_t_student_asymmetric_garch1_q2_p2_new
 df_Xt_t_student_asymmetric_garch1_q2_p2 <- data.frame(t = 1:length(Xt), X = Xt)
+
+# Test Shamiro-Wilk
+Xt_t_student_asymmetric_garch1_q2_p2_sw <- shapiro.test(Xt)
+show(Xt_t_student_asymmetric_garch1_q2_p2_sw)
+# Si ha un p-value minore di 0.05 quindi possiamo dire che la serie non è
+# normalmente distribuito.
 
 # Line plot
 Data_df<- df_Xt_t_student_asymmetric_garch1_q2_p2
@@ -10875,7 +11072,7 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p2_cf, 
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p2_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p2_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p2_sw)))
 
 # Con i nuovi parametri stimati, rispetto al modello precedente, si ha un modello Garch(2,2)
 # con una distribuzione t-student asimmetrica che ha evidenza di eteroschedasticità nel modello
