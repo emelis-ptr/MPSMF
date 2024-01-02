@@ -37,6 +37,9 @@ library(crayon)
 library(DescTools)
 library(fitdistrplus)
 library(urca)
+library(goftest)
+library(glogis)
+library(pracma)
 
 ##########################################################################################################################
 #################################ff#########################################################################################
@@ -280,6 +283,20 @@ model_garch <- function(a0, aq, bp, X0, sigmasquared0, W_t, q, p){
   return(X_t)
 }
 
+# Consider the fit of the empirical distribution of the residuals with a Generalized Student distribution still by the function
+# fitdistrplus::fitdist(). Following Venables and Ripley, we have to introduce the generalized Student distribution
+# (see https://https://en.wikipedia.org/wiki/Student%27s_t-distribution). This is defined in terms of the R component functions of the 
+# standard Student distribution, dt(), pt(), qt(), rt(), and the location, scale, and degrees of freedom parameters, m, s, and df, by the 
+# functions
+dt_ls <- function(x, m, s, df)	1/s*dt((x-m)/s, df)
+pt_ls <- function(q, m, s, df)  pt((q-m)/s, df)
+qt_ls <- function(p, m, s, df)  qt(p, df)*s+m
+rt_ls <- function(n, m, s, df)  rt(n,df)*s+m
+# In this case, the location parameter m is just the mean of the generalized Student distribution, but the scale parameter s, is given by
+#
+# s=sigma*sqrt((df-2)/df)
+#
+# where sigma is the standard deviation parameter of the distribution.
 #############################################################################################################
 #############################################################################################################
 ##########################################################################################################################
@@ -1546,21 +1563,26 @@ summary(Xt_normal_arch1_q1_lm$fitted.values)
 Xt_normal_arch1_q1_res <- Xt_normal_arch1_q1_lm$residuals
 # Calcoliamo la skew e la kurtosi
 set.seed(123)
-skew <- skew <- DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew <- DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 skew
 #       skew      lwr.ci      upr.ci 
 # -0.08678682 -0.24846259  0.04388842 
 set.seed(123)
-kurt <- kurt <- DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt  <- DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 kurt
+# Intervallo di confidenza 80%
 #      kurt     lwr.ci     upr.ci 
 # -0.1544153 -0.3911550  0.2348151 
+# Intervallo di confidenza 99%
+#      kurt     lwr.ci     upr.ci 
+# -0.1544153 -0.5565872  0.7696437 
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+# Dal grafico notiamo che le osservazioni seguono una distribuzine normale.
 
-# ADF Test
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare.
 y <- Xt_normal_arch1_q1_res
 num_lags <- 3                  # Setting the lag parameter for the test.
 Xt_normal_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
@@ -1662,7 +1684,8 @@ plot(Xt_normal_arch1_q1_sp)
 # Test Shamiro-Wilk 
 Xt_normal_arch1_q1_sw <- shapiro.test(Xt)
 show(Xt_normal_arch1_q1_sw)
-# Si ha un p-value maggiore di 0.05, quindi, la serie è normalmente distribuito.
+# Si ha un p-value maggiore di 0.05, quindi, non possiamo rigettare lìipotesi nulla che i dati seguano una distribuzione normale. 
+# I dati sembrano seguire una distribuzione normale.
 
 plot(Xt_normal_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_arch1_q1_lm,2) # Q-Q Residuals
@@ -1673,13 +1696,13 @@ plot(Xt_normal_arch1_q1_lm,3) # Scale-location
 t <-1:length(Xt)
 Xt_normal_arch1_q1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = FALSE, data=df_Xt_normal_arch1_q1)
 show(Xt_normal_arch1_q1_bp)
-# Si ha un p-value di 0.00615 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.008681 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Test WHITE sui residui del modello lineare
 Xt_normal_arch1_q1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = FALSE, data=df_Xt_normal_arch1_q1)
 show(Xt_normal_arch1_q1_w)
-# Si ha un p-value di 0.02191 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.03002 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -1726,11 +1749,12 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
-max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
+max_lag <- ceiling(min(10, T/4)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_arch1_q1_lb)
-# La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag considerati.
-# I risultati indicano assenza di autocorrelazione nei resisui.
+# I ritardi da 1 a 4 hanno il p-value leggermente superiore a 0.05, ma vicino a questo valore. 
+# A partire dal ritardo 5, il p-value sembra superare 0.05, suggerendo che non c'è autocorrelazione significativa 
+# nei residui a partire da quel punto.
 
 modello[['simulazione']][['arch_q1']][['normale']][['1']] <- append(modello[['simulazione']][['arch_q1']][['normale']][['1']], 
                                                                     list('lm'=Xt_normal_arch1_q1_lm, 'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_normal_arch1_q1_cf, 
@@ -1817,19 +1841,24 @@ summary(Xt_normal_arch1_q1_lm$fitted.values)
 
 Xt_normal_arch1_q1_res <- Xt_normal_arch1_q1_lm$residuals
 
-skew <- skew <- DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew <- DescTools::Skew(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew          lwr.ci      upr.ci 
 # -0.04892516 -0.15903750  0.05665529 
-kurt <- kurt <- DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt  <- DescTools::Kurt(Xt_normal_arch1_q1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 show(kurt)
+# Livello di significatività 5%
 #      kurt      lwr.ci      upr.ci 
-# -0.32278623 -0.47849072 -0.09394918
+# -0.32278623 -0.55014759  0.03314538 
+# Livello di significatività1%
+#      kurt      lwr.ci      upr.ci 
+# -0.3227862 -0.6138619   0.2428574 
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_arch1_q1_res
 num_lags <- 3                  # Setting the lag parameter for the test.
@@ -1932,7 +1961,8 @@ plot(Xt_normal_arch1_q1_sp)
 # Test Shapiro-Wilk
 Xt_normal_arch1_q1_sw <- shapiro.test(Xt)
 show(Xt_normal_arch1_q1_sw)
-# Si ha un p-value maggiore di 0.05, quindi la serie è normalmente distribuito.
+# Si ha un p-value maggiore di 0.05, quindi, non possiamo rigettare l'ipotesi nulla che i dati seguano una distribuzione normale.
+# I dati sembrano seguire una distribuzione normale.
 
 plot(Xt_normal_arch1_q1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_arch1_q1_lm,2) # Q-Q Residuals
@@ -1996,12 +2026,11 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 3  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
-max_lag <- ceiling(min(2*12,T/5)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
+max_lag <- ceiling(min(10,T/4)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_arch1_q1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_arch1_q1_lb)
-# La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione in tutti i lag considerati.
-
-# I risultati indicano assenza di autocorrelazione nei resisui.
+#  I primi ritardi non mostrano autocorrelazione significativa nei residui, ma a partire dal ritardo 5, 
+# potrebbe esserci una certa autocorrelazione. 
 
 modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], 
                                             list('normale'=list('Xt'=Xt_normal_arch1_q1_new, 'a0'=a0, 'a1'=a1, 'q'=q, 'stazionarietà'=stazionaietà, 
@@ -2086,15 +2115,262 @@ show(skew)
 #  skew          lwr.ci      upr.ci 
 # 0.19494181 -0.08884189  0.52093593
 set.seed(123)
-kurt <- kurt <- DescTools::Kurt(Xt_t_student_symmetric_arch1_q1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt <- kurt <- DescTools::Kurt(Xt_t_student_symmetric_arch1_q1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 show(kurt)
 #      kurt      lwr.ci      upr.ci 
-# 1.861238 1.276939 2.867688
+# 1.8612384 0.6592552 3.6767636 
+# All'1% di significatività l'eccesso di kurtosi non è zero. 
+
+Xt_t_student_symmetric_arch1_q1_cf <- list()
+# Cullen-Frey
+options(repr.plot.width = 10, repr.plot.height = 6)
+cf <- descdist(Xt, discrete=FALSE, boot=500)
+Xt_t_student_symmetric_arch1_q1_cf <- append(Xt_t_student_symmetric_arch1_q1_cf, list(cf))
+show(cf)
+# summary statistics
+------
+#  min:  -3.262066   max:  3.37251 
+# median:  0.001791954 
+# mean:  -0.002615934 
+# estimated sd:  0.763665 
+# estimated skewness:  0.1949418 
+# estimated kurtosis:  4.861238 
+# Conferma visiva che l'ipotesi nulla di normalità bisogna scartarla all'1% di significatività 
+# quindi possiamo dire che è una distribuzione simmetrica con una forte kurtosi.
+
+# Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
+# Applichiamo la standardizzazione
+# Calcolo dei residui standardizzati
+y <- Xt_t_student_symmetric_arch1_q1_res
+show(c(mean(y),var(y)))
+# [1] -8.542537e-18  5.829699e-01
+z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
+show(c(mean(z_st),var(z_st)))
+# [1] -1.086989e-17  1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
-Xt_t_student_symmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
+cf <- descdist(z_st, discrete=FALSE, graph=TRUE, boot=500)
+Xt_t_student_symmetric_arch1_q1_cf <- append(Xt_t_student_symmetric_arch1_q1_cf, list(cf)) 
+show(cf)
+# summary statistics
+------
+# min:  -4.266144   max:  4.59034 
+# median:  0.004906486 
+# mean:  7.984715e-18 
+# estimated sd:  1 
+# estimated skewness:  0.2004542 
+# estimated kurtosis:  4.955997 
+# Da Cullen-Frey, abbiamo una possibile distribuzione logistica o di student per i residui.
+  
+# Esploriamo queste possibilità in più dettagli.
+z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
+z_st_demp <- EnvStats::demp(z_st_qemp, z_st)     # Empirical probability density of the residuals.
+z_st_pemp <- EnvStats::pemp(z_st_qemp, z_st)     # Empirical distribution function of the residuals.  
+x <- z_st_qemp
+y_d <- z_st_demp
+y_p <- z_st_pemp
+# Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
+# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# scale=sqrt(3)/pi e shape=1.
+loc <- 0
+shp <- 1
+Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
+hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
+     freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the ARCH(1) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
+lines(x, y_d, lwd=2, col= "darkblue")
+lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, dt(x, df=3), lwd=2, col= "red")
+lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+# Plot della funzione di distribuzione empirica dei residui standardizzati
+loc <- 0
+shp <- 1
+Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
+     main= "Empirical Distribution Function of the Standardized Residuals of the ARCH(1) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
+lines(x, y_p, lwd=2, col= "darkblue")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, pt(x, df=3), lwd=2, col= "red")
+lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
 
+fitdist_test <- list()
+# Distribuzione logistica generalizzata
+# Come prima cosa, fittiamo la distribuzione logistica generalizzata utilizzando la funzione fitdistrplus::fitdist().
+fitdist_glogis <- fitdistrplus::fitdist(z_st, "glogis", start=list(location=0, scale=sqrt(3)/pi, shape=1), method= "mle")
+fitdist_test[["glogis"]][["glogis"]] <- fitdist_glogis
+summary(fitdist_glogis)
+# Fitting of the distribution ' glogis ' by maximum likelihood 
+# Parameters : 
+#           estimate Std. Error
+# location -0.07964129 0.14169334
+# scale     0.55665568 0.03669895
+# shape     1.08914075 0.17787739
+# Loglikelihood:  -695.0136   AIC:  1396.027   BIC:  1408.671 
+# Correlation matrix:
+#            location      scale      shape
+# location  1.0000000 -0.7926341 -0.9554749
+# scale    -0.7926341  1.0000000  0.8243698
+# shape    -0.9554749  0.8243698  1.0000000
+
+# La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
+set.seed(12345)
+fitdist_glogis_bd <- fitdistrplus::bootdist(fitdist_glogis, niter=1000)
+fitdist_test[["glogis"]][["uncertainty"]] <- fitdist_glogis_bd
+summary(fitdist_glogis_bd)
+# Parametric bootstrap medians and 95% percentile CI 
+# Median       2.5%     97.5%
+#   location -0.0889993 -0.4299843 0.1810415
+# scale     0.5549285  0.4836019 0.6360499
+# shape     1.0993132  0.7864985 1.6373604
+# We fix the initial points of the constrained maximization procedure
+location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
+scale <- fitdist_glogis_bd[["fitpart"]][["estimate"]][2]
+shape <- fitdist_glogis_bd[["fitpart"]][["estimate"]][3]
+minus_logLik <- function(x) -sum(log(dglogis(z_st, location=x[1], scale=x[2], shape=x[3]))) # the log-likelihood of the generalized logistic
+# distribution.
+fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the minimization procedure where (location,scale,shape) is the 
+# starting point.
+show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
+#    location       scale       shape 
+# -0.08271232  0.55777995  1.09281598
+
+# Setting
+location <- fitdist_glogis[["estimate"]][["location"]]
+scale <- fitdist_glogis[["estimate"]][["scale"]]
+shape <- fitdist_glogis[["estimate"]][["shape"]]
+# We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
+# generalized logistic.
+loc <- round(location,4)
+scl <- round(scale,4)
+shp <- round(shape,4)
+show(c(loc,scl,shp))
+# -0.0796  0.5567  1.0891
+Est_Gen_Log_Dens_Func <- bquote(paste("Estimated Generalized Logistic Density Function, location = ", .(loc), ", scale = ", .(scl) , ", shape = ", .(shp)))
+hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), 
+     freq=FALSE, main= "Density Histogram of the Standardized Residuals of the GARCH(1,1) model + Empirical Density Function + Estimated Generalized Logistic Density", xlab= "Standardized Residuals", ylab= "Density")
+lines(density(z_st), lwd=2, col= "darkgreen")
+lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", Est_Gen_Log_Dens_Func), 
+       col=c("darkgreen", "magenta"),
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+
+# Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
+# a fittare i dati con una generalized Student distribution con zero location. 
+# Questo viene fatto cambiando il parametro m nella funzione *fitdistrplus::fitdist*.
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, dt_ls, start=list(s=sqrt(1/3), df=3), fix.arg=list(m=0), method= "mle")
+fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
+summary(fitdist_t_ls)
+# Fitting of the distribution ' t_ls ' by maximum likelihood 
+# Parameters : 
+#   estimate Std. Error
+# s  0.811707   0.04317391
+# df 5.7769418  1.42531533
+# Fixed parameters:
+#     value
+# m     0
+# Loglikelihood:  -694.9214   AIC:  1393.843   BIC:  1402.272 
+#Correlation matrix:
+#       s       df
+# s  1.000000 0.680783
+# df 0.680783 1.000000
+
+# Alla fine, consideriamo il test Goodness of fit.
+# The Kolmogorov-Smirnov test in the library *stats*
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+KS_z_st_glogis <- ks.test(z_st, y="pglogis", location=loc, scale=scl, shape=shp, alternative= "two.sided")
+fitdist_test[["glogis"]][["Kolmogorov-Smirnov"]] <- KS_z_st_glogis
+show(KS_z_st_glogis)
+# 	Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.017578, p-value = 0.9978
+# alternative hypothesis: two-sided
+# Con un p-value cosi alto, non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
+# che la serie è una distribuzione logistica generalizzata.
+m <- 0
+s <- round(fminunc_result$par[1],4)
+df <- round(fminunc_result$par[2],4)
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_ls", m=0, s=s, df=df, alternative= "two.sided")
+fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
+show(KS_z_st_t_ls)
+# Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.96561, p-value < 2.2e-16
+# alternative hypothesis: two-sided
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata.
+
+# The Cramer-Von Mises test in the library *goftest*.
+# This function performs the Cramer-Von Mises test of goodness-of-fit to the distribution specified by the argument null. It is assumed that the 
+# values in x are independent and identically distributed random values, with some cumulative distribution function F. The null hypothesis is 
+# that F is the function specified by the argument null, while the alternative hypothesis is that F is some other function.
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+CVM_z_st_glogis <- goftest::cvm.test(z_st, null= "pglogis", location=loc, scale=scl, shape=shp, estimated=FALSE)
+fitdist_test[["glogis"]][["Cramer-Von Mises"]] <- CVM_z_st_glogis 
+show(CVM_z_st_glogis)
+# Cramer-von Mises test of goodness-of-fit
+# Null hypothesis: distribution ‘pglogis’
+# with parameters location = -0.0796, scale = 0.5567, shape = 1.0891
+# Parameters assumed to be fixed
+# data:  z_st
+# omega2 = 0.018845, p-value = 0.998
+# Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
+# Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
+m <- 0
+s <- round(fminunc_result$par[1],4)
+df <- round(fminunc_result$par[2],4)
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pt_ls", m=0, s=s, df=df, estimated=FALSE)
+fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
+show(CVM_z_st_t_ls)
+# Cramer-von Mises test of goodness-of-fit
+# Null hypothesis: distribution ‘pt_ls’
+# with parameters m = 0, s = -0.0827, df = 0.5578
+# Parameters assumed to be fixed
+# data:  z_st
+# omega2 = 9.9693, p-value < 2.2e-16
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata.
+
+# The Anderson-Darling test in the library *goftest*.
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+AD_z_st_glogis <- goftest::ad.test(z_st, null= "pglogis", location=location, scale=scale, shape=shape, estimated=FALSE)
+fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
+show(AD_z_st_glogis)
+# Anderson-Darling test of goodness-of-fit
+# Null hypothesis: distribution ‘pglogis’
+# with parameters location = -0.0796412857701351, scale = 0.556655675177367, shape = 1.0891407461961
+# Parameters assumed to be fixed
+# data:  z_st
+# An = 0.17549, p-value = 0.9957
+# Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
+# Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
+m <- 0
+s <- round(fminunc_result$par[1],4)
+df <- round(fminunc_result$par[2],4)
+AD_z_st_t_ls <- goftest::ad.test(z_st, "pt_ls", m=0, s=s, df=df, estimated=FALSE)
+fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
+show(AD_z_st_t_ls)
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata
+
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_arch1_q1_res
 num_lags <- 3                   # Setting the lag parameter for the test.
@@ -2270,7 +2546,8 @@ modello[['simulazione']][['arch_q1']][['simmetrico']][['1']] <- append(modello[[
                                                                             'Cullen-Frey'=Xt_t_student_symmetric_arch1_q1_cf, 
                                                                             'Breusch-Pagan'=Xt_t_student_symmetric_arch1_q1_bp,'White'=Xt_t_student_symmetric_arch1_q1_w, 
                                                                             'Ljiung-Box'=Xt_t_student_symmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch1_q1_adf, 
-                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch1_q1_sw))
+                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch1_q1_sw,
+                                                                            'Generalized Distribution'=fitdist_test))
 
 # In questo modello Arch(1) con una distribuzione t-student simmetrica si ha evidenza di eteroschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -2368,11 +2645,249 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
+# Applichiamo la standardizzazione
+# Calcolo dei residui standardizzati
+y <- Xt_t_student_symmetric_arch1_q1_res
+show(c(mean(y),var(y)))
+# [1] -8.444634e-18  2.704741e+00
+z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
+show(c(mean(z_st),var(z_st)))
+# [1] -4.984077e-18  1.000000e+00
+
+# Cullen-Frey
+options(repr.plot.width = 10, repr.plot.height = 6)
+cf <- descdist(z_st, discrete=FALSE, graph=TRUE, boot=500)
+Xt_t_student_symmetric_arch1_q1_cf <- append(Xt_t_student_symmetric_arch1_q1_cf, list(cf)) 
+show(cf)
+# summary statistics
+------
+#  min:  -4.462193   max:  3.578521 
+# median:  -0.01590323 
+# mean:  -4.984077e-18 
+# estimated sd:  1 
+# estimated skewness:  0.155173 
+# estimated kurtosis:  4.596664 
+  
+# Esploriamo queste possibilità in più dettagli.
+z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
+z_st_demp <- EnvStats::demp(z_st_qemp, z_st)     # Empirical probability density of the residuals.
+z_st_pemp <- EnvStats::pemp(z_st_qemp, z_st)     # Empirical distribution function of the residuals.  
+x <- z_st_qemp
+y_d <- z_st_demp
+y_p <- z_st_pemp
+# Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
+# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# scale=sqrt(3)/pi e shape=1.
+loc <- 0
+shp <- 1
+Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
+hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
+     freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the ARCH(1) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
+lines(x, y_d, lwd=2, col= "darkblue")
+lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, dt(x, df=3), lwd=2, col= "red")
+lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+# Plot della funzione di distribuzione empirica dei residui standardizzati
+loc <- 0
+shp <- 1
+Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
+     main= "Empirical Distribution Function of the Standardized Residuals of the ARCH(1) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
+lines(x, y_p, lwd=2, col= "darkblue")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, pt(x, df=3), lwd=2, col= "red")
+lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+
+fitdist_test <- list()
+# Distribuzione logistica generalizzata
+# Come prima cosa, fittiamo la distribuzione logistica generalizzata utilizzando la funzione fitdistrplus::fitdist().
+fitdist_glogis <- fitdistrplus::fitdist(z_st, "glogis", start=list(location=0, scale=sqrt(3)/pi, shape=1), method= "mle")
+fitdist_test[["glogis"]][["glogis"]] <- fitdist_glogis
+summary(fitdist_glogis)
+# Fitting of the distribution ' glogis ' by maximum likelihood 
+# Parameters : 
+#           estimate Std. Error
+# location -0.1060596 0.14770666
+# scale     0.5659501 0.03745644
+# shape     1.1215516 0.18804060
+# Loglikelihood:  -697.4753   AIC:  1400.951   BIC:  1413.594 
+# Correlation matrix:
+#           location      scale      shape
+# location  1.0000000 -0.7988681 -0.9583583
+# scale    -0.7988681  1.0000000  0.8269470
+# shape    -0.9583583  0.8269470  1.0000000
+
+# La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
+set.seed(12345)
+fitdist_glogis_bd <- fitdistrplus::bootdist(fitdist_glogis, niter=1000)
+fitdist_test[["glogis"]][["uncertainty"]] <- fitdist_glogis_bd
+summary(fitdist_glogis_bd)
+# Parametric bootstrap medians and 95% percentile CI 
+#             Median       2.5%     97.5%
+# location -0.1175512 -0.4685861 0.1617938
+# scale     0.5640942  0.4920352 0.6460453
+# shape     1.1331028  0.8074557 1.6928413
+# We fix the initial points of the constrained maximization procedure
+location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
+scale <- fitdist_glogis_bd[["fitpart"]][["estimate"]][2]
+shape <- fitdist_glogis_bd[["fitpart"]][["estimate"]][3]
+minus_logLik <- function(x) -sum(log(dglogis(z_st, location=x[1], scale=x[2], shape=x[3]))) # the log-likelihood of the generalized logistic
+# distribution.
+fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the minimization procedure where (location,scale,shape) is the 
+# starting point.
+show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
+#    location       scale       shape 
+#   -0.1062089  0.5659415  1.1217658 
+
+# Setting
+location <- fitdist_glogis[["estimate"]][["location"]]
+scale <- fitdist_glogis[["estimate"]][["scale"]]
+shape <- fitdist_glogis[["estimate"]][["shape"]]
+# We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
+# generalized logistic.
+loc <- round(location,4)
+scl <- round(scale,4)
+shp <- round(shape,4)
+show(c(loc,scl,shp))
+# -0.1061  0.5660  1.1216
+Est_Gen_Log_Dens_Func <- bquote(paste("Estimated Generalized Logistic Density Function, location = ", .(loc), ", scale = ", .(scl) , ", shape = ", .(shp)))
+hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), 
+     freq=FALSE, main= "Density Histogram of the Standardized Residuals of the GARCH(1,1) model + Empirical Density Function + Estimated Generalized Logistic Density", xlab= "Standardized Residuals", ylab= "Density")
+lines(density(z_st), lwd=2, col= "darkgreen")
+lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", Est_Gen_Log_Dens_Func), 
+       col=c("darkgreen", "magenta"),
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+
+# Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
+# a fittare i dati con una generalized Student distribution con zero location. 
+# Questo viene fatto cambiando il parametro m nella funzione *fitdistrplus::fitdist*.
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, dt_ls, start=list(s=sqrt(1/3), df=3), fix.arg=list(m=0), method= "mle")
+fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
+summary(fitdist_t_ls)
+# Fitting of the distribution ' t_ls ' by maximum likelihood 
+# Parameters : 
+#   estimate Std. Error
+# s  0.8279158 0.04380522
+# df 6.2749723 1.66554550
+# Fixed parameters:
+#     value
+# m     0
+# Loglikelihood:  -697.4625   AIC:  1398.925   BIC:  1407.354 
+#Correlation matrix:
+#       s       df
+# s  1.000000 0.687201
+# df 0.687201 1.000000
+
+# Alla fine, consideriamo il test Goodness of fit.
+# The Kolmogorov-Smirnov test in the library *stats*
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+KS_z_st_glogis <- ks.test(z_st, y="pglogis", location=loc, scale=scl, shape=shp, alternative= "two.sided")
+fitdist_test[["glogis"]][["Kolmogorov-Smirnov"]] <- KS_z_st_glogis
+show(KS_z_st_glogis)
+# 	Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.018322, p-value = 0.9961
+# alternative hypothesis: two-sided
+# Con un p-value cosi alto, non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
+# che la serie è una distribuzione logistica generalizzata.
+m <- 0
+s <- round(fminunc_result$par[1],4)
+df <- round(fminunc_result$par[2],4)
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_ls", m=0, s=s, df=df, alternative= "two.sided")
+fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
+show(KS_z_st_t_ls)
+# Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.96561, p-value < 2.2e-16
+# alternative hypothesis: two-sided
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata.
+
+# The Cramer-Von Mises test in the library *goftest*.
+# This function performs the Cramer-Von Mises test of goodness-of-fit to the distribution specified by the argument null. It is assumed that the 
+# values in x are independent and identically distributed random values, with some cumulative distribution function F. The null hypothesis is 
+# that F is the function specified by the argument null, while the alternative hypothesis is that F is some other function.
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+CVM_z_st_glogis <- goftest::cvm.test(z_st, null= "pglogis", location=loc, scale=scl, shape=shp, estimated=FALSE)
+fitdist_test[["glogis"]][["Cramer-Von Mises"]] <- CVM_z_st_glogis 
+show(CVM_z_st_glogis)
+# Cramer-von Mises test of goodness-of-fit
+# Null hypothesis: distribution ‘pglogis’
+# with parameters location = -0.1061, scale = 0.566, shape = 1.1216
+# Parameters assumed to be fixed
+# data:  z_st
+# omega2 = 0.018152, p-value = 0.9984
+# Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
+# Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
+m <- 0
+s <- round(fminunc_result$par[1],4)
+df <- round(fminunc_result$par[2],4)
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pt_ls", m=0, s=s, df=df, estimated=FALSE)
+fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
+show(CVM_z_st_t_ls)
+# Cramer-von Mises test of goodness-of-fit
+# Null hypothesis: distribution ‘pt_ls’
+# with parameters m = 0, s = -0.1062, df = 0.5659
+# Parameters assumed to be fixed
+# data:  z_st
+# omega2 = 9.9693, p-value < 2.2e-16
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata.
+
+# The Anderson-Darling test in the library *goftest*.
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+AD_z_st_glogis <- goftest::ad.test(z_st, null= "pglogis", location=location, scale=scale, shape=shape, estimated=FALSE)
+fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
+show(AD_z_st_glogis)
+# Anderson-Darling test of goodness-of-fit
+# Null hypothesis: distribution ‘pglogis’
+# with parameters location = -0.106059627135577, scale = 0.565950101781953, shape = 1.12155158016255
+# Parameters assumed to be fixed
+# data:  z_st
+# An = An = 0.1698, p-value = 0.9965
+# Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
+# Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
+m <- 0
+s <- round(fminunc_result$par[1],4)
+df <- round(fminunc_result$par[2],4)
+AD_z_st_t_ls <- goftest::ad.test(z_st, "pt_ls", m=0, s=s, df=df, estimated=FALSE)
+fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
+show(AD_z_st_t_ls)
+# Anderson-Darling test of goodness-of-fit
+# Null hypothesis: distribution ‘pt_ls’
+# with parameters m = 0, s = -0.1062, df = 0.5659
+# Parameters assumed to be fixed
+# data:  z_st
+# An = 50.215, p-value = 1.2e-06
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata
+
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_arch1_q1_res
 num_lags <- 3                   # Setting the lag parameter for the test.
 Xt_t_student_symmetric_arch1_q1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_t_student_symmetric_arch1_q1_adf) 
+summary(Xt_t_student_symmetric_arch1_q1_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
@@ -2543,7 +3058,8 @@ modello[['stimati']][['arch_q1']] <- append(modello[['stimati']][['arch_q1']], l
                                                                                            'skew'=skew, 'kurt'=kurt, 'Cullen-Frey'=Xt_t_student_symmetric_arch1_q1_cf, 
                                                                                            'Breusch-Pagan'=Xt_t_student_symmetric_arch1_q1_bp,'White'=Xt_t_student_symmetric_arch1_q1_w, 
                                                                                            'Ljiung-Box'=Xt_t_student_symmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch1_q1_adf, 
-                                                                                           'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch1_q1_sw)))
+                                                                                           'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch1_q1_sw,                                                                             
+                                                                                           'Generalized Distribution'=fitdist_test))
 
 # In questo modello Arch(1) con una distribuzione t-student simmetrica si ha evidenza di eteroschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -2636,6 +3152,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_arch1_q1_res
 num_lags <- 3                 # Setting the lag parameter for the test.
@@ -2783,7 +3300,8 @@ modello[['simulazione']][['arch_q1']][['asimmetrico']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q1_cf, 
                                                                              'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q1_bp, 'White'=Xt_t_student_asymmetric_arch1_q1_w, 
                                                                              'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q1_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q1_sw))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q1_sw,                                              
+                                                                             'Generalized Distribution'=fitdist_test))
 
 # In questo modello Arch(1) si ha presenza di eteroschedasticità e presenza di autocorrelazione.
 # Quindi, proviamo a stimare i migliori parametri per il modello:
@@ -2883,6 +3401,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_arch1_q1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_arch1_q1_res
 num_lags <- 3                  # Setting the lag parameter for the test.
@@ -3093,6 +3612,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare.
 # ADF Test
 y <- Xt_normal_garch2_q1_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -3346,6 +3866,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch2_q1_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -3584,6 +4105,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch3_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch3_q1_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -3736,7 +4258,7 @@ modello[['simulazione']][['garch_q1_p1']][['simmetrico']][['3']] <- append(model
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf, 
                                                                                 'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch3_q1_p1_sw))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch3_q1_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # Il modello Garch(1,1) con distribuzione t-student simmetrica ha presenza di omoschedasticità.
 # Dato che la serie è omoschedastico, proviamo a stimare i migliori parametri per il modello.
@@ -3839,6 +4361,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch3_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch3_q1_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -4007,7 +4530,7 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf,
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch3_q1_p1_sw)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch3_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch3_q1_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student simmetrica, con i nuovi parametri stimati,
 # si ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -4098,6 +4621,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch2_q1_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -4266,7 +4790,7 @@ modello[['simulazione']][['garch_q1_p1']][['asimmetrico']][['2']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch2_q1_p1_sw))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch2_q1_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # Questo modello Garch(1,1) con una distribuzione normale ha presenza di autocorrelazione
 # e presenza di eteroschedasticità. 
@@ -4371,6 +4895,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch2_q1_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -4540,7 +5065,7 @@ modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch2_q1_p1_sw)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch2_q1_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch2_q1_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student asimmetrica, con i
 # i miglior parametri stimati la serie ha presenza di eteroschedasticità e
@@ -4634,6 +5159,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch1_q1_p2_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -4910,6 +5436,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch1_q1_p2_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -5171,6 +5698,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch1_q1_p2_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -5338,7 +5866,7 @@ modello[['simulazione']][['garch_q1_p2']][['simmetrico']][['1']] <- append(model
                                                                            list('lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt,
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_symmetric_garch1_q1_p2_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch1_q1_p2_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch1_q1_p2_sw))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch1_q1_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # Questo modello Garch(1,2) con distribuzione t-student simmetrica ha un'evidenza di 
 # eteroschedasticità nella serie e assenza di autocorrelazione nei residui.
@@ -5442,6 +5970,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch1_q1_p2_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -5610,7 +6139,7 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch1_q1_p2_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch1_q1_p2_cf, 'Breusch-Pagan'=Xt_t_student_symmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_symmetric_garch1_q1_p2_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch1_q1_p2_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch1_q1_p2_sw)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch1_q1_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # In questo modello Garch(1,1) con una distribuzione t-student simmetrica, con i nuovi parametri stimati,
 # si ha evidenza di eteroschedasticità e assenza di autocorrelazione.
@@ -5701,6 +6230,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch1_q1_p2_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -5869,7 +6399,7 @@ modello[['simulazione']][['garch_q1_p2']][['asimmetrico']][['1']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q1_p2_cf, 
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q1_p2_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q1_p2_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q1_p2_sw))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q1_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # Questo modello Garch(1,2) con una distribuzione t-student asimmetrica ha presenza di autocorrelazione
 # e presenza di omoschedasticità nel test di White. 
@@ -5974,6 +6504,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch1_q1_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch1_q1_p2_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -6143,7 +6674,7 @@ modello[['stimati']][['garch_q1_p2']] <- append(modello[['stimati']][['garch_q1_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q1_p2_cf, 
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q1_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q1_p2_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q1_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q1_p2_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q1_p2_sw)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q1_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q1_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # In questo modello Garch(1,2) con una distribuzione t-student asimmetrica, con i nuovi parametri stimati,
 # presenta eteroschedasticità nella serie e assenza di autocorrelazione.
@@ -6236,6 +6767,7 @@ kurt
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_arch1_q2_res
 num_lags <- 4                   # Setting the lag parameter for the test.
@@ -6508,6 +7040,7 @@ kurt
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_arch1_q2_res
 num_lags <- 4                   # Setting the lag parameter for the test.
@@ -6768,6 +7301,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_arch2_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_arch2_q2_res
 num_lags <- 4                   # Setting the lag parameter for the test.
@@ -6936,7 +7470,7 @@ modello[['simulazione']][['arch_q2']][['simmetrico']][['2']] <- append(modello[[
                                                                             'Cullen-Frey'=Xt_t_student_symmetric_arch2_q2_cf, 
                                                                             'Breusch-Pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'White'=Xt_t_student_symmetric_arch2_q2_w, 
                                                                             'Ljiung-Box'=Xt_t_student_symmetric_arch2_q2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch2_q2_adf, 
-                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch2_q2_sw))
+                                                                            'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch2_q2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # Il modello Arch(2) con distribuzione t-student simmetrica ha presenza di omoschedasticità
 # nella serie e assenza di autocorrelazione.
@@ -7037,6 +7571,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_arch2_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_arch2_q2_res
 num_lags <- 4                   # Setting the lag parameter for the test.
@@ -7205,7 +7740,7 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], l
                                                                                                       'Cullen-Frey'=Xt_t_student_symmetric_arch2_q2_cf, 
                                                                                                       'Breusch-Pagan'=Xt_t_student_symmetric_arch2_q2_bp, 'White'=Xt_t_student_symmetric_arch2_q2_w, 
                                                                                                       'Ljiung-Box'=Xt_t_student_symmetric_arch2_q2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_arch2_q2_adf, 
-                                                                                                      'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch2_q2_sw)))
+                                                                                                      'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_arch2_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_arch2_q2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # In questo modello Arch(2) con una distribuzione t-student simmetrica si ha evidenza di omoschedasticità nella serie
 # e assenza di autocorrelazione nei residui.
@@ -7295,6 +7830,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_arch1_q2_res
 num_lags <- 4                   # Setting the lag parameter for the test.
@@ -7462,7 +7998,7 @@ modello[['simulazione']][['arch_q2']][['asimmetrico']][['1']] <- append(modello[
                                                                              'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q2_cf, 
                                                                              'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'White'=Xt_t_student_asymmetric_arch1_q2_w, 
                                                                              'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q2_adf, 
-                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q2_sw))
+                                                                             'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # In questo modello Arch(2) con una distribuzione t-student asimmetrica si ha presenza di eteroschedasticità
 # ma con presenza di autocorrelazione. 
@@ -7565,6 +8101,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_arch1_q2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_arch1_q2_res
 num_lags <- 4                   # Setting the lag parameter for the test.
@@ -7733,7 +8270,7 @@ modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']],
                                                                     'Cullen-Frey'=Xt_t_student_asymmetric_arch1_q2_cf, 
                                                                     'Breusch-Pagan'=Xt_t_student_asymmetric_arch1_q2_bp, 'White'=Xt_t_student_asymmetric_arch1_q2_w, 
                                                                     'Ljiung-Box'=Xt_t_student_asymmetric_arch1_q2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_arch1_q2_adf, 
-                                                                    'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q2_sw)))
+                                                                    'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_arch1_q2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_arch1_q2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # In questo modello Arch(2) con una distribuzione t-student asimmetrica si ha presenza di eteroschedasticità
 # nel test di Breusch-Pagan ma presenza di omoschedasticità con il test di White; con i nuovi
@@ -7827,6 +8364,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch1_q2_p1_res
 num_lags <- 6                   # Setting the lag parameter for the test.
@@ -8102,6 +8640,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch1_q2_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -8364,6 +8903,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch2_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch2_q2_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -8555,7 +9095,7 @@ modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']] <- append(model
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p1_cf, 
                                                                                 'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p1_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p1_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p1_sw))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # In questo modello Garch(2,1) con distribuzione simmetrica si ha presenza di 
 # omoschedasticità e assenza di autocorrelazione.
@@ -8659,6 +9199,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch2_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch2_q2_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -8848,7 +9389,7 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p1_cf, 
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p1_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p1_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p1_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p1_sw)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # Con la stima dei nuovi parametri, il modello Garch(2,1) con distribuzione t-student
 # simmetrica ha presenza di eteroschedasticità nel modello e assenza di autocorrelazione
@@ -8941,6 +9482,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -9112,7 +9654,7 @@ modello[['simulazione']][['garch_q2_p1']][['asimmetrico']][['1']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p1_cf, 
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p1_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p1_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p1_sw))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # In questo modello Garch(2,1) con una distribuzione t-student asimmetrica si ha presenza
 # di omoschedasticità nel test di White e presenza di autocorrelazione.
@@ -9219,6 +9761,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch1_q2_p1_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 num_lags <- 5                   # Setting the lag parameter for the test.
@@ -9387,7 +9930,7 @@ modello[['stimati']][['garch_q2_p1']] <- append(modello[['stimati']][['garch_q2_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p1_cf, 
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p1_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p1_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p1_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p1_sw)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p1_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p1_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # Con i parametri stimati, il modello Garch(2,1) con distribuzione t-student asimmetrica
 # ha presenza di eteroschedasticità nei residui del modello e assenza di autocorrelazione
@@ -9479,6 +10022,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch1_q2_p2_res
 num_lags <- 7                   # Setting the lag parameter for the test.
@@ -9772,6 +10316,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_normal_garch1_q2_p2_res
 num_lags <- 7                   # Setting the lag parameter for the test.
@@ -10051,6 +10596,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch2_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch2_q2_p2_res
 num_lags <- 7                   # Setting the lag parameter for the test.
@@ -10241,7 +10787,7 @@ modello[['simulazione']][['garch_q2_p2']][['simmetrico']][['2']] <- append(model
                                                                                 'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p2_cf, 
                                                                                 'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p2_w, 
                                                                                 'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p2_adf, 
-                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p2_sw))
+                                                                                'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # In questo modello Garch(2,2) con una distribuzione t-student simmetrica
 # si ha presenza di omoschedasticità nei residui del modello e presenza di autocorrelazione.
@@ -10346,6 +10892,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_symmetric_garch2_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_symmetric_garch2_q2_p2_res
 num_lags <- 7                   # Setting the lag parameter for the test.
@@ -10537,7 +11084,7 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch2_q2_p2_cf, 
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch2_q2_p2_bp, 'White'=Xt_t_student_symmetric_garch2_q2_p2_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch2_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch2_q2_p2_adf, 
-                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p2_sw)))
+                                                                       'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_symmetric_garch2_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_symmetric_garch2_q2_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # Con i nuovi parametri stimati, nel modello Garch(2,2) con una distribuzione t-student simmetrica
 # si ha presenza di eteroschedasticità nei residui del modello e assenza di autocorrelazione.
@@ -10627,6 +11174,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 num_lags <- 7                   # Setting the lag parameter for the test.
@@ -10796,7 +11344,7 @@ modello[['simulazione']][['garch_q2_p2']][['asimmetrico']][['1']] <- append(mode
                                                                                  'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p2_cf, 
                                                                                  'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p2_w, 
                                                                                  'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p2_adf, 
-                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p2_sw))
+                                                                                 'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test))
 
 # In questo modello Garch(2,2) con distribuzione t-student asimmetrica si ha presenza di 
 # eteroschedasticità nel modello e presenza di autocorrelazione.
@@ -10901,6 +11449,7 @@ show(kurt)
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_t_student_asymmetric_garch1_q2_p2_cf <- descdist(Xt, discrete=FALSE, boot=500)
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 num_lags <- 7                   # Setting the lag parameter for the test.
@@ -11072,7 +11621,7 @@ modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch1_q2_p2_cf, 
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch1_q2_p2_bp, 'White'=Xt_t_student_asymmetric_garch1_q2_p2_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch1_q2_p2_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch1_q2_p2_adf, 
-                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p2_sw)))
+                                                                        'Kwiatowski-Phillips-Schmidt-Shin'=Xt_t_student_asymmetric_garch1_q2_p2_kpss, 'Shapiro-Wilk'=Xt_t_student_asymmetric_garch1_q2_p2_sw,                                                                             'Generalized Distribution'=fitdist_test)),                                                                             'Generalized Distribution'=fitdist_test)))
 
 # Con i nuovi parametri stimati, rispetto al modello precedente, si ha un modello Garch(2,2)
 # con una distribuzione t-student asimmetrica che ha evidenza di eteroschedasticità nel modello
