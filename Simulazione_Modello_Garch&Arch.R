@@ -2467,7 +2467,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -2480,7 +2480,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -2495,7 +2495,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -2544,7 +2544,7 @@ show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
 # Questo viene fatto cambiando il parametro m nella funzione *fitdistrplus::fitdist*.
-# fitdist_t_ls <- fitdistrplus::fitdist(z_st, dt_gstud, start=list(s=1, df=3), fix.arg=list(m=0), method= "mle")
+# fitdist_t_ls <- fitdistrplus::fitdist(z_st, dstd , start=list(s=1, df=5), fix.arg=list(m=0), method= "mle")
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "std", start=list(nu=3.2), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
@@ -2559,7 +2559,7 @@ summary(fitdist_t_ls)
 # Loglikelihood:  -697.9264   AIC:  1397.853   BIC:  1402.067 
 abs(5-5.841794) # 0.841794
 
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #   estimate   Std. Error
 # s  0.8116467 0.04316767
@@ -3044,7 +3044,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -3057,7 +3057,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -3072,7 +3072,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -4789,7 +4789,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -4902,7 +4902,7 @@ summary(fitdist_t_ls)
 # Loglikelihood:  -704.2682   AIC:  1410.536   BIC:  1414.751 
 
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- fitdist_glogis_location
 shp <- fitdist_glogis_shape
@@ -5346,7 +5346,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -5923,7 +5923,7 @@ show(skewness)
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
 # nu 4.7064719  0.6255521
@@ -6330,7 +6330,7 @@ show(skewness)
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
 # nu 4.8994564 0.75789977
@@ -7057,7 +7057,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -7070,7 +7070,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -7085,7 +7085,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -7099,15 +7099,15 @@ summary(fitdist_glogis)
 # Fitting of the distribution ' glogis ' by maximum likelihood 
 # Parameters : 
 #           estimate Std. Error
-# location -0.006418736 0.13310863
-# scale     0.548695880 0.03590097
-# shape     1.004792941 0.15548183
-# Loglikelihood:  -700.8565   AIC:  1407.713   BIC:  1420.357 
+# location 0.05767796 0.12045187
+# scale    0.52390486 0.03432382
+# shape    0.93099643 0.13631579
+# Loglikelihood:  -693.1906   AIC:  1392.381   BIC:  1405.019 
 # Correlation matrix:
-#            location    scale      shape
-# location  1.0000000 -0.7757615 -0.9481598
-# scale    -0.7757615  1.0000000  0.8189433
-# shape    -0.9481598  0.8189433  1.0000000
+#   location      scale      shape
+# location  1.0000000 -0.7611068 -0.9393534
+# scale    -0.7611068  1.0000000  0.8157231
+# shape    -0.9393534  0.8157231  1.0000000
 #
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -7591,7 +7591,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -7604,7 +7604,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -7619,7 +7619,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -7681,7 +7681,7 @@ summary(fitdist_t_ls)
 # sd       1
 # Loglikelihood:  -695.1662   AIC:  1392.332   BIC:  1396.547 
 #
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
 # s  0.7938275 0.04234867
@@ -7704,7 +7704,7 @@ m <- 0
 sd <- 1
 df <- round(fitdist_t_ls[['estimate']][['nu']])
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
@@ -7715,7 +7715,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
 lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -7728,7 +7728,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -8158,7 +8158,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -8171,7 +8171,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -8186,7 +8186,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -8238,7 +8238,7 @@ show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "std", start=list(nu=3.2), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
 # nu 3.496084  0.3018963
@@ -8257,7 +8257,7 @@ m <- 0
 sd <- 1
 df <- round(fitdist_t_ls[['estimate']][['nu']])
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
@@ -8268,7 +8268,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
 lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -8281,7 +8281,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -9983,7 +9983,7 @@ set.seed(123)
 skew <- skew <- DescTools::Skew(Xt_t_student_symmetric_arch2_q2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #     skew      lwr.ci    upr.ci 
-#  0.2881626 -0.4626866  1.1913669 
+#  0.0477896 -0.4597433  0.4788980 
 set.seed(123)
 kurt <- kurt <- DescTools::Kurt(Xt_t_student_symmetric_arch2_q2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
@@ -9998,22 +9998,22 @@ Xt_t_student_symmetric_arch2_q2_cf <- append(Xt_t_student_symmetric_arch2_q2_cf,
 show(cf)
 # summary statistics
 # ------
-# min:  -5.581118   max:  6.48243 
-# median:  -0.04598215 
-# mean:  -0.02881437 
-# estimated sd:  1.003554 
-# estimated skewness:  0.2881626 
-# estimated kurtosis:  9.405644 
+# min:  -3.284355   max:  3.178185 
+# median:  -0.0329561 
+# mean:  -0.02391484 
+# estimated sd:  0.6538484 
+# estimated skewness:  0.0477896 
+# estimated kurtosis:  6.234913 
 
 # Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_symmetric_arch2_q2_res
 show(c(mean(y),var(y)))
-# [1] 2.497666e-17 1.006401e+00
+# [1] 3.815633e-18 4.272211e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -1.086989e-17  1.000000e+00
+# [1] 6.784124e-18 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -10022,12 +10022,12 @@ Xt_t_student_symmetric_arch2_q2_cf <- append(Xt_t_student_symmetric_arch2_q2_cf,
 show(cf)
 # summary statistics
 # ------
-# min:  -5.563591   max:  6.46172 
-# median:  -0.02122822 
-# mean:  1.594395e-17 
+# min:  -5.016809   max:  4.870653 
+# median:  -0.01403835 
+# mean:  6.784124e-18 
 # estimated sd:  1 
-# estimated skewness:  0.268565 
-# estimated kurtosis:  9.381576 
+# estimated skewness:  0.0330962 
+# estimated kurtosis:  6.223267 
 
 # Esploriamo queste possibilità in più dettagli.
 z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
@@ -10037,7 +10037,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -10050,7 +10050,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -10065,7 +10065,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -10079,15 +10079,15 @@ summary(fitdist_glogis)
 # Fitting of the distribution ' glogis ' by maximum likelihood 
 # Parameters : 
 #           estimate Std. Error
-# location 0.01666357 0.10509817
-# scale    0.49856668 0.03062763
-# shape    0.96620443 0.13107762
-# Loglikelihood:  -670.0434   AIC:  1346.087   BIC:  1358.731 
+# location 0.01318935 0.11641283
+# scale    0.52018156 0.03299072
+# shape    0.97590034 0.13999702
+#Loglikelihood:  -685.1963   AIC:  1376.393   BIC:  1389.036 
 # Correlation matrix:
-#           location      scale      shape
-# location  1.0000000 -0.7270929 -0.9308092
-# scale    -0.7270929  1.0000000  0.7851714
-# shape    -0.9308092  0.7851714  1.0000000
+#        location      scale     shape
+# location  1.0000000 -0.7505517 -0.938574
+# scale    -0.7505517  1.0000000  0.802224
+# shape    -0.9385740  0.8022240  1.000000
 #
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -10096,9 +10096,9 @@ fitdist_test[["glogis"]][["bootdist"]] <- fitdist_glogis_bd
 summary(fitdist_glogis_bd)
 # Parametric bootstrap medians and 95% percentile CI 
 #            Median       2.5%     97.5%
-# location 0.01023479 -0.2830888 0.2412333
-# scale    0.49735350  0.4319477 0.5716965
-# shape    0.97227289  0.7070451 1.4221003
+# location 0.005994848 -0.3002384 0.2472756
+# scale    0.518903793  0.4507412 0.5964519
+# shape    0.981520199  0.7132867 1.4386685
 # We fix the initial points of the constrained maximization procedure
 location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
 scale <- fitdist_glogis_bd[["fitpart"]][["estimate"]][2]
@@ -10109,7 +10109,7 @@ fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the
 # starting point.
 show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
 #   location    scale       shape 
-# 0.01674752 0.49852464 0.96600238 
+# 0.01355793 0.52011496 0.97538212  
 #
 logLik <- -fminunc_result$value # the minimized negative log-likelihood
 n <- length(z_st)
@@ -10119,7 +10119,7 @@ BIC <- k*log(n)-2*logLik
 AICc <- AIC + 2*k*((k+1)/(n-k-1))
 show(c(logLik, AIC, BIC, AICc))
 #    logLik    AIC       BIC      AICc
-# -670.0434 1346.0867 1358.7305 1346.1351
+# -685.1963 1376.3926 1389.0364 1376.4410
 #
 fitdist_glogis_location <- as.numeric(fitdist_glogis$estimate[1])
 fitdist_glogis_scale <- as.numeric(fitdist_glogis$estimate[2])
@@ -10127,31 +10127,10 @@ fitdist_glogis_shape <- as.numeric(fitdist_glogis$estimate[3])
 # Notiamo:
 round(c(fitdist_glogis_location, fitdist_glogis_scale, fitdist_glogis_shape),4)
 # location   scale    shape
-#  0.0167   0.4986 0.9662
+#  0.0132 0.5202 0.9759
 round(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3]),4)
 # location   scale    shape
-#  0.0167   0.4985   0.9660  
-
-# Setting
-location <- fitdist_glogis[["estimate"]][["location"]]
-scale <- fitdist_glogis[["estimate"]][["scale"]]
-shape <- fitdist_glogis[["estimate"]][["shape"]]
-# We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
-# generalized logistic.
-loc <- round(location,4)
-scl <- round(scale,4)
-shp <- round(shape,4)
-show(c(loc,scl,shp))
-# 0.0833 0.5305 0.9105
-Est_Gen_Log_Dens_Func <- bquote(paste("Estimated Generalized Logistic Density Function, location = ", .(loc), ", scale = ", .(scl) , ", shape = ", .(shp)))
-hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), 
-     freq=FALSE, main= "Density Histogram of the Standardized Residuals of the ARCH(2) model + Empirical Density Function + Estimated Generalized Logistic Density", xlab= "Standardized Residuals", ylab= "Density")
-lines(density(z_st), lwd=2, col= "darkgreen")
-lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", Est_Gen_Log_Dens_Func), 
-       col=c("darkgreen", "magenta"),
-       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
-       inset=-0.01, bty= "n")
+# 0.0136   0.5201   0.9754  
 
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
@@ -10162,16 +10141,50 @@ summary(fitdist_t_ls)
 # Fitting of the distribution ' t_ls ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
-# s  0.6562312 0.03898811
-# df 3.2964093 0.54830763
+# nu 4.256257  0.5440075
 # Fixed parameters:
-#   value
-# m     0
-# Loglikelihood:  -659.5316   AIC:  1323.063   BIC:  1331.492 
-# Correlation matrix:
-#       s        df
-# s  1.0000000 0.6731859
-# df 0.6731859 1.0000000
+#       value
+# mean     0
+# sd       1
+#Loglikelihood:  -681.2307   AIC:  1364.461   BIC:  1368.676 
+
+# Setting
+loc <- fitdist_glogis[["estimate"]][["location"]]
+scl <- fitdist_glogis[["estimate"]][["scale"]]
+shp <- fitdist_glogis[["estimate"]][["shape"]]
+#
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+# Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
+# scale=sqrt(3)/pi e shape=1.
+Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", scl, ", shape = ", .(shp)))
+plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
+hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
+     freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the ARCH(2) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
+lines(x, y_d, lwd=2, col= "darkblue")
+lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, dstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
+lines(x, dglogis(x, location=loc, scale=scl, shape=shp), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+# Plot della funzione di distribuzione empirica dei residui standardizzati
+Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
+     main= "Empirical Distribution Function of the Standardized Residuals of the ARCH(2) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
+lines(x, y_p, lwd=2, col= "darkblue")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, pstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
+lines(x, pglogis(x, location=loc, scale=scl, shape=shp), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
@@ -10183,34 +10196,23 @@ fitdist_test[["glogis"]][["Kolmogorov-Smirnov"]] <- KS_z_st_glogis
 show(KS_z_st_glogis)
 # 	Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.039507, p-value = 0.4161
+# D = 0.033191, p-value = 0.6403
 # alternative hypothesis: two-sided
 # Con un p-value cosi alto, non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
 # che la serie è una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", mean=m, sd=sd, nu=df, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.31479, p-value < 2.2e-16
+# D = 0.021119, p-value = 0.979
 # alternative hypothesis: two-sided
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
 #
-# Utilizzando i parametri ottenuti da fitdistrplus::fitdist
-m <- 0
-s <- round(fitdist_t_ls[['estimate']][['s']],4)
-df <- round(fitdist_t_ls[['estimate']][['df']],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
-fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.024899, p-value = 0.9159
-# alternative hypothesis: two-sided
 
 # The Cramer-Von Mises test in the library *goftest*.
 # This function performs the Cramer-Von Mises test of goodness-of-fit to the distribution specified by the argument null. It is assumed that the 
@@ -10224,26 +10226,26 @@ fitdist_test[["glogis"]][["Cramer-Von Mises"]] <- CVM_z_st_glogis
 show(CVM_z_st_glogis)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘pglogis’
-# with parameters location = 0.0167, scale = 0.4986, shape = 0.9662
+# with parameters location = 0.0132, scale = 0.5202, shape = 0.9759
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 0.16694, p-value = 0.3419
+# omega2 = 0.094272, p-value = 0.6139
 # Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", m=0, s=s, df=df, estimated=FALSE)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.0167, df = 0.4985
+# with parameters mean = 0, sd = 1, nu = 4
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 20.123, p-value < 2.2e-16
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
+# omega2 = 0.029751, p-value = 0.9771
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
@@ -10254,24 +10256,24 @@ fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
 show(AD_z_st_glogis)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘pglogis’
-# with parameters location = 0.0166635678660593, scale = 0.498566684449701, shape = 0.966204430158391
+# with parameters location = 0.0131893459664435, scale = 0.520181556933482, shape = 0.975900340456598
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 1.024, p-value = 0.3449
+# An = 0.59025, p-value = 0.6572
 # Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
 AD_z_st_t_ls <- goftest::ad.test(z_st, null = "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.0167, df = 0.4985
+# with parameters mean = 0, sd = 1, nu = 4
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 159.01, p-value = 1.2e-06
+# An = 0.23432, p-value = 0.9781
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
@@ -10284,7 +10286,7 @@ summary(Xt_t_student_symmetric_arch2_q2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_symmetric_arch2_q2_res   
 Xt_t_student_symmetric_arch2_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -10381,13 +10383,13 @@ plot(Xt_t_student_symmetric_arch2_q2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_arch2_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_arch2_q2)
 show(Xt_t_student_symmetric_arch2_q2_bp)
-# Si ha un p-value di 0.05495 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.06779 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_arch2_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_arch2_q2)
 show(Xt_t_student_symmetric_arch2_q2_w)
-# Si ha un p-value di 0.1056 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.143 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -10428,7 +10430,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_arch2_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.1745, df = 1, p-value = 0.2785
+# X-squared = 0.51582, df = 1, p-value = 0.4726
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
@@ -10535,12 +10537,12 @@ set.seed(123)
 skew <- skew <- DescTools::Skew(Xt_t_student_symmetric_arch2_q2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #     skew      lwr.ci    upr.ci 
-#  0.2881626 -0.4626866  1.1913669 
+#  0.0477896 -0.4597433  0.4788980
 set.seed(123)
 kurt <- kurt <- DescTools::Kurt(Xt_t_student_symmetric_arch2_q2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #      kurt      lwr.ci      upr.ci 
-#     6.405644  3.595817 10.055224
+#     3.234913 2.024320 4.740100
 
 Xt_t_student_symmetric_arch2_q2_cf <- list()
 # Cullen-Frey
@@ -10550,22 +10552,22 @@ Xt_t_student_symmetric_arch2_q2_cf <- append(Xt_t_student_symmetric_arch2_q2_cf,
 show(cf)
 # summary statistics
 # ------
-# min:  -7.931665   max:  7.075343 
-# median:  -0.09094344 
-# mean:  -0.06743611 
-# estimated sd:  1.697502 
-# estimated skewness:  -0.005473358 
-# estimated kurtosis:  5.343186 
+# min:  -4.302721   max:  3.548004 
+# median:  -0.05402259 
+# mean:  -0.04114046 
+# estimated sd:  0.9674306 
+# estimated skewness:  -0.05144538 
+# estimated kurtosis:  4.900747 
 
 # Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_symmetric_arch2_q2_res
 show(c(mean(y),var(y)))
-# [1] 1.961354e-17 2.879436e+00
+# [1] 1.19838e-17 9.35246e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] 9.267001e-18 1.000000e+00
+# [1] 1.066692e-17 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -10574,12 +10576,12 @@ Xt_t_student_symmetric_arch2_q2_cf <- append(Xt_t_student_symmetric_arch2_q2_cf,
 show(cf)
 # summary statistics
 # ------
-# min:  -4.663584   max:  4.180432 
-# median:  -0.01235897 
-# mean:  9.267001e-18 
+# min:  -4.435761   max:  3.665265 
+# median:  -0.0110929 
+# mean:  1.066692e-17 
 # estimated sd:  1 
-# estimated skewness:  -0.01830406 
-# estimated kurtosis:  5.32931 
+# estimated skewness:  -0.0628364 
+# estimated kurtosis:  4.88613 
 
 # Esploriamo queste possibilità in più dettagli.
 z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
@@ -10589,7 +10591,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
@@ -10602,7 +10604,7 @@ lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Log_Dens_Func), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -10617,7 +10619,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
        col=c("darkblue", "red","darkgreen","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -10631,15 +10633,15 @@ summary(fitdist_glogis)
 # Fitting of the distribution ' glogis ' by maximum likelihood 
 # Parameters : 
 #           estimate Std. Error
-# location 0.01408616 0.12093299
-# scale    0.52793686 0.03393082
-# shape    0.97682022 0.14314429
-# Loglikelihood:  -690.655   AIC:  1387.31   BIC:  1399.954 
+# location 0.02428212 0.12255514
+# scale    0.53013874 0.03434561
+# shape    0.96704017 0.14276981
+# Loglikelihood:  -693.5562   AIC:  1393.112   BIC:  1405.756 
 # Correlation matrix:
-#            location      scale      shape
-# location  1.0000000 -0.7591317 -0.9412159
-# scale    -0.7591317  1.0000000  0.8087876
-# shape    -0.9412159  0.8087876  1.0000000
+#  location      scale      shape
+# location  1.0000000 -0.7621369 -0.9417586
+# scale    -0.7621369  1.0000000  0.8123080
+# shape    -0.9417586  0.8123080  1.0000000
 #
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -10648,9 +10650,9 @@ fitdist_test[["glogis"]][["bootdist"]] <- fitdist_glogis_bd
 summary(fitdist_glogis_bd)
 # Parametric bootstrap medians and 95% percentile CI 
 #            Median       2.5%     97.5%
-# location 0.007328097 -0.3045767 0.2520008
-# scale    0.526591188  0.4574519 0.6051668
-# shape    0.982508147  0.7140331 1.4402622
+# location 0.01712643 -0.2941393 0.2634145
+# scale    0.52870543  0.4592990 0.6079342
+# shape    0.97269156  0.7075249 1.4238595
 # We fix the initial points of the constrained maximization procedure
 location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
 scale <- fitdist_glogis_bd[["fitpart"]][["estimate"]][2]
@@ -10661,7 +10663,7 @@ fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the
 # starting point.
 show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
 #   location    scale       shape 
-# 0.0143142 0.5279449 0.9768183  
+# 0.0239515 0.5301768 0.9674039 
 #
 logLik <- -fminunc_result$value # the minimized negative log-likelihood
 n <- length(z_st)
@@ -10671,7 +10673,7 @@ BIC <- k*log(n)-2*logLik
 AICc <- AIC + 2*k*((k+1)/(n-k-1))
 show(c(logLik, AIC, BIC, AICc))
 #    logLik    AIC       BIC      AICc
-# -690.655 1387.310 1399.954 1387.358
+#  -693.5562 1393.1124 1405.7562 1393.1608
 #
 fitdist_glogis_location <- as.numeric(fitdist_glogis$estimate[1])
 fitdist_glogis_scale <- as.numeric(fitdist_glogis$estimate[2])
@@ -10679,31 +10681,10 @@ fitdist_glogis_shape <- as.numeric(fitdist_glogis$estimate[3])
 # Notiamo:
 round(c(fitdist_glogis_location, fitdist_glogis_scale, fitdist_glogis_shape),4)
 # location   scale    shape
-#  0.0141   0.5279   0.9768
+# 0.0243 0.5301 0.9670
 round(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3]),4)
 # location   scale    shape
-#  0.0143   0.5279   0.9768  
-
-# Setting
-location <- fitdist_glogis[["estimate"]][["location"]]
-scale <- fitdist_glogis[["estimate"]][["scale"]]
-shape <- fitdist_glogis[["estimate"]][["shape"]]
-# We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
-# generalized logistic.
-loc <- round(location,4)
-scl <- round(scale,4)
-shp <- round(shape,4)
-show(c(loc,scl,shp))
-# 0.0833 0.5305 0.9105
-Est_Gen_Log_Dens_Func <- bquote(paste("Estimated Generalized Logistic Density Function, location = ", .(loc), ", scale = ", .(scl) , ", shape = ", .(shp)))
-hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), 
-     freq=FALSE, main= "Density Histogram of the Standardized Residuals of the ARCH(2) model + Empirical Density Function + Estimated Generalized Logistic Density", xlab= "Standardized Residuals", ylab= "Density")
-lines(density(z_st), lwd=2, col= "darkgreen")
-lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", Est_Gen_Log_Dens_Func), 
-       col=c("darkgreen", "magenta"),
-       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
-       inset=-0.01, bty= "n")
+#  0.0240   0.5302   0.9674 
 
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
@@ -10714,16 +10695,50 @@ summary(fitdist_t_ls)
 # Fitting of the distribution ' t_ls ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
-# s  0.7585366 0.04415249
-# df 4.4612980 0.96356301
+# nu 5.026982  0.8611653
 # Fixed parameters:
 #   value
-# m     0
-# Loglikelihood:  -688.6327   AIC:  1381.265   BIC:  1389.695 
-# Correlation matrix:
-#       s        df
-# s  1.0000000 0.7077076
-# df 0.7077076 1.0000000
+# mean     0
+# sd       1
+# Loglikelihood:  -692.5503   AIC:  1387.101   BIC:  1391.315 
+
+# Setting
+loc <- fitdist_glogis[["estimate"]][["location"]]
+scl <- fitdist_glogis[["estimate"]][["scale"]]
+shp <- fitdist_glogis[["estimate"]][["shape"]]
+#
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+# Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
+# scale=sqrt(3)/pi e shape=1.
+Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", scl, ", shape = ", .(shp)))
+plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
+hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
+     freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the ARCH(2) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
+lines(x, y_d, lwd=2, col= "darkblue")
+lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, dstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
+lines(x, dglogis(x, location=loc, scale=scl, shape=shp), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+# Plot della funzione di distribuzione empirica dei residui standardizzati
+Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
+     main= "Empirical Distribution Function of the Standardized Residuals of the ARCH(2) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
+lines(x, y_p, lwd=2, col= "darkblue")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, pstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "red")
+lines(x, pglogis(x, location=loc, scale=scl, shape=shp), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
@@ -10735,34 +10750,22 @@ fitdist_test[["glogis"]][["Kolmogorov-Smirnov"]] <- KS_z_st_glogis
 show(KS_z_st_glogis)
 # 	Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.028985, p-value = 0.7949
+# D = 0.025986, p-value = 0.8883
 # alternative hypothesis: two-sided
 # Con un p-value cosi alto, non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
 # che la serie è una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", mean=m, sd=sd, nu=df, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.33847, p-value < 2.2e-16
+# D = 0.020747, p-value = 0.9825
 # alternative hypothesis: two-sided
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
-#
-# Utilizzando i parametri ottenuti da fitdistrplus::fitdist
-m <- 0
-s <- round(fitdist_t_ls[['estimate']][['s']],4)
-df <- round(fitdist_t_ls[['estimate']][['df']],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
-fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.022404, p-value = 0.9633
-# alternative hypothesis: two-sided
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
 
 # The Cramer-Von Mises test in the library *goftest*.
 # This function performs the Cramer-Von Mises test of goodness-of-fit to the distribution specified by the argument null. It is assumed that the 
@@ -10776,24 +10779,24 @@ fitdist_test[["glogis"]][["Cramer-Von Mises"]] <- CVM_z_st_glogis
 show(CVM_z_st_glogis)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘pglogis’
-# with parameters location = 0.0141, scale = 0.5279, shape = 0.9768
+# with parameters location = 0.0243, scale = 0.5301, shape = 0.967
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 0.069877, p-value = 0.7525
+# omega2 = 0.057778, p-value = 0.8282
 # Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", m=0, s=s, df=df, estimated=FALSE)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
-# Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.0143, df = 0.5279
+# Null hypothesis: distribution ‘pstd’
+# with parameters mean = 0, sd = 1, nu = 5
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 23.327, p-value < 2.2e-16
+# omega2 = 0.024975, p-value = 0.9897
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
@@ -10806,26 +10809,26 @@ fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
 show(AD_z_st_glogis)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘pglogis’
-# with parameters location = 0.0140861607603367, scale = 0.527936863191365, shape = 0.976820220708653
+# with parameters location = 0.0242821159700998, scale = 0.530138740070849, shape = 0.967040165803978
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 0.45585, p-value = 0.792
+# An = 0.3979, p-value = 0.8508
 # Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
 AD_z_st_t_ls <- goftest::ad.test(z_st, null = "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.0143, df = 0.5279
+# with parameters mean = 0, sd = 1, nu = 5
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 202.76, p-value = 1.2e-06
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata
+# An = 0.19936, p-value = 0.9906
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata
 
 # La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
@@ -10933,13 +10936,13 @@ plot(Xt_t_student_symmetric_arch2_q2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_arch2_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_arch2_q2)
 show(Xt_t_student_symmetric_arch2_q2_bp)
-# Si ha un p-value di 0.08707 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.111 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_arch2_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_arch2_q2)
 show(Xt_t_student_symmetric_arch2_q2_w)
-# Si ha un p-value di 0.1964 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.2541 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -10980,7 +10983,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_arch2_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 0.29774, df = 1, p-value = 0.5853
+# X-squared = 0.19128, df = 1, p-value = 0.6619
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
@@ -11080,18 +11083,18 @@ s <- DescTools::Skew(Xt_t_student_asymmetric_arch1_q2, weights=NULL, na.rm=TRUE,
 skew[['0.80']] <- s
 show(s)
 #  skew       lwr.ci      upr.ci 
-# -1.953076 -2.282325 -1.697657 
+# -1.054419 -1.367669 -0.698684  
 set.seed(123)
 s <- DescTools::Skew(Xt_t_student_asymmetric_arch1_q2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 skew[['0.99']] <- s
 show(s)
 #  skew       lwr.ci      upr.ci 
-# -1.953076 -2.678542  -1.400344  
+# -1.0544191 -1.6279523 -0.1983669  
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_asymmetric_arch1_q2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #   kurt   lwr.ci   upr.ci 
-# 5.677547 4.243872 8.020919 
+# 3.445536 2.659977 4.614481  
 
 Xt_t_student_asymmetric_arch1_q2_cf <- list()
 # Cullen-Frey
@@ -11101,12 +11104,12 @@ Xt_t_student_asymmetric_arch1_q2_cf <- append(Xt_t_student_asymmetric_arch1_q2_c
 show(cf)
 # summary statistics
 # ------
-# min:  -2.735619   max:  0.09346241 
-# median:  -0.30326 
-# mean:  -0.3937797 
-# sample sd:  0.4018346 
-# sample skewness:  -1.947212 
-# sample kurtosis:  8.608955   
+# min:  -3.232504   max:  2.863358 
+# median:  0.0714099 
+# mean:  -0.004656135 
+# sample sd:  0.7045951 
+# sample skewness:  -1.051253 
+# sample kurtosis:  6.399201
 # Dal grafico di Cullen-Frey, la serie potrebbe seguire una distribuzione t-student.
 
 # Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
@@ -11114,10 +11117,10 @@ show(cf)
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_asymmetric_arch1_q2_res
 show(c(mean(y),var(y)))
-# [1] -3.773945e-18  1.597635e-01
+# [1] 3.137573e-18 4.973176e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -7.396861e-18  1.000000e+00
+# [1] 2.909565e-18 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -11126,189 +11129,83 @@ Xt_t_student_asymmetric_arch1_q2_cf <- append(Xt_t_student_asymmetric_arch1_q2_c
 show(cf)
 # summary statistics
 # ------
-# min:  -5.785182   max:  1.341542 
-# median:  0.2022792 
-# mean:  -7.396861e-18 
+# min:  -4.584982   max:  4.091947 
+# median:  0.1096481 
+# mean:  2.909565e-18 
 # sample sd:  0.9989995 
-# sample skewness:  -1.876595 
-# sample kurtosis:  8.390935 
+# sample skewness:  -1.035504 
+# sample kurtosis:  6.388775  
 
 fitdist_test <- list()
-# Distribuzione gamma generalizzata
-# Come prima cosa, fittiamo la distribuzione gamma generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_ggamma <- fitdistrplus::fitdist(z_st, "gengamma", start=list(mu=0, sigma=1, Q=1), method= "mge")
-fitdist_test[["ggamma"]][["ggamma"]] <- fitdist_ggamma
-summary(fitdist_ggamma)
-# Fitting of the distribution ' t_ggamma ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# mu    0.2998580
-# sigma 0.3220883
-# Q     9.6067898
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf
-
-# Distribuzione beta generalizzata
-# Come prima cosa, fittiamo la distribuzione beta generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_gbeta <- fitdistrplus::fitdist(z_st, "genbeta", start=list(shape1=1, shape2=2, shape3=3, scale = sqrt(3)/pi), method= "mge")
-fitdist_test[["gbeta"]][["gbeta"]] <- fitdist_gbeta
-summary(fitdist_gbeta)
-# Fitting of the distribution ' t_gbeta ' by maximum goodness-of-fit 
-# Parameters : 
-#          estimate
-# shape1  0.1421514
-# shape2 0.3333217
-# shape3 1.5011324
-# scale  0.9938409
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf  
-
 # Distribuzione student asimmetrica generalizzata
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, "ast", start=list(alpha=sqrt(1/3), nu1=3, nu2=2), method= "mle")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
-# alpha   0.5312798   0.01769793
-# nu1     4.9854382   1.27689763
-# nu2   342.2148545 400.83219053
-# Loglikelihood:  -674.0007   AIC:  1354.001   BIC:  1366.645 
+# nu 4.2184862  0.4762162
+# xi 0.7451216  0.0438584
+# Fixed parameters:
+#   value
+# mean     0
+# sd       1
+# Loglikelihood:  -661.0156   AIC:  1326.031   BIC:  1334.46 
 # Correlation matrix:
-#   alpha          nu1          nu2
-# alpha 1.000000000  0.283453549  0.005803241
-# nu1   0.283453549  1.000000000 -0.001565643
-# nu2   0.005803241 -0.001565643  1.000000000
-
-# Distribuzione esponenziale generalizzata
-fitdist_gexp <- fitdistrplus::fitdist(z_st, dt_gexp, start=list(lambda=1, a=1), method= "mge")
-fitdist_test[["gexp"]][["gexp"]] <- fitdist_gexp
-summary(fitdist_gexp)
-# Fitting of the distribution ' t_gexp ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# lambda 0.9276956
-# a      0.3505553
-#Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf 
+#     nu         xi
+# nu  1.0000000 -0.2357207
+# xi -0.2357207  1.0000000
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-KS_z_st_ggamma <- ks.test(z_st, y="pgengamma", mu=loc, sigma=scl, Q=shp, alternative= "two.sided")
-fitdist_test[["ggamma"]][["Kolmogorov-Smirnov"]] <- KS_z_st_ggamma
-show(KS_z_st_ggamma)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.396, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-shape1 <- round(fitdist_gbeta[["estimate"]][["shape1"]],4)
-shape2 <- round(fitdist_gbeta[["estimate"]][["shape2"]],4)
-shape3 <- round(fitdist_gbeta[["estimate"]][["shape3"]],4)
-scl <- round(fitdist_gbeta[["estimate"]][["scale"]],4)
-KS_z_st_gbeta <- ks.test(z_st, y="pgenbeta", shape1=shape1, shape2=shape2, shape3=shape3, scale=scl, alternative= "two.sided")
-fitdist_test[["gbeta"]][["Kolmogorov-Smirnov"]] <- KS_z_st_gbeta
-show(KS_z_st_gbeta)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.382, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="past", alpha=alpha, nu1=nu1, nu2=nu2, alternative= "two.sided")
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="psstd", m=m, sd=sd, nu=df, xi=xi, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.15065, p-value = 2.78e-10
+# D = 0.068265, p-value = 0.01893
 # alternative hypothesis: two-sided
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student asimmetrica generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
-#
-# Setting
-lambda <- round(fitdist_gexp[["estimate"]][["lambda"]],4)
-a <- round(fitdist_gexp[["estimate"]][["a"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_gexp", a=a, lambda=lambda, alternative= "two.sided")
-fitdist_test[["gexp"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.396, p-value < 2.2e-16
-# alternative hypothesis: two-sided
 
 # Cramer-von Mises test of goodness-of-fit
 # Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5313, nu1 = 4.9854, nu2 = 342.2149
+# with parameters mean = 0, sd = 1, nu = 4, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 4.2636, p-value < 2.2e-16
+# omega2 = 0.77988, p-value = 0.008145
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-AD_z_st_ggamma <- goftest::ad.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Anderson-Darling"]] <- AD_z_st_ggamma
-show(AD_z_st_ggamma)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2999, sigma = 0.3221, Q = 9.6068
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-shape1 <- round(fitdist_gbeta[["estimate"]][["shape1"]],4)
-shape2 <- round(fitdist_gbeta[["estimate"]][["shape2"]],4)
-shape3 <- round(fitdist_gbeta[["estimate"]][["shape3"]],4)
-scl <- round(fitdist_gbeta[["estimate"]][["scale"]],4)
-AD_z_st_gbeta <- goftest::ad.test(z_st, null= "pgenbeta",  shape1=shape1, shape2=shape2, shape3=shape3, scale=scl, estimated=FALSE)
-fitdist_test[["gbeta"]][["Anderson-Darling"]] <- AD_z_st_gbeta
-show(AD_z_st_gbeta)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters shape1 = 0.034, shape2 = 1.8098, shape3 = 10.676, scale = 1.5659
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-AD_z_st_t_ls <- goftest::ad.test(z_st, "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5313, nu1 = 4.9854, nu2 = 342.2149
+# with parameters mean = 0, sd = 1, nu = 4, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 21.662, p-value = 1.2e-06
+# An = 4.0598, p-value = 0.00816
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
@@ -11321,7 +11218,7 @@ summary(Xt_t_student_asymmetric_arch1_q2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_asymmetric_arch1_q2_res   
 Xt_t_student_asymmetric_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -11418,13 +11315,13 @@ plot(Xt_t_student_asymmetric_arch1_q2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch1_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch1_q2)
 show(Xt_t_student_asymmetric_arch1_q2_bp)
-# Si ha un p-value di  0.008644 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di  0.001449 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_arch1_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_arch1_q2)
 show(Xt_t_student_asymmetric_arch1_q2_w)
-# Si ha un p-value di 0.0311 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.00608 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -11465,7 +11362,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_arch1_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 18.342, df = 1, p-value = 1.846e-05
+# X-squared = 1.2676, df = 1, p-value = 0.2602
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
@@ -11575,18 +11472,18 @@ s<- DescTools::Skew(Xt_t_student_asymmetric_arch1_q2_res, weights=NULL, na.rm=TR
 skew[['0.80']] <- s
 show(s)
 #  skew       lwr.ci      upr.ci 
-# -1.719841 -2.060248 -1.481361 
+# -1.1576415 -1.5178810 -0.9058469
 set.seed(123)
 s<- DescTools::Skew(Xt_t_student_asymmetric_arch1_q2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 skew[['0.99']] <- s
 show(s)
 #  skew       lwr.ci      upr.ci 
-# -1.719841 -2.385585 -1.250526  
+# -1.1576415 -1.7498957 -0.6540517  
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_asymmetric_arch1_q2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
-# 4.487039 3.086632 6.572315
+# 3.249043 2.265292 4.778715
 
 Xt_t_student_asymmetric_arch1_q2_cf <- list()
 # Cullen-Frey
@@ -11596,12 +11493,12 @@ Xt_t_student_asymmetric_arch1_q2_cf <- append(Xt_t_student_asymmetric_arch1_q2_c
 show(cf)
 # summary statistics
 # ------
-# min:  -2.50563   max:  0.09254517 
-# median:  -0.3117069 
-# mean:  -0.3929088 
-# sample sd:  0.3873124 
-# sample skewness:  -1.765816 
-# sample kurtosis:  7.585634  
+# min:  -5.642719   max:  3.234806 
+# median:  0.1091652 
+# mean:  0.0005123739 
+# sample sd:  1.131737 
+# sample skewness:  -1.168482 
+# sample kurtosis:  6.227255  
 # Dal grafico di Cullen-Frey, la serie potrebbe seguire una distribuzione t-student.
 
 # Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
@@ -11609,10 +11506,10 @@ show(cf)
 # Calcolo dei residui standardizzati
 y <- residuals(fit)
 show(c(mean(y),var(y)))
-# [1] 0.0002667849 0.3834332078
+# [1] 0.001536828 1.112368888
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -3.100168e-18  1.000000e+00
+# [1] 1.877908e-17 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -11621,192 +11518,86 @@ Xt_t_student_asymmetric_arch1_q2_cf <- append(Xt_t_student_asymmetric_arch1_q2_c
 show(cf)
 # summary statistics
 # ------
-# min:  -5.470414   max:  1.2569 
-# median:  0.2106966 
-# mean:  3.019438e-17 
+# min:  -5.098489   max:  2.558423 
+# median:  0.1341632 
+# mean:  1.877908e-17 
 # sample sd:  0.9989975 
-# sample skewness:  -1.759615 
-# sample kurtosis:  7.593119 
+# sample skewness:  -1.245177 
+# sample kurtosis:  6.296855 
 
 fitdist_test <- list()
-# Distribuzione gamma generalizzata
-# Come prima cosa, fittiamo la distribuzione gamma generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_ggamma <- fitdistrplus::fitdist(z_st, "gengamma", start=list(mu=0, sigma=1, Q=1), method= "mge")
-fitdist_test[["ggamma"]][["ggamma"]] <- fitdist_ggamma
-summary(fitdist_ggamma)
-# Fitting of the distribution ' t_ggamma ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# mu    0.2999770
-# sigma 0.3215918
-# Q     9.3347305
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf
-
-# Distribuzione beta generalizzata
-# Come prima cosa, fittiamo la distribuzione beta generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_gbeta <- fitdistrplus::fitdist(z_st, "genbeta", start=list(shape1=1, shape2=2, shape3=3, scale = sqrt(3)/pi), method= "mge")
-fitdist_test[["gbeta"]][["gbeta"]] <- fitdist_gbeta
-summary(fitdist_gbeta)
-# Fitting of the distribution ' t_gbeta ' by maximum goodness-of-fit 
-# Parameters : 
-#          estimate
-# shape1  0.1421514
-# shape2 0.3333217
-# shape3 1.5011324
-# scale  0.9938409
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf  
-
 # Distribuzione student asimmetrica generalizzata
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, "ast", start=list(alpha=sqrt(1/3), nu1=3, nu2=2), method= "mle")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
-# alpha   0.5323466 1.738037e-02
-# nu1     5.2525012 1.399166e+00
-# nu2   342.2224861 1.002802e+03
-# Loglikelihood:  -676.1899   AIC:  1358.38   BIC:  1371.018 
+# nu 5.4891534 0.94582629
+# xi 0.6899426 0.04274545
+# Fixed parameters:
+#        value
+# mean     0
+# sd       1
+# Loglikelihood:  -663.9724   AIC:  1331.945   BIC:  1340.37 
 # Correlation matrix:
-#         alpha          nu1          nu2
-# alpha 1.00000000  0.284149907  0.016476848
-# nu1   0.28414991  1.000000000 -0.003361853
-# nu2   0.01647685 -0.003361853  1.000000000
-
-# Distribuzione esponenziale generalizzata
-fitdist_gexp <- fitdistrplus::fitdist(z_st, dt_gexp, start=list(lambda=1, a=1), method= "mge")
-fitdist_test[["gexp"]][["gexp"]] <- fitdist_gexp
-summary(fitdist_gexp)
-# Fitting of the distribution ' t_gexp ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# lambda 0.9091717
-# a      0.3543430
-#Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf 
+#         nu         xi
+# nu  1.0000000 -0.2875501
+# xi -0.2875501  1.0000000
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-KS_z_st_ggamma <- ks.test(z_st, y="pgengamma", mu=loc, sigma=scl, Q=shp, alternative= "two.sided")
-fitdist_test[["ggamma"]][["Kolmogorov-Smirnov"]] <- KS_z_st_ggamma
-show(KS_z_st_ggamma)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D =  0.41082, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-shape1 <- round(fitdist_gbeta[["estimate"]][["shape1"]],4)
-shape2 <- round(fitdist_gbeta[["estimate"]][["shape2"]],4)
-shape3 <- round(fitdist_gbeta[["estimate"]][["shape3"]],4)
-scl <- round(fitdist_gbeta[["estimate"]][["scale"]],4)
-KS_z_st_gbeta <- ks.test(z_st, y="pgenbeta", shape1=shape1, shape2=shape2, shape3=shape3, scale=scl, alternative= "two.sided")
-fitdist_test[["gbeta"]][["Kolmogorov-Smirnov"]] <- KS_z_st_gbeta
-show(KS_z_st_gbeta)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.382, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="past", alpha=alpha, nu1=nu1, nu2=nu2, alternative= "two.sided")
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="psstd", mean=m, sd=sd, nu=df, xi=xi, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.1525, p-value = 1.664e-10
+# D = 0.06636, p-value = 0.02468
 # alternative hypothesis: two-sided
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student asimmetrica generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 #
-# Setting
-lambda <- round(fitdist_gexp[["estimate"]][["lambda"]],4)
-a <- round(fitdist_gexp[["estimate"]][["a"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_gexp", a=a, lambda=lambda, alternative= "two.sided")
-fitdist_test[["gexp"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.41082, p-value < 2.2e-16
-# alternative hypothesis: two-sided
 
 # Cramer-von Mises test of goodness-of-fit
 # Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5323, nu1 = 5.2525, nu2 = 342.2225
+# with parameters mean = 0, sd = 1, nu = 5, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 4.1763, p-value < 2.2e-16
+# omega2 = 0.76964, p-value = 0.008621
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-AD_z_st_ggamma <- goftest::ad.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Anderson-Darling"]] <- AD_z_st_ggamma
-show(AD_z_st_ggamma)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.3, sigma = 0.3216, Q = 9.3347
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-shape1 <- round(fitdist_gbeta[["estimate"]][["shape1"]],4)
-shape2 <- round(fitdist_gbeta[["estimate"]][["shape2"]],4)
-shape3 <- round(fitdist_gbeta[["estimate"]][["shape3"]],4)
-scl <- round(fitdist_gbeta[["estimate"]][["scale"]],4)
-AD_z_st_gbeta <- goftest::ad.test(z_st, null= "pgenbeta",  shape1=shape1, shape2=shape2, shape3=shape3, scale=scl, estimated=FALSE)
-fitdist_test[["gbeta"]][["Anderson-Darling"]] <- AD_z_st_gbeta
-show(AD_z_st_gbeta)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters shape1 = 0.034, shape2 = 1.8098, shape3 = 10.676, scale = 1.5659
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-AD_z_st_t_ls <- goftest::ad.test(z_st, "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5323, nu1 = 5.2525, nu2 = 342.2225
+# with parameters mean = 0, sd = 1, nu = 5, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 21.359, p-value = 1.2e-06
+# An = 4.1824, p-value = 0.007112
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
-
 
 # La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
@@ -11817,7 +11608,7 @@ summary(Xt_t_student_asymmetric_arch1_q2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_asymmetric_arch1_q2_res   
 Xt_t_student_asymmetric_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -11914,13 +11705,13 @@ plot(Xt_t_student_asymmetric_arch1_q2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_arch1_q2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_arch1_q2)
 show(Xt_t_student_asymmetric_arch1_q2_bp)
-# Si ha un p-value di  0.01755 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di  0.005627 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_arch1_q2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_arch1_q2)
 show(Xt_t_student_asymmetric_arch1_q2_w)
-# Si ha un p-value di 0.05526 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.02061 < 0.05, quindi,  possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -11961,14 +11752,14 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_arch1_q2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 2.968, df = 1, p-value = 0.08493
+# X-squared = 0.59029, df = 1, p-value = 0.4423
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(10, T/4)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_arch1_q2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_arch1_q2_lb)
-# Il risultato del test haun p-value > 0.05, ciò significa che non possiamo rigettare
+# Il risultato del test haun p-value < 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 
 modello[['stimati']][['arch_q2']] <- append(modello[['stimati']][['arch_q2']], 
@@ -12429,7 +12220,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
@@ -12898,12 +12689,12 @@ set.seed(123)
 skew <- skew <- DescTools::Skew(Xt_t_student_symmetric_garch2_q2_p1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew          lwr.ci      upr.ci 
-# 0.4054487 -0.5069528  1.5384136 
+# 0.05922268 -0.52223043  0.62583718
 set.seed(123)
 kurt <- kurt <- DescTools::Kurt(Xt_t_student_symmetric_garch2_q2_p1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #      kurt      lwr.ci      upr.ci 
-#    8.718254  4.774529 13.232193
+#    4.147305   2.536975   6.261847
 
 Xt_t_student_symmetric_garch2_q2_p1_cf <- list()
 # Cullen-Frey
@@ -12913,12 +12704,12 @@ Xt_t_student_symmetric_garch2_q2_p1_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  min:  -8.762494   max:  10.36249 
-# median:  -0.06312752 
-# mean:  -0.02961526 
-# estimated sd:  1.465221 
-# estimated skewness:  0.4054487 
-# estimated kurtosis:  11.71825 
+# min:  -4.685117   max:  4.594745 
+# median:  -0.04164059 
+# mean:  -0.02805814 
+# estimated sd:  0.8584542 
+# estimated skewness:  0.05922268 
+# estimated kurtosis:  7.147305  
 # Conferma visiva che l'ipotesi nulla di normalità bisogna scartarla all'1% di significatività 
 # quindi possiamo dire che è una distribuzione simmetrica con una forte kurtosi.
 
@@ -12927,10 +12718,10 @@ show(cf)
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_symmetric_garch2_q2_p1_res
 show(c(mean(y),var(y)))
-# [1] -1.220129e-17  2.145274e+00
+# [1] 7.070028e-18 7.363905e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -4.932578e-18  1.000000e+00
+# [1] 6.652339e-18 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -12939,12 +12730,13 @@ Xt_t_student_symmetric_garch2_q2_p1_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  -5.991912   max:  7.065771 
-# median:  -0.02856761 
-# mean:  -4.932578e-18 
+# min:  -5.456657   
+# max:  5.357559 
+# median:  -0.01879541 
+# mean:  6.652339e-18 
 # estimated sd:  1 
-# estimated skewness:  0.3841129 
-# estimated kurtosis:  11.69265  
+# estimated skewness:  0.04280734 
+# estimated kurtosis:  7.140661  
 # Da Cullen-Frey, abbiamo una possibile distribuzione logistica o di student per i residui.
 
 # Esploriamo queste possibilità in più dettagli.
@@ -12955,41 +12747,34 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
-mu <- 0
-alpha <- sqrt(2)
-beta <- 2
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
-Gen_Norm_Dens_Func <- bquote(paste("Gener. Normal Density Function, mu = ", .(mu),", alpha = ", alpha, ", beta = ", .(beta)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
 hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
      freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the GARCH(2,1) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
 lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
-lines(x, dgnorm(x, mu=mu, alpha=alpha, beta=beta), lwd=2, col= "orange")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=loc, scale=sqrt(3)/pi, shape=shp), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", Gen_Norm_Dens_Func, "Student Density Function, df=3", Gen_Log_Dens_Func), 
-       col=c("darkblue", "darkgreen", "orange", "red","magenta"), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
+       col=c("darkblue", "darkgreen", "red","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 # Plot della funzione di distribuzione empirica dei residui standardizzati
 Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
-Gen_Norm_Distr_Func <- bquote(paste("Gener. Normal Distribution Function, mu = ", .(mu),", alpha = ", alpha, ", beta = ", .(beta)))
 plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(2,1) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
 lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
-lines(x, pgnorm(x, mu=mu, alpha=alpha, beta=beta), lwd=2, col= "orange")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Gen_Norm_Distr_Func, "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
-       col=c("darkblue", "darkgreen", "orange", "red","magenta"), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function","Student Distribution Function, df=5", Gen_Log_Distr_Func), 
+       col=c("darkblue", "darkgreen", "red","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 
@@ -13002,15 +12787,15 @@ summary(fitdist_glogis)
 # Fitting of the distribution ' glogis ' by maximum likelihood 
 # Parameters : 
 #           estimate Std. Error
-# location 0.01752954 0.09815676
-# scale    0.48487522 0.02907360
-# shape    0.96132629 0.12554329
-# Loglikelihood:  -659.8476   AIC:  1325.695   BIC:  1338.339 
+# location 0.0123738  0.1129075
+# scale    0.5142024  0.0321967
+# shape    0.9750459  0.1373638
+# Loglikelihood:  -680.7066   AIC:  1367.413   BIC:  1380.057 
 # Correlation matrix:
-#            location      scale      shape
-# location  1.0000000 -0.7086191 -0.9250209
-# scale    -0.7086191  1.0000000  0.7715721
-# shape    -0.9250209  0.7715721  1.0000000
+#       location      scale      shape
+# location  1.0000000 -0.7425956 -0.9362592
+# scale    -0.7425956  1.0000000  0.7960526
+# shape    -0.9362592  0.7960526  1.0000000
 #
 # Setting
 location <- fitdist_glogis[["estimate"]][["location"]]
@@ -13020,15 +12805,15 @@ shape <- fitdist_glogis[["estimate"]][["shape"]]
 mean <- location+(digamma(shape)-digamma(1))*scale
 fitdist_test[["glogis"]][["mean"]] <- mean
 show(mean)
-# 0.01136273
+# -0.00912685
 sd <- sqrt((psigamma(shape, deriv=1)+psigamma(1, deriv=1))*scale^2)
 fitdist_test[["glogis"]][["sd"]] <- sd
 show(sd)
-# 1.050816
+# 0.9414187
 skewness <- (psigamma(shape, deriv=2)-psigamma(1, deriv=2))/((psigamma(shape, deriv=1)+psigamma(1, deriv=1))^(3/2))
 fitdist_test[["glogis"]][["skew"]] <- skewness
 show(skewness)
-# 0.1602432
+# -0.02772218
 #
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -13037,9 +12822,9 @@ fitdist_test[["glogis"]][["bootdist"]] <- fitdist_glogis_bd
 summary(fitdist_glogis_bd)
 # Parametric bootstrap medians and 95% percentile CI 
 #              Median       2.5%     97.5%
-# location 0.01104832 -0.2730578 0.2364790
-# scale    0.48374303  0.4202351 0.5560274
-# shape    0.96732516  0.7039307 1.4133414
+# location 0.005612547 -0.2974726 0.2439670
+# scale    0.512933373  0.4455774 0.5896815
+# shape    0.980986547  0.7129541 1.4365004
 #
 # We fix the initial points of the constrained maximization procedure
 location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
@@ -13051,7 +12836,7 @@ fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the
 # starting point.
 show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
 #    location       scale       shape 
-#    0.01757891 0.48483571 0.96121942 
+#    0.01254582 0.51419525 0.97499737  
 logLik <- -fminunc_result$value # the minimized negative log-likelihood
 n <- length(z_st)
 k <- length(fminunc_result[["par"]])
@@ -13060,7 +12845,7 @@ BIC <- k*log(n)-2*logLik
 AICc <- AIC + 2*k*((k+1)/(n-k-1))
 show(c(logLik, AIC, BIC, AICc))
 # logLik       AIC       BIC      AICc
-# -659.8476 1325.6951 1338.3389 1325.7435
+# -680.7066 1367.4131 1380.0569 1367.4615
 
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
@@ -13068,19 +12853,15 @@ show(c(logLik, AIC, BIC, AICc))
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "std", start=list(nu=3.2), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
-# s  0.6156915 0.03674324
-# df 2.9985920 0.45971216
+# nu 4.014713  0.4561426
 # Fixed parameters:
 #   value
-# m     0
-# Loglikelihood:  -644.2908   AIC:  1292.582   BIC:  1301.011 
-# Correlation matrix:
-#        s       df
-# s  1.000000 0.658484
-# df 0.658484 1.000000
+# mean     0
+# sd       1
+# Loglikelihood:  -675.0405   AIC:  1352.081   BIC:  1356.296 
 logLik <- fitdist_t_ls$loglik # the minimized negative log-likelihood
 n <- length(z_st)
 k <- length(fitdist_t_ls[["estimate"]])
@@ -13089,7 +12870,7 @@ BIC <- k*log(n)-2*logLik
 AICc <- AIC + 2*k*((k+1)/(n-k-1))
 show(c(logLik, AIC, BIC, AICc))
 # logLik       AIC       BIC       AICc
-# -644.2908 1292.5817 1301.0109 1292.6058
+# -675.0405 1352.0810 1356.2956 1352.0890
 #
 # Confrontando la distribuzione Student generalizzata con la distribuzione logistica generalizzata
 # Fitting of the distribution ' glogis ' by maximum likelihood 
@@ -13110,34 +12891,8 @@ fitdist_test[["gstudent"]][["bootdist"]] <- fitdist_t_ls_bd
 summary(fitdist_t_ls_bd)
 #Parametric bootstrap medians and 95% percentile CI 
 #      Median      2.5%     97.5%
-# s  0.6205833 0.5521932 0.6932191
-# df 3.0632238 2.3644322 4.5078311
+# nu  4.051102 3.347787 5.465607
 #
-# Also in this case we show the application of the *pracma::fminunc()* function.
-# We fix the initial points of the unconstrained maximization procedure
-s  <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][1]
-df <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][2]
-minus_logLik <- function(x) -sum(log(dt_ls(z_st, m=0, s=x[1], df=x[2]))) # the log-likelihood of the generalized logistic
-# distribution.
-fminunc_result <- fminunc(x0=c(s, df), fn=minus_logLik)   # the minimization procedure where (s,df) is the starting point.
-show(c(fminunc_result$par[1],fminunc_result$par[2]))      # the estimated parameters.
-#     s        df 
-# 0.6157003 2.9991954 
-#
-logLik <- -fminunc_result$value # the minimized negative log-likelihood
-n <- length(z_st)
-k <- length(fminunc_result[["par"]])
-AIC <- 2*k-2*logLik
-BIC <- k*log(n)-2*logLik
-AICc <- AIC + 2*k*((k+1)/(n-k-1))
-show(c(logLik, AIC, BIC, AICc))
-# logLik       AIC       BIC      AICc
-# -644.2908 1292.5817 1301.0109 1292.6058
-#
-# Confrontandolo con la distribuzione logistica generalizzata
-# logLik       AIC       BIC      AICc
-# -659.8476 1325.6951 1338.3389 1325.7435
-# La distribuzione logistica generalizzata è un modello migliore per il modello Garch(2,1).
 
 # We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
 # generalized student and generalized logistic.
@@ -13147,16 +12902,16 @@ scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
 shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
 #
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
-Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Generalized Student Density Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Student Density Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
 Est_Gen_Logis_Dens_Func <- bquote(paste("Estimated Generalized Logistic Density Function, location = ", .(loc), ", scale = ", .(scl) , ", degrees of freedom = ", .(shp)))
 hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+1.1), 
      freq=FALSE, main= "Density Histogram of the Standardized Residuals of the GARCH(2,1) model + Empirical 
      Density Function + Estimated Generalized Student Density", xlab= "Standardized Residuals", ylab= "Density")
 lines(density(z_st), lwd=2, col= "darkgreen")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, dt_gstud(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, dstd (x, mean=0, sd=sd, nu=df), lwd=2, col= "blue")
 lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est_Gen_Stud_Dens_Func, Est_Gen_Logis_Dens_Func), 
        col=c("darkgreen","red", "blue", "magenta"), 
@@ -13164,13 +12919,13 @@ legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est
        inset=-0.01, bty= "n")
 # We also plot the empirical distribution function of the standardized residuals together with the distribution function of the standard 
 # Gaussian, generalized Student and generalized logistic.
-Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Generalized Student Distribution Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Student Distribution Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
 Est_Gen_Logis_Distr_Func <- bquote(paste("Estimated Generalized Logistic Distribution Function, location = ", .(loc), ", scale = ", .(scl) , ", degrees of freedom = ", .(shp)))
 plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(2,1) model", 
      xlab= "Standardized Residuals", ylab= "Probability Distribution")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, pt_ls(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, pt_ls(x, mean=0, sd=sd, nu=df), lwd=2, col= "blue")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Est_Gen_Stud_Distr_Func, Est_Gen_Logis_Distr_Func ),
        col=c("darkgreen", "red", "blue", "magenta"), 
@@ -13187,19 +12942,19 @@ fitdist_test[["glogis"]][["Kolmogorov-Smirnov"]] <- KS_z_st_glogis
 show(KS_z_st_glogis)
 # 	Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.046149, p-value = 0.2373
+# D = 0.03435, p-value = 0.5968
 # alternative hypothesis: two-sided
 # Non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
 # che la serie è una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", mean=m, sd=sd, nu=df, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.026522, p-value = 0.8733
+# D = 0.024188, p-value = 0.9317
 # alternative hypothesis: two-sided
 # E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata.
 
@@ -13215,24 +12970,24 @@ fitdist_test[["glogis"]][["Cramer-Von Mises"]] <- CVM_z_st_glogis
 show(CVM_z_st_glogis)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘pglogis’
-# with parameters location = 0.0175, scale = 0.4849, shape = 0.9613
+# with parameters location = 0.0124, scale = 0.5142, shape = 0.975
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 0.21824, p-value = 0.2348
+# omega2 = 0.098893, p-value = 0.5905
 # Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", m=0, s=s, df=df, estimated=FALSE)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.6157, df = 2.9986
+# with parameters mean = 0, sd = 1, nu = 4
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 0.035349, p-value = 0.9556
+# omega2 = 0.022887, p-value = 0.9935
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata.
 
 # The Anderson-Darling test in the library *goftest*.
@@ -13244,24 +12999,24 @@ fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
 show(AD_z_st_glogis)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘pglogis’
-# with parameters location = 0.0175295446557035, scale = 0.484875217436582, shape = 0.961326286884748
+# with parameters location = 0.0123738015306441, scale = 0.51420243656747, shape = 0.975045908876096
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 1.375, p-value = 0.2093
+# An = 0.64163, p-value = 0.6095
 # Non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
 AD_z_st_t_ls <- goftest::ad.test(z_st, null = "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.6157, df = 2.9986
+# with parameters mean = 0, sd = 1, nu = 4
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 0.18861, p-value = 0.9932
+# An = 0.16003, p-value = 0.9977
 # E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata.
 
 # La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
@@ -13273,7 +13028,7 @@ summary(Xt_t_student_symmetric_garch2_q2_p1_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_symmetric_garch2_q2_p1_res   
 Xt_t_student_symmetric_garch2_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -13393,13 +13148,13 @@ plot(Xt_t_student_symmetric_garch2_q2_p1_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p1)
 show(Xt_t_student_symmetric_garch2_q2_p1_bp)
-# Si ha un p-value di 0.06841 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.07009 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p1)
 show(Xt_t_student_symmetric_garch2_q2_p1_w)
-# Si ha un p-value di 0.07795 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.107 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -13440,15 +13195,14 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch2_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.5367, df = 1, p-value = 0.2151
+# X-squared = 0.93002, df = 1, p-value = 0.3349
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(10, T/4)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_symmetric_garch2_q2_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_symmetric_garch2_q2_p1_lb)
-# La forma estesa del test di Ljung-Box conferma che c'è presenza di correlazione in tutti i lag
-# eccetto nel lag 17 e 19.
+# La forma estesa del test di Ljung-Box conferma che c'è assenza di correlazione
 # Il risultati indica una presenza di autocorrelazione nei residui del modello.
 
 modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']] <- append(modello[['simulazione']][['garch_q2_p1']][['simmetrico']][['2']], 
@@ -13551,12 +13305,12 @@ set.seed(123)
 skew <- skew <- DescTools::Skew(Xt_t_student_symmetric_garch2_q2_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew          lwr.ci      upr.ci 
-# -0.255279475 -0.587126502 -0.004490806  
+# -0.255279459 -0.587126491 -0.004490806  
 set.seed(123)
 kurt <- kurt <- DescTools::Kurt(Xt_t_student_symmetric_garch2_q2_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #      kurt      lwr.ci      upr.ci 
-#    2.013370 1.344181 3.064797
+#    2.013369  1.344181   3.064795 
 
 Xt_t_student_symmetric_garch2_q2_p1_cf <- list()
 # Cullen-Frey
@@ -13566,13 +13320,12 @@ Xt_t_student_symmetric_garch2_q2_p1_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  -3.061793   max:  2.338794 
-# median:  -0.02846289 
-# mean:  -0.03769684 
-# estimated sd:  0.6770248 
+# min:  -1.837079   max:  1.403279 
+# median:  -0.01707776 
+# mean:  -0.02261815 
+# estimated sd:  0.4062156 
 # estimated skewness:  -0.3024933 
-# estimated kurtosis:  5.023176 38 
-# estimated kurtosis:  3.965768 
+# estimated kurtosis:  5.023175 
 # Conferma visiva che l'ipotesi nulla di normalità bisogna scartarla all'1% di significatività 
 # quindi possiamo dire che è una distribuzione simmetrica con una forte kurtosi.
 
@@ -13581,10 +13334,10 @@ show(cf)
 # Calcolo dei residui standardizzati
 y <- residuals(Xt_t_student_symmetric_garch2_q2_p1_fit)
 show(c(mean(y),var(y)))
-# [1] -0.0002005317  1.5897341259
+# [1] -0.0001554686  0.9538404745
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -1.11468e-17  1.00000e+00
+# [1] -4.481079e-18  1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -13593,11 +13346,11 @@ Xt_t_student_symmetric_garch2_q2_p1_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  -4.064725   max:  3.901932 
-# median:  -0.01109126 
-# mean:  -1.11468e-17 
+# min:  -4.064726   max:  3.901932 
+# median:  -0.01109141 
+# mean:  -4.481079e-18 
 # estimated sd:  1 
-# estimated skewness:  -0.09056083 
+# estimated skewness:  -0.09056084 
 # estimated kurtosis:  4.631105 
 # Da Cullen-Frey, abbiamo una possibile distribuzione logistica o di student per i residui.
 
@@ -13609,41 +13362,34 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 loc <- 0
 shp <- 1
-mu <- 0
-alpha <- sqrt(2)
-beta <- 2
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
-Gen_Norm_Dens_Func <- bquote(paste("Gener. Normal Density Function, mu = ", .(mu),", alpha = ", alpha, ", beta = ", .(beta)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
 hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
      freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the GARCH(2,1) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
 lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
-lines(x, dgnorm(x, mu=mu, alpha=alpha, beta=beta), lwd=2, col= "orange")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
 lines(x, dglogis(x, location=loc, scale=sqrt(3)/pi, shape=shp), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", Gen_Norm_Dens_Func, "Student Density Function, df=3", Gen_Log_Dens_Func), 
-       col=c("darkblue", "darkgreen", "orange", "red","magenta"), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
+       col=c("darkblue", "darkgreen",  "red","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 # Plot della funzione di distribuzione empirica dei residui standardizzati
 Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
-Gen_Norm_Distr_Func <- bquote(paste("Gener. Normal Distribution Function, mu = ", .(mu),", alpha = ", alpha, ", beta = ", .(beta)))
 plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(2,1) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
 lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
-lines(x, pgnorm(x, mu=mu, alpha=alpha, beta=beta), lwd=2, col= "orange")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Gen_Norm_Distr_Func, "Student Distribution Function, df=3", Gen_Log_Distr_Func), 
-       col=c("darkblue", "darkgreen", "orange", "red","magenta"), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
+       col=c("darkblue", "darkgreen", "red","magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 
@@ -13722,19 +13468,15 @@ show(c(logLik, AIC, BIC, AICc))
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "std", start=list(nu=3.2), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
-# s  0.7792705 0.04578673
-# df 4.7829077 1.11735844
+# nu 5.080309  0.8908301
 # Fixed parameters:
-#   value
-# m     0
-# Loglikelihood:  -692.5155   AIC:  1389.031   BIC:  1397.456  
-# Correlation matrix:
-#        s       df
-# s  1.000000 0.7221519
-# df 0.7221519 1.000000
+#         value
+# mean      0
+# sd        1
+# Loglikelihood:  -692.5881   AIC:  1387.176   BIC:  1391.389 
 #
 # Confrontando la distribuzione Student generalizzata con la distribuzione logistica generalizzata
 # Fitting of the distribution ' glogis ' by maximum likelihood 
@@ -13755,34 +13497,7 @@ fitdist_test[["gstudent"]][["bootdist"]] <- fitdist_t_ls_bd
 summary(fitdist_t_ls_bd)
 #Parametric bootstrap medians and 95% percentile CI 
 #      Median      2.5%     97.5%
-# s  0.7843031 0.7065833 0.870694
-# df 4.9364116 3.4408065 8.572198
-#
-# Also in this case we show the application of the *pracma::fminunc()* function.
-# We fix the initial points of the unconstrained maximization procedure
-s  <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][1]
-df <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][2]
-minus_logLik <- function(x) -sum(log(dt_ls(z_st, m=0, s=x[1], df=x[2]))) # the log-likelihood of the generalized logistic
-# distribution.
-fminunc_result <- fminunc(x0=c(s, df), fn=minus_logLik)   # the minimization procedure where (s,df) is the starting point.
-show(c(fminunc_result$par[1],fminunc_result$par[2]))      # the estimated parameters.
-#     s        df 
-# 0.7791935 4.7829348  
-#
-logLik <- -fminunc_result$value # the minimized negative log-likelihood
-n <- length(z_st)
-k <- length(fminunc_result[["par"]])
-AIC <- 2*k-2*logLik
-BIC <- k*log(n)-2*logLik
-AICc <- AIC + 2*k*((k+1)/(n-k-1))
-show(c(logLik, AIC, BIC, AICc))
-# logLik       AIC       BIC      AICc
-# -692.5155 1389.0311 1397.4563 1389.0552
-#
-# Confrontandolo con la distribuzione logistica generalizzata
-# logLik       AIC       BIC      AICc
-# -693.1906 1392.3811 1405.0189 1392.4296
-# La distribuzione logistica generalizzata è un modello migliore per il modello Garch(2,1).
+# nu  5.147667 3.958483 8.224833 
 
 # We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
 # generalized student and generalized logistic.
@@ -13792,16 +13507,16 @@ scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
 shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
 #
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
-Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Generalized Student Density Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Student Density Function, mean = ", .(m), ", sd = ", .(sd) , ", degrees of freedom = ", .(df)))
 Est_Gen_Logis_Dens_Func <- bquote(paste("Estimated Generalized Logistic Density Function, location = ", .(loc), ", scale = ", .(scl) , ", degrees of freedom = ", .(shp)))
 hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+1.1), 
      freq=FALSE, main= "Density Histogram of the Standardized Residuals of the GARCH(2,1) model + Empirical 
      Density Function + Estimated Generalized Student Density", xlab= "Standardized Residuals", ylab= "Density")
 lines(density(z_st), lwd=2, col= "darkgreen")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, dt_gstud(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, dstd (x, mean=m, sd=sd, nu=df), lwd=2, col= "blue")
 lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est_Gen_Stud_Dens_Func, Est_Gen_Logis_Dens_Func), 
        col=c("darkgreen","red", "blue", "magenta"), 
@@ -13809,13 +13524,13 @@ legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est
        inset=-0.01, bty= "n")
 # We also plot the empirical distribution function of the standardized residuals together with the distribution function of the standard 
 # Gaussian, generalized Student and generalized logistic.
-Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Generalized Student Distribution Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Student Distribution Function, mean = ", .(m), ", sd = ", .(sd) , ", degrees of freedom = ", .(df)))
 Est_Gen_Logis_Distr_Func <- bquote(paste("Estimated Generalized Logistic Distribution Function, location = ", .(loc), ", scale = ", .(scl) , ", degrees of freedom = ", .(shp)))
 plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(2,1) model", 
      xlab= "Standardized Residuals", ylab= "Probability Distribution")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, pt_ls(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, pt_ls(x, mean=m, sd=sd, nu=df), lwd=2, col= "blue")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Est_Gen_Stud_Distr_Func, Est_Gen_Logis_Distr_Func ),
        col=c("darkgreen", "red", "blue", "magenta"), 
@@ -13837,14 +13552,14 @@ show(KS_z_st_glogis)
 # Non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
 # che la serie è una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", mean=m, sd=sd, nu=df, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.024273, p-value = 0.9304
+# D = 0.023555, p-value = 0.9447
 # alternative hypothesis: two-sided
 # E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata.
 
@@ -13867,17 +13582,17 @@ show(CVM_z_st_glogis)
 # Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", m=0, s=s, df=df, estimated=FALSE)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.7793, df = 4.7829
+# with parameters  mean = 0, sd = 1, nu = 5
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 0.03366, p-value = 0.9628
+# omega2 = 1.1422, p-value = 0.001137
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata.
 
 # The Anderson-Darling test in the library *goftest*.
@@ -13896,17 +13611,17 @@ show(AD_z_st_glogis)
 # Non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fitdist_t_ls[["estimate"]][["s"]],4)
-df <- round(fitdist_t_ls[["estimate"]][["df"]],4)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
 AD_z_st_t_ls <- goftest::ad.test(z_st, null = "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.7793, df = 4.7829
+# with parameters  mean = 0, sd = 1, nu = 5
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 0.23801, p-value = 0.9764
+# An = 0.25784, p-value = 0.9661
 # E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata.
 
 # La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
@@ -13918,7 +13633,7 @@ summary(Xt_t_student_symmetric_garch2_q2_p1_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_symmetric_garch2_q2_p1_res   
 Xt_t_student_symmetric_garch2_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -14038,9 +13753,9 @@ plot(Xt_t_student_symmetric_garch2_q2_p1_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p1)
 show(Xt_t_student_symmetric_garch2_q2_p1_bp)
-# Si ha un p-value di 8.935e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 8.936e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p1)
 show(Xt_t_student_symmetric_garch2_q2_p1_w)
@@ -14182,12 +13897,12 @@ set.seed(123)
 skew <- DescTools::Skew(Xt_t_student_asymmetric_garch1_q2_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew       lwr.ci      upr.ci 
-# -2.061462 -2.458634 -1.771173
+# -1.3020583 -1.7272608 -0.8887039
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_asymmetric_garch1_q2_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
-# 6.671224 4.830661 9.393460
+# 4.979284 3.659133 7.390155 
 
 Xt_t_student_asymmetric_garch1_q2_p1_cf <- list()
 # Cullen-Frey
@@ -14196,23 +13911,22 @@ cf <- descdist(Xt, discrete=FALSE, boot=5000)
 Xt_t_student_asymmetric_garch1_q2_p1_cf <- append(Xt_t_student_asymmetric_garch1_q2_p1_cf, list(cf)) 
 show(cf)
 # summary statistics
-# ------
-# min:  -3.63268   max:  0.1201175 
-# median:  -0.3875043 
-# mean:  -0.5044075 
-# estimated sd:  0.52923 
-# estimated skewness:  -2.126559 
-# estimated kurtosis:  9.816979 
+# -------5.515358   max:  3.96331 
+# median:  0.09973168 
+# mean:  -0.01288055 
+# estimated sd:  0.9682439 
+# estimated skewness:  -1.31112 
+# estimated kurtosis:  7.979817  
 
 # Goodness of fit
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 show(c(mean(y),var(y)))
-# [1] 1.165517e-17 2.761284e-01
+# [1] -1.239460e-18  9.374041e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] 1.516701e-17 1.000000e+00
+# [1] -1.17354e-18  1.00000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -14221,180 +13935,84 @@ Xt_t_student_asymmetric_garch1_q2_p1_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 # summary statistics
 # ------
-# min:  -6.010758   max:  1.318109 
-# median:  0.2184589 
-# mean:  1.516701e-17 
+# min:  -5.687993   max:  4.122067 
+# median:  0.1072694 
+# mean:  -1.17354e-18 
 # estimated sd:  1 
-# estimated skewness:  -2.061462 
-# estimated kurtosis:  9.671224 
+# estimated skewness:  -1.302058 
+# estimated kurtosis:  7.979284 
 
 fitdist_test <- list()
-# Distribuzione gamma generalizzata
-# Come prima cosa, fittiamo la distribuzione gamma generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_ggamma <- fitdistrplus::fitdist(z_st, "gengamma", start=list(mu=0, sigma=1, Q=1), method= "mge")
-fitdist_test[["ggamma"]][["ggamma"]] <- fitdist_ggamma
-summary(fitdist_ggamma)
-# Fitting of the distribution ' t_ggamma ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# mu    0.2818387
-# sigma 0.3257796
-# Q     9.5346131
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf
-#
-# La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
-set.seed(12345)
-fitdist_ggamma_bd <- fitdistrplus::bootdist(fitdist_ggamma, niter=1000)
-fitdist_test[["ggamma"]][["bootdist"]] <- fitdist_ggamma_bd
-summary(fitdist_ggamma_bd)
-# Parametric bootstrap medians and 95% percentile CI 
-#            Median      2.5%     97.5%
-# mu    0.2685426 -0.3192791  0.4086361
-# sigma 0.3300515  0.2453978  1.0049458
-# Q     9.6366042  2.9822231 12.6578016
-#
-mu <- fitdist_ggamma_bd[["fitpart"]][["estimate"]][1]
-sigma <- fitdist_ggamma_bd[["fitpart"]][["estimate"]][2]
-Q <- fitdist_ggamma_bd[["fitpart"]][["estimate"]][3]
-
 # Distribuzione student asimmetrica generalizzata
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, "ast", start=list(alpha=sqrt(1/3), nu1=3, nu2=2), method= "mle")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
-# alpha   0.532368   0.0180346
-# nu1     4.812137   1.1925148
-# nu2   342.226845 487.5952888
-# Loglikelihood:  -669.3196   AIC:  1344.639   BIC:  1357.283 
+# nu 3.7864147 0.34804860
+# xi 0.7530256 0.04258794
+# Fixed parameters:
+#   value
+# mean     0
+# sd       1
+# Loglikelihood:  -647.6883   AIC:  1299.377   BIC:  1307.806 
 # Correlation matrix:
-#   alpha          nu1          nu2
-# alpha 1.000000000  0.280043608  0.007532578
-# nu1   0.280043608  1.000000000 -0.001537913
-# nu2   0.007532578 -0.001537913  1.000000000
+#      nu         xi
+# nu  1.0000000 -0.2567307
+# xi -0.2567307  1.0000000
 #
-# Setting
-alpha <- fitdist_t_ls[["estimate"]][["alpha"]]
-nu1 <- fitdist_t_ls[["estimate"]][["nu1"]]
-nu2 <- fitdist_t_ls[["estimate"]][["nu2"]]
-# 
-
-# Distribuzione esponenziale generalizzata
-fitdist_gexp <- fitdistrplus::fitdist(z_st, dt_gexp, start=list(lambda=sqrt(1/3), a=1), method= "mge")
-fitdist_test[["gexp"]][["gexp"]] <- fitdist_gexp
-summary(fitdist_gexp)
-# Fitting of the distribution ' t_ls ' by maximum likelihood 
-# Parameters : 
-#   estimate
-# lambda 0.9290702
-# a      0.3465040
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf 
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-KS_z_st_ggamma <- ks.test(z_st, y="pgengamma", mu=loc, sigma=scl, Q=shp, alternative= "two.sided")
-fitdist_test[["ggamma"]][["Kolmogorov-Smirnov"]] <- KS_z_st_ggamma
-show(KS_z_st_ggamma)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.382, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]], 4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="past", alpha=alpha, nu1=nu1, nu2=nu2, alternative= "two.sided")
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="psstd", mean=m, sd=sd, nu=df, xi=xi, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.16905, p-value = 7.769e-13
-# alternative hypothesis: two-sided
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
-# Setting
-a <- round(fitdist_gexp[["estimate"]][["a"]],4)
-lambda <- round(fitdist_gexp[["estimate"]][["lambda"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_gexp", a=a, lambda=lambda, alternative= "two.sided")
-fitdist_test[["gexp"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.382, p-value < 2.2e-16
+# D = 0.070608, p-value = 0.01367
 # alternative hypothesis: two-sided
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # Cramer-von Mises test of goodness-of-fit
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
-show(CVM_z_st_t_ls)
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2818, sigma = 0.3258, Q = 9.5346
-# Parameters assumed to be fixed
-# data:  z_st
-# omega2 = 10.352, p-value < 2.2e-16
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]], 4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters  alpha = 0.5324, nu1 = 4.8121, nu2 = 342.2268
+# with parameters mean = 0, sd = 1, nu = 4, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 4.7188, p-value < 2.2e-16
+# omega2 = 0.87823, p-value = 0.004742
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-AD_z_st_ggamma <- goftest::ad.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Anderson-Darling"]] <- AD_z_st_ggamma
-show(AD_z_st_ggamma)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2818, sigma = 0.3258, Q = 9.5346
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]], 4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-AD_z_st_t_ls <- goftest::ad.test(z_st, "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5324, nu1 = 4.8121, nu2 = 342.2268
+# with parameters mean = 0, sd = 1, nu = 4, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 23.863, p-value = 1.2e-06
+# An = 4.4973, p-value = 0.005004
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
@@ -14407,7 +14025,7 @@ summary(Xt_t_student_asymmetric_garch1_q2_p1_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res   
 Xt_t_student_asymmetric_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -14504,13 +14122,13 @@ plot(Xt_t_student_asymmetric_garch1_q2_p1_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p1)
 show(Xt_t_student_asymmetric_garch1_q2_p1_bp)
-# Si ha un p-value di 0.01844 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.008424 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p1)
 show(Xt_t_student_asymmetric_garch1_q2_p1_w)
-# Si ha un p-value di 0.06222 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.03038 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Nel test di Breusch-Pagan il p-value < 0.05 ed indica una presenza di eteroschedasticità nei residui del modello; ma,
@@ -14555,7 +14173,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 24.414, df = 1, p-value = 7.771e-07
+# X-squared = 2.2677, df = 1, p-value = 0.1321
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
@@ -14667,12 +14285,12 @@ set.seed(123)
 skew <- DescTools::Skew(Xt_t_student_asymmetric_garch1_q2_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew       lwr.ci      upr.ci 
-# -1.817504 -2.161507 -1.575212
+# -1.366555 -1.888880 -1.006714 
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_asymmetric_garch1_q2_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
-#5.308088 3.831570 7.501694
+# 5.412643 3.447495 8.338754
 
 Xt_t_student_asymmetric_garch1_q2_p1_cf <- list()
 # Cullen-Frey
@@ -14682,22 +14300,22 @@ Xt_t_student_asymmetric_garch1_q2_p1_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 # summary statistics
 # ------
-# min:  -2.81999   max:  0.09415767 
-# median:  -0.2869798 
-# mean:  -0.3996478 
-# estimated sd:  0.4229043 
-# estimated skewness:  -1.96857 
-# estimated kurtosis:  8.536045 
+# min:  -5.132047   max:  2.300351 
+# median:  0.06576357 
+# mean:  -0.002418708 
+# estimated sd:  0.8262552 
+# estimated skewness:  -1.445498 
+# estimated kurtosis:  8.60122 
 
 # Goodness of fit
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 show(c(mean(y),var(y)))
-# [1] -4.065270e-18  1.691427e-01
+# [1] 7.234664e-18 6.816501e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -7.761587e-18  1.000000e+00
+# [1] 7.049483e-18 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -14706,165 +14324,86 @@ Xt_t_student_asymmetric_garch1_q2_p1_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 # summary statistics
 # ------
-# min:  -5.519478   max:  1.547996 
-# median:  0.2058407 
-# mean:  -7.761587e-18 
+# min:  -6.153227   max:  2.814234 
+# median:  0.05739205 
+# mean:  7.049483e-18 
 # estimated sd:  1 
-# estimated skewness:  -1.817504 
-# estimated kurtosis:  8.308088 
+# estimated skewness:  -1.366555 
+# estimated kurtosis:  8.412643 
 
 fitdist_test <- list()
-# Distribuzione gamma generalizzata
-# Come prima cosa, fittiamo la distribuzione gamma generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_ggamma <- fitdistrplus::fitdist(z_st, "gengamma", start=list(mu=0, sigma=1, Q=1), method= "mge")
-fitdist_test[["ggamma"]][["ggamma"]] <- fitdist_ggamma
-summary(fitdist_ggamma)
-# Fitting of the distribution ' t_ggamma ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# mu    0.2628365
-# sigma 0.3530752
-# Q     8.7207017
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf
-#
-
 # Distribuzione student asimmetrica generalizzata
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, "ast", start=list(alpha=sqrt(1/3), nu1=3, nu2=2), method= "mle")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #          estimate Std. Error
-# alpha   0.526996   0.01768637
-# nu1     4.912573   1.24377102
-# nu2   342.225085 360.32462796
-# Loglikelihood:  -674.9072   AIC:  1355.814   BIC:  1368.458 
+# nu 3.4607151  0.2845284
+# xi 0.8539229  0.0423700
+# Fixed parameters:
+#   value
+# mean     0
+# sd       1
+# Loglikelihood:  -650.3156   AIC:  1304.631   BIC:  1313.061 
 # Correlation matrix:
-#          alpha        nu1          nu2
-# alpha 1.000000000  0.2804141  0.002259433
-# nu1   0.280414116  1.0000000 -0.002675900
-# nu2   0.002259433 -0.0026759  1.000000000
+#        nu         xi
+# nu  1.0000000 -0.2537074
+# xi -0.2537074  1.0000000
 #
-
-# Distribuzione esponenziale generalizzata
-fitdist_gexp <- fitdistrplus::fitdist(z_st, dt_gexp, start=list(lambda=sqrt(1/3), a=1), method= "mge")
-fitdist_test[["gexp"]][["gexp"]] <- fitdist_gexp
-summary(fitdist_gexp)
-# Fitting of the distribution ' t_ls ' by maximum likelihood 
-# Parameters : 
-#   estimate
-# lambda 1.041843
-# a      0.380479
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf 
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-KS_z_st_ggamma <- ks.test(z_st, y="pgengamma", mu=loc, sigma=scl, Q=shp, alternative= "two.sided")
-fitdist_test[["ggamma"]][["Kolmogorov-Smirnov"]] <- KS_z_st_ggamma
-show(KS_z_st_ggamma)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.398, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]], 4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="past", alpha=alpha, nu1=nu1, nu2=nu2, alternative= "two.sided")
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="psstd", mean=m, sd=sd, nu=df, xi=xi, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.15083, p-value = 2.632e-10
+# D = 0.0589, p-value = 0.06228
 # alternative hypothesis: two-sided
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
-# Setting
-a <- round(fitdist_gexp[["estimate"]][["a"]],4)
-lambda <- round(fitdist_gexp[["estimate"]][["lambda"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_gexp", a=a, lambda=lambda, alternative= "two.sided")
-fitdist_test[["gexp"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.398, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
+# Non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
 
 # Cramer-von Mises test of goodness-of-fit
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
-show(CVM_z_st_t_ls)
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2628, sigma = 0.3531, Q = 8.7207
-# Parameters assumed to be fixed
-# data:  z_st
-# omega2 = 11.159, p-value < 2.2e-16
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]], 4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters  alpha = 0.527, nu1 = 4.9126, nu2 = 342.2251
+# with parameters  mean = 0, sd = 1, nu = 3, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 3.7537, p-value = 1.468e-09
+# omega2 = 0.63226, p-value = 0.0186
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-AD_z_st_ggamma <- goftest::ad.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Anderson-Darling"]] <- AD_z_st_ggamma
-show(AD_z_st_ggamma)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2628, sigma = 0.3531, Q = 8.7207
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]], 4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-AD_z_st_t_ls <- goftest::ad.test(z_st, "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.527, nu1 = 4.9126, nu2 = 342.2251
+# with parameters  mean = 0, sd = 1, nu = 3, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 18.777, p-value = 1.2e-06
+# An = 3.6983, p-value = 0.01227
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
-
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 
 # La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
 # ADF Test
@@ -14875,7 +14414,7 @@ summary(Xt_t_student_asymmetric_garch1_q2_p1_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res   
 Xt_t_student_asymmetric_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -14972,13 +14511,13 @@ plot(Xt_t_student_asymmetric_garch1_q2_p1_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p1)
 show(Xt_t_student_asymmetric_garch1_q2_p1_bp)
-# Si ha un p-value di 0.000104 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 9.843e-09 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p1)
 show(Xt_t_student_asymmetric_garch1_q2_p1_w)
-# Si ha un p-value di 0.000536 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 3.869e-08 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -15019,7 +14558,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 4.0259, df = 1, p-value = 0.04481
+# X-squared = 0.90869, df = 1, p-value = 0.3405
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 6  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
@@ -15503,7 +15042,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
@@ -15993,18 +15532,18 @@ s <- DescTools::Skew(Xt_t_student_symmetric_garch2_q2_p2, weights=NULL, na.rm=TR
 skew[['0.80']] <-s
 show(s)
 #  skew          lwr.ci      upr.ci 
-# 0.3374604 -0.4776944  1.3811634
+# 0.04680226 -0.48451031  0.56101369
 set.seed(123)
 s <- DescTools::Skew(Xt_t_student_symmetric_garch2_q2_p2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 skew[['0.99']] <-s
 show(s)
 #  skew          lwr.ci      upr.ci 
-# 0.3374604 -1.0936168  2.1662321
+# 0.04680226 -0.89569276  0.97717169 
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_symmetric_garch2_q2_p2, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #      kurt      lwr.ci      upr.ci 
-#     7.592470  4.044877 11.725884
+#    3.600370 2.213924 5.432474 
 
 Xt_t_student_symmetric_garch2_q2_p2_cf <- list()
 # Cullen-Frey
@@ -16014,21 +15553,21 @@ Xt_t_student_symmetric_garch2_q2_p2_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  -8.370337   max:  9.936838 
-# median:  -0.06117429 
-# mean:  -0.03574476 
-# estimated sd:  1.455507 
-# estimated skewness:  0.3374604 
-# estimated kurtosis:  10.59247
+# min:  -4.439292   max:  4.388261 
+# median:  -0.04177032 
+# mean:  -0.02942944 
+# estimated sd:  0.8498939 
+# estimated skewness:  0.04680226 
+# estimated kurtosis:  6.60037 
 
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_symmetric_garch2_q2_p2_res
 show(c(mean(y),var(y)))
-# [1] 6.795346e-18 2.117259e+00
+# [1] 9.589009e-18 7.218655e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] 3.40819e-19 1.00000e+00
+# [1] 8.410427e-18 1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -16037,12 +15576,12 @@ Xt_t_student_symmetric_garch2_q2_p2_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  -5.75415   max:  6.827574 
-# median:  -0.02139769 
-# mean:  3.40819e-19 
+# min:  -5.217521   max:  5.172572 
+# median:  -0.01366885 
+# mean:  8.410427e-18 
 # estimated sd:  1 
-# estimated skewness:  0.3207262 
-# estimated kurtosis:  10.57181 
+# estimated skewness:  0.03342274 
+# estimated kurtosis:  6.594698  
 
 # Esploriamo queste possibilità in più dettagli.
 z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
@@ -16052,7 +15591,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 m <- 0
 s <- sqrt(1/3)
@@ -16064,8 +15603,8 @@ hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[len
 lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
-lines(x, dt_gstud(x, m=m, s=s, df=df), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Stud_Dens_Func), 
+lines(x, dstd (x, m=m, s=s, df=df), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Stud_Dens_Func), 
        col=c("darkblue", "darkgreen", "red", "magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -16080,7 +15619,7 @@ lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
 lines(x, psstd(x, m=m, s=s, df=df), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Stud_Distr_Func), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Stud_Distr_Func), 
        col=c("darkblue", "darkgreen", "red", "magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
@@ -16089,22 +15628,18 @@ fitdist_test <- list()
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
 # Questo viene fatto cambiando il parametro m nella funzione *fitdistrplus::fitdist*.
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, dt_gstud, start=list(s=sqrt(1/3), df=df), fix.arg=list(m=0), method= "mle")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "std", start=list(nu=3.2), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
-#   estimate Std. Error
-# s  0.6366414 0.03773411
-# df 3.1530131 0.50210049
+#    estimate Std. Error
+# nu 4.190374  0.5172012
 # Fixed parameters:
-#   value
-# m     0
-# Loglikelihood:  -651.9758   AIC:  1307.952   BIC:  1316.381 
-# Correlation matrix:
-#        s       df
-# s  1.000000 0.663253
-# df 0.663253 1.000000
+#        value
+# mean     0
+# sd       1
+# Loglikelihood:  -679.1697   AIC:  1360.339   BIC:  1364.554
 # 
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -16113,70 +15648,48 @@ fitdist_test[["gstudent"]][["bootdist"]] <- fitdist_t_ls_bd
 summary(fitdist_t_ls_bd)
 # Parametric bootstrap medians and 95% percentile CI 
 #      Median     2.5%     97.5%
-# s  0.6414328 0.572115 0.7164908
-# df 3.2506167 2.420378 4.7219923 
-# 
-# We fix the initial points of the unconstrained maximization procedure
-s  <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][1]
-df <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][2]
-minus_logLik <- function(x) -sum(log(dt_gstud(z_st, m=0, s=x[1], df=x[2]))) # the log-likelihood of the generalized logistic
-# distribution.
-fminunc_result <- fminunc(x0=c(s, df), fn=minus_logLik)   # the minimization procedure where (s,df) is the starting point.
-show(c(fminunc_result$par[1],fminunc_result$par[2]))      # the estimated parameters.
-#     s        df 
-# 0.6366311 3.1534463 
-#
-logLik <- -fminunc_result$value # the minimized negative log-likelihood
-n <- length(z_st)
-k <- length(fminunc_result[["par"]])
-AIC <- 2*k-2*logLik
-BIC <- k*log(n)-2*logLik
-AICc <- AIC + 2*k*((k+1)/(n-k-1))
-show(c(logLik, AIC, BIC, AICc))
-#   logLik    AIC       BIC       AICc
-# -651.9758 1307.9515 1316.3807 1307.9757
+# nu  4.240719 3.481995 5.754641
 
 # We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
 # generalized student.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Generalized Student Density Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Student Density Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
 hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+1.1), 
      freq=FALSE, main= "Density Histogram of the Standardized Residuals of the GARCH(1,1) model + Empirical 
      Density Function + Estimated Generalized Student Density", xlab= "Standardized Residuals", ylab= "Density")
 lines(density(z_st), lwd=2, col= "darkgreen")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, dt_gstud(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, dstd (x, m=m, sd=sd, nu=df), lwd=2, col= "blue")
 legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est_Gen_Stud_Dens_Func), 
        col=c("darkgreen","red", "blue"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 # We also plot the empirical distribution function of the standardized residuals together with the distribution function of the standard 
 # Gaussian and generalized Student.
-Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Generalized Student Distribution Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Student Distribution Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
 plot(z_st, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the ARCH(2) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
-lines(x, y_p, lwd=2, col= "darkblue")
-lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
-lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
-lines(x, psstd(x, m=0, s=s, df=df), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Est_Gen_Stud_Distr_Func), 
-       col=c("darkblue", "red","darkgreen","magenta"), 
+lines(x, y_p, lwd=2, col= "darkgreen")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "red")
+lines(x, pstd(x, dstd (x, m=m, sd=sd, nu=df)), lwd=2, col= "blue")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Est_Gen_Stud_Distr_Func), 
+       col=c("darkgreen","red", "blue"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 
 # The Kolmogorov-Smirnov test in the library *stats*
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", mean=m, sd=sd, nu=df, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.023137, p-value = 0.9517
+# D = 0.021112, p-value = 0.9791
 # alternative hypothesis: two-sided
 # Non possiamo rigettare l'ipotesi nulla, quindi, possiamo affermare che la serie segue una distribuzione t-student simmetrica.
 
@@ -16189,7 +15702,7 @@ summary(Xt_t_student_symmetric_garch2_q2_p2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_symmetric_garch2_q2_p2_res   
 Xt_t_student_symmetric_garch2_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -16309,13 +15822,13 @@ plot(Xt_t_student_symmetric_garch2_q2_p2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p2)
 show(Xt_t_student_symmetric_garch2_q2_p2_bp)
-# Si ha un p-value di 0.08959 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.09135 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p2)
 show(Xt_t_student_symmetric_garch2_q2_p2_w)
-# Si ha un p-value di 0.08332 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.121 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -16356,7 +15869,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch2_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 1.0338, df = 1, p-value = 0.3093
+# X-squared = 0.69404, df = 1, p-value = 0.4048
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
@@ -16468,25 +15981,25 @@ s <- DescTools::Skew(Xt_t_student_symmetric_garch2_q2_p2_res, weights=NULL, na.r
 skew[['0.80']] <- s
 show(s)
 #  skew          lwr.ci      upr.ci 
-# -0.255462013 -0.602606510 -0.001996112 
+# -0.255469421 -0.602616033 -0.001999383
 s <- DescTools::Skew(Xt_t_student_symmetric_garch2_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 skew[['0.99']] <- s
 show(s)
 #  skew          lwr.ci      upr.ci 
-# -0.2554620 -0.8663047  0.2793432
+# -0.2554694 -0.8663158  0.2793340 
 kurt <- list()
 set.seed(123)
 k <- DescTools::Kurt(Xt_t_student_symmetric_garch2_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 kurt[['0.80']] <- k
 show(k)
 #      kurt      lwr.ci      upr.ci 
-#     2.083156 1.391013 3.136304 
+#     2.083194 1.391056 3.136408  
 set.seed(123)
 k <- DescTools::Kurt(Xt_t_student_symmetric_garch2_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
 kurt[['0.99']] <- k
 show(k)
 #      kurt      lwr.ci      upr.ci 
-#     2.0831563 0.8683918 3.8755111 
+#    2.0831942 0.8683994 3.8755929 
 
 Xt_t_student_symmetric_garch2_q2_p2_cf <- list()
 # Cullen-Frey
@@ -16496,21 +16009,21 @@ Xt_t_student_symmetric_garch2_q2_p2_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  --2.106342   max:  1.639042 
-# median:  -0.01956935 
-# mean:  -0.02609001 
-# estimated sd:  0.4676008 
-# estimated skewness:  -0.305889 
-# estimated kurtosis:  5.093396 
+# min:  -1.263695   max:  0.9833368 
+# median:  -0.01174033 
+# mean:  -0.01565248 
+# estimated sd:  0.280533 
+# estimated skewness:  -0.305897 
+# estimated kurtosis:  5.093433
 
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_symmetric_garch2_q2_p2_res
 show(c(mean(y),var(y)))
-# [1]  2.949680e-18 2.183532e-01
+# [1] -7.005898e-18  7.859170e-02
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] 8.677087e-18 1.000000e+00
+# [1] -6.644208e-18  1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -16519,12 +16032,12 @@ Xt_t_student_symmetric_garch2_q2_p2_cf <- append(Xt_t_student_symmetric_garch2_q
 show(cf)
 # summary statistics
 # ------
-# min:  -4.444782   max:  3.613371 
-# median:  -0.007762059 
-# mean:  8.677087e-18 
+# min:  -4.44483   max:  3.613402 
+# median:  -0.007762063 
+# mean:  -6.644208e-18 
 # estimated sd:  1 
-# estimated skewness:  -0.255462 
-# estimated kurtosis:  5.083156 
+# estimated skewness:  -0.2554694 
+# estimated kurtosis:  5.083194 
 
 # Esploriamo queste possibilità in più dettagli.
 z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
@@ -16534,7 +16047,7 @@ x <- z_st_qemp
 y_d <- z_st_demp
 y_p <- z_st_pemp
 # Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
-# la funzione di densità Student con gradi di libertà df=3, e la funzione di densità logistica generalizzata con il parametri location=0,
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
 # scale=sqrt(3)/pi e shape=1.
 m <- 0
 s <- sqrt(1/3)
@@ -16549,10 +16062,9 @@ hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[len
 lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
-lines(x, dt_gstud(x, m=m, s=s, df=df), lwd=2, col= "magenta")
 lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "orange")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=3", Gen_Stud_Dens_Func, Gen_Log_Dens_Func), 
-       col=c("darkblue", "darkgreen", "red", "magenta", "orange"), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Log_Dens_Func), 
+       col=c("darkblue", "darkgreen", "red", "orange"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 # Plot della funzione di distribuzione empirica dei residui standardizzati
@@ -16564,10 +16076,9 @@ plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0),
 lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
-lines(x, psstd(x, m=m, s=s, df=df), lwd=2, col= "magenta")
 lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "orange")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Gen_Stud_Distr_Func, Gen_Log_Distr_Func), 
-       col=c("darkblue", "darkgreen", "red", "magenta", "orange"), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5",  Gen_Log_Distr_Func), 
+       col=c("darkblue", "darkgreen", "red", "orange"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 
@@ -16580,15 +16091,15 @@ summary(fitdist_glogis)
 # Fitting of the distribution ' glogis ' by maximum likelihood 
 # Parameters : 
 #           estimate Std. Error
-# location 0.09911437 0.10627577
-# scale    0.50547711 0.03170328
-# shape    0.88294117 0.11833229
-# Loglikelihood:  -689.471   AIC:  1384.942   BIC:  1397.586 
+# location 0.09911437 0.10627568
+# scale    0.50547711 0.03170329
+# shape    0.88294117 0.11833221
+# Loglikelihood:  -689.4708   AIC:  1384.942   BIC:  1397.586 
 # Correlation matrix:
 #   location      scale      shape
-# location  1.0000000 -0.7212606 -0.9249804
+# location  1.0000000 -0.7212606 -0.9249803
 # scale    -0.7212606  1.0000000  0.7930994
-# shape    -0.9249804  0.7930994  1.0000000
+# shape    -0.9249803  0.7930994  1.0000000
 #
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -16610,7 +16121,7 @@ fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the
 # starting point.
 show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
 #  location    scale       shape 
-# 0.0990526 0.5055401 0.8829705  
+# 0.09905461 0.50553941 0.88296832 
 #
 logLik <- -fminunc_result$value # the minimized negative log-likelihood
 n <- length(z_st)
@@ -16620,7 +16131,7 @@ BIC <- k*log(n)-2*logLik
 AICc <- AIC + 2*k*((k+1)/(n-k-1))
 show(c(logLik, AIC, BIC, AICc))
 #    logLik    AIC       BIC      AICc
-#  -689.471 1384.942 1397.586 1384.990
+#  -689.4708 1384.9417 1397.5855 1384.9901
 
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
@@ -16628,19 +16139,15 @@ show(c(logLik, AIC, BIC, AICc))
 fitdist_t_ls <- fitdistrplus::fitdist(z_st, "std", start=list(nu=3.2), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #   estimate Std. Error
-# s  0.7197164 0.04622955
-# df 3.7175926 0.75706274
+# nu 4.217238  0.5599402
 # Fixed parameters:
 #   value
-# m     0
-# Loglikelihood:  -686.7699   AIC:  1377.54   BIC:  1385.969 
-# Correlation matrix:
-#          s        df
-# s  1.0000000 0.7406941
-# df 0.7406941 1.0000000
+# mean     0
+# sd       1
+# Loglikelihood:  -687.0721   AIC:  1376.144   BIC:  1380.359  
 # 
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -16649,45 +16156,26 @@ fitdist_test[["gstudent"]][["bootdist"]] <- fitdist_t_ls_bd
 summary(fitdist_t_ls_bd)
 # Parametric bootstrap medians and 95% percentile CI 
 #      Median     2.5%     97.5%
-# s  0.7239481 0.6499392 0.8118494
-# df 3.7975168 2.8562930 6.0972005 
-# 
-# We fix the initial points of the unconstrained maximization procedure
-s  <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][1]
-df <- fitdist_t_ls_bd[["fitpart"]][["estimate"]][2]
-minus_logLik <- function(x) -sum(log(dt_gstud(z_st, m=0, s=x[1], df=x[2]))) # the log-likelihood of the generalized logistic
-# distribution.
-fminunc_result <- fminunc(x0=c(s, df), fn=minus_logLik)   # the minimization procedure where (s,df) is the starting point.
-show(c(fminunc_result$par[1],fminunc_result$par[2]))      # the estimated parameters.
-#     s        df 
-# 0.7195686 3.7161888 
-#
-logLik <- -fminunc_result$value # the minimized negative log-likelihood
-n <- length(z_st)
-k <- length(fminunc_result[["par"]])
-AIC <- 2*k-2*logLik
-BIC <- k*log(n)-2*logLik
-AICc <- AIC + 2*k*((k+1)/(n-k-1))
-show(c(logLik, AIC, BIC, AICc))
-#   logLik    AIC       BIC       AICc
-# -686.7699 1377.5399 1385.9691 1377.5640
+# nu  4.269423 3.465110 5.756986 
 
 # We plot the histogram and the empirical density function of the standardized residuals together with the density function of the estimated 
 # generalized student.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+#
 location <- fitdist_glogis[["estimate"]][["location"]]
 scale <- fitdist_glogis[["estimate"]][["scale"]]
 shape <- fitdist_glogis[["estimate"]][["shape"]]
+#
 Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", scale, ", shape = ", .(shp)))
-Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Generalized Student Density Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+Est_Gen_Stud_Dens_Func <- bquote(paste("Estimated Student Density Function, mean = ", .(m), ", sd = ", .(sd) , ", degrees of freedom = ", .(df)))
 hist(z_st, breaks= "Scott", col= "green", border= "black", xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+1.1), 
      freq=FALSE, main= "Density Histogram of the Standardized Residuals of the GARCH(1,1) model + Empirical 
      Density Function + Estimated Generalized Student Density", xlab= "Standardized Residuals", ylab= "Density")
 lines(density(z_st), lwd=2, col= "darkgreen")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, dt_gstud(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, dstd (x, mean=m, s=sd, nu=df), lwd=2, col= "blue")
 lines(x, dglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est_Gen_Stud_Dens_Func, Gen_Log_Dens_Func), 
        col=c("darkgreen","red", "blue", "magenta"), 
@@ -16695,18 +16183,17 @@ legend("topleft", legend=c("Empirical Density", "Standard Gaussian Density", Est
        inset=-0.01, bty= "n")
 # We also plot the empirical distribution function of the standardized residuals together with the distribution function of the standard 
 # Gaussian and generalized Student.
-Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Generalized Student Distribution Function, location = ", .(m), ", scale = ", .(s) , ", degrees of freedom = ", .(df)))
+Est_Gen_Stud_Distr_Func <- bquote(paste("Estimated Student Distribution Function, mean = ", .(m), ", sd = ", .(sd) , ", degrees of freedom = ", .(df)))
 Est_Gen_Log_Distr_Func <- bquote(paste("Estimated Generalized Logistic Distribution Function, location = ", .(location), ", scale = ", .(scale) , ", shape = ", .(shp)))
 plot(z_st, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the ARCH(2) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
 lines(x, y_p, lwd=2, col= "orange")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
-lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
-lines(x, psstd(x, m=0, s=s, df=df), lwd=2, col= "blue")
+lines(x, pstd(x, mean=m, s=sd, nu=df), lwd=2, col= "red")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=3", Est_Gen_Stud_Distr_Func, Est_Gen_Log_Distr_Func), 
-       col=c("orange", "red","darkgreen","blue", "magenta"), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Est_Gen_Stud_Distr_Func, Est_Gen_Log_Distr_Func), 
+       col=c("orange", "darkgreen","red", "magenta"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 
@@ -16724,14 +16211,14 @@ show(KS_z_st_glogis)
 # Non possiamo rigettare l'ipotesi nulla, quindi, abbiamo una prova sufficiente
 # che la serie è una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", m=m, sd=sd, nu=df, alternative= "two.sided")
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pstd", mean=m, sd=sd, nu=df, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.035165, p-value = 0.5666
+# D = 0.033459, p-value = 0.6303
 # alternative hypothesis: two-sided
 # Non possiamo rigettare l'ipotesi nulla, quindi, possiamo affermare che la serie segue una distribuzione t-student simmetrica.
 
@@ -16754,17 +16241,17 @@ show(CVM_z_st_glogis)
 # Non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", m=0, s=s, df=df, estimated=FALSE)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
-# Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.7196, df = 3.7162
+# Null hypothesis: distribution ‘pstd’
+# with parameters mean = 0, sd = 1, nu = 4
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 0.07762, p-value = 0.706
+# omega2 = 0.071665, p-value = 0.7416
 # Non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui seguono la distribuzione specificata.
 
@@ -16784,17 +16271,17 @@ show(AD_z_st_glogis)
 # Non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
 # Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
 m <- 0
-s <- round(fminunc_result$par[1],4)
-df <- round(fminunc_result$par[2],4)
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
 AD_z_st_t_ls <- goftest::ad.test(z_st, null = "pstd", mean=m, sd=sd, nu=df, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters m = 0, s = 0.7196, df = 3.7162
+# with parameters mean = 0, sd = 1, nu = 4
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 0.48136, p-value = 0.7658
+# An =  0.59536, p-value = 0.6523
 # Non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui seguono la distribuzione specificata
 
@@ -16807,7 +16294,7 @@ summary(Xt_t_student_symmetric_garch2_q2_p2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_symmetric_garch2_q2_p2_res   
 Xt_t_student_symmetric_garch2_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -16929,7 +16416,7 @@ Xt_t_student_symmetric_garch2_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varform
 show(Xt_t_student_symmetric_garch2_q2_p2_bp)
 # Si ha un p-value di 3.22e-07 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_symmetric_garch2_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_symmetric_garch2_q2_p2)
 show(Xt_t_student_symmetric_garch2_q2_p2_w)
@@ -17071,12 +16558,12 @@ set.seed(123)
 skew <- DescTools::Skew(Xt_t_student_asymmetric_garch1_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew       lwr.ci      upr.ci 
-# -1.965005 -2.317760 -1.697547 
+# -1.1984789 -1.5480696 -0.8240799
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_asymmetric_garch1_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
-# 5.958485 4.327387 8.254191 
+# 4.132030 3.156296 5.807462 
 
 Xt_t_student_asymmetric_garch1_q2_p2_cf <- list()
 # Cullen-Frey
@@ -17086,22 +16573,22 @@ Xt_t_student_asymmetric_garch1_q2_p2_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 #summary statistics
 # ------
-# min:  -3.491142   max:  0.1174107 
-# median:  -0.388085 
-# mean:  -0.5034917 
-# sample sd:  0.5216231 
-# sample skewness:  -2.028765 
-# sample kurtosis:  9.055298 
+# min:  -4.957061   max:  3.775335 
+# median:  0.09695226 
+# mean:  -0.01081236 
+# sample sd:  0.9550634 
+# sample skewness:  -1.205601 
+# sample kurtosis:  7.083448 
 # Da Cullen-Frey, la serie potrebbe seguire una distribuzione esponenziale, gamma o beta.
 
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 show(c(mean(y),var(y)))
-# [1] 1.576441e-17 2.685801e-01
+# [1] -2.970844e-17  9.138646e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] 1.430659e-17 1.000000e+00
+# [1] -1.028084e-17  1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -17110,144 +16597,84 @@ Xt_t_student_asymmetric_garch1_q2_p2_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 # summary statistics
 # ------
-# min:  -3.491142   max:  0.1174107 
-# median:  -0.388085 
-# mean:  -0.5034917 
-# sample sd:  0.5216231 
-# sample skewness:  -2.028765 
-# sample kurtosis:  9.055298 
-# Da Cullen-Frey, la serie potrebbe seguire una distribuzione esponenziale, gamma o beta.
+# min:  -4.957061   max:  3.775335 
+# median:  0.09695226 
+# mean:  -0.01081236 
+# sample sd:  0.9550634 
+# sample skewness:  -1.205601 
+# sample kurtosis:  7.083448  
+# Da Cullen-Frey, la serie potrebbe seguire una distribuzione student.
 
 fitdist_test <- list()
-# Distribuzione gamma generalizzata
-# Come prima cosa, fittiamo la distribuzione gamma generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_ggamma <- fitdistrplus::fitdist(z_st, "gengamma", start=list(mu=0, sigma=1, Q=1), method= "mge")
-fitdist_test[["ggamma"]][["ggamma"]] <- fitdist_ggamma
-summary(fitdist_ggamma)
-# Fitting of the distribution ' t_ggamma ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# mu    0.2790821
-# sigma 0.3105550
-# Q     9.7769383
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf
-
 # Distribuzione student asimmetrica generalizzata
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, "ast", start=list(alpha=0.5, nu1=1, nu2=1), method= "mle")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
-# alpha   0.5319332   0.01790579
-# nu1     4.9168284   1.25320338
-# nu2   342.2243210 347.12898268
-# Loglikelihood:  -671.7069   AIC:  1349.414   BIC:  1362.058 
+# nu 3.9442458 0.39225713
+# xi 0.7493448 0.04266034
+# Fixed parameters:
+#        value
+# mean     0
+# sd       1
+# Loglikelihood:  -653.573   AIC:  1311.146   BIC:  1319.575 
 # Correlation matrix:
-#   alpha          nu1          nu2
-# alpha 1.000000000  0.288162869  0.005085613
-# nu1   0.288162869  1.000000000 -0.001278076
-# nu2   0.005085613 -0.001278076  1.000000000
-
-# Distribuzione esponenziale generalizzata
-fitdist_gexp <- fitdistrplus::fitdist(z_st, dt_gexp, start=list(lambda=1, a=1), method= "mge")
-fitdist_test[["gexp"]][["gexp"]] <- fitdist_gexp
-summary(fitdist_gexp)
-# Fitting of the distribution ' t_gexp ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# lambda 0.9739564
-# a      0.3626100
-#Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf 
+#   nu         xi
+# nu  1.0000000 -0.2475059
+# xi -0.2475059  1.0000000
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-KS_z_st_ggamma <- ks.test(z_st, y="pgengamma", mu=loc, sigma=scl, Q=shp, alternative= "two.sided")
-fitdist_test[["ggamma"]][["Kolmogorov-Smirnov"]] <- KS_z_st_ggamma
-show(KS_z_st_ggamma)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.39, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="past", alpha=alpha, nu1=nu1, nu2=nu2, alternative= "two.sided")
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="psstd", mean=m, sd=sd, nu=df, xi=xi, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.15896, p-value = 2.125e-11
+# D = 0.069458, p-value = 0.01606
 # alternative hypothesis: two-sided
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student asimmetrica generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
-#
-# Setting
-lambda <- round(fitdist_gexp[["estimate"]][["lambda"]],4)
-a <- round(fitdist_gexp[["estimate"]][["a"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_gexp", a=a, lambda=lambda, alternative= "two.sided")
-fitdist_test[["gexp"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.39, p-value < 2.2e-16
-# alternative hypothesis: two-sided
 
 # Cramer-von Mises test of goodness-of-fit
 # Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5319, nu1 = 4.9168, nu2 = 342.2243
+# with parameters mean = 0, sd = 1, nu = 4, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 4.5308, p-value < 2.2e-16
+# omega2 = 0.84238, p-value = 0.005772
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-AD_z_st_ggamma <- goftest::ad.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Anderson-Darling"]] <- AD_z_st_ggamma
-show(AD_z_st_ggamma)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2791, sigma = 0.3106, Q = 9.7769
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-AD_z_st_t_ls <- goftest::ad.test(z_st, "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.5319, nu1 = 4.9168, nu2 = 342.2243
+# with parameters mean = 0, sd = 1, nu = 4, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 22.885, p-value = 1.2e-06
+# An = 4.3451, p-value = 0.005929
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
@@ -17260,7 +16687,7 @@ summary(Xt_t_student_asymmetric_garch1_q2_p2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res   
 Xt_t_student_asymmetric_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -17361,13 +16788,13 @@ plot(Xt_t_student_asymmetric_garch1_q2_p2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
 show(Xt_t_student_asymmetric_garch1_q2_p2_bp)
-# Si ha un p-value di 0.01213 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.002564 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
 show(Xt_t_student_asymmetric_garch1_q2_p2_w)
-# Si ha un p-value di 0.04304 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 0.01056 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -17516,12 +16943,12 @@ set.seed(123)
 skew <- DescTools::Skew(Xt_t_student_asymmetric_garch1_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(skew)
 #  skew       lwr.ci      upr.ci 
-# -1.817514 -2.161602 -1.575137  
+# -1.381282 -1.918875 -1.007438  
 set.seed(123)
 kurt <- DescTools::Kurt(Xt_t_student_asymmetric_garch1_q2_p2_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
 show(kurt)
 #  kurt   lwr.ci   upr.ci 
-#5.308298 3.831205 7.502219 
+# 5.605969 3.522017 8.679813
 
 Xt_t_student_asymmetric_garch1_q2_p2_cf <- list()
 # Cullen-Frey
@@ -17531,22 +16958,22 @@ Xt_t_student_asymmetric_garch1_q2_p2_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 #summary statistics
 # ------
-# min:  -2.819468   max:  0.09412356 
-# median:  -0.2869036 
-# mean:  -0.3995599 
-# sample sd:  0.422367 
-# sample skewness:  -1.96277 
-# sample kurtosis:  8.46957 
-# Da Cullen-Frey, la serie potrebbe seguire una distribuzione esponenziale, gamma o beta.
+# min:  -4.644343   max:  2.05256 
+# median:  0.05762716 
+# mean:  -0.002640901 
+# sample sd:  0.7373117 
+# sample skewness:  -1.459215 
+# sample kurtosis:  8.735853 
+# Da Cullen-Frey, la serie potrebbe seguire una distribuzione student.
 
 # Applichiamo la standardizzazione
 # Calcolo dei residui standardizzati
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 show(c(mean(y),var(y)))
-# [1] -9.540979e-18  1.690534e-01
+# [1] -3.253691e-18  5.438591e-01
 z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
 show(c(mean(z_st),var(z_st)))
-# [1] -1.685392e-17  1.000000e+00
+# [1] -1.412065e-18  1.000000e+00
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -17555,139 +16982,85 @@ Xt_t_student_asymmetric_garch1_q2_p2_cf <- append(Xt_t_student_asymmetric_garch1
 show(cf)
 # summary statistics
 # ------
-# min:  -2.819468   max:  0.09412356 
-# median:  -0.2869036 
-# mean:  -0.3995599 
-# sample sd:  0.422367 
-# sample skewness:  -1.96277 
-# sample kurtosis:  8.46957 
+# min:   -4.644343   max:  2.05256 
+# median:  0.05762716 
+# mean:  -0.002640901 
+# sample sd:  0.7373117 
+# sample skewness:  -1.459215 
+# sample kurtosis:  8.735853 
 # Da Cullen-Frey, la serie potrebbe seguire una distribuzione esponenziale, gamma o beta.
 
 fitdist_test <- list()
-# Distribuzione gamma generalizzata
-# Come prima cosa, fittiamo la distribuzione gamma generalizzata utilizzando la funzione fitdistrplus::fitdist().
-fitdist_ggamma <- fitdistrplus::fitdist(z_st, "gengamma", start=list(mu=0, sigma=1, Q=1), method= "mge")
-fitdist_test[["ggamma"]][["ggamma"]] <- fitdist_ggamma
-summary(fitdist_ggamma)
-# Fitting of the distribution ' t_ggamma ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# mu    0.2598200
-# sigma 0.3590915
-# Q     8.5681946
-# Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf
-
 # Distribuzione student asimmetrica generalizzata
-fitdist_t_ls <- fitdistrplus::fitdist(z_st, "ast", start=list(alpha=2, nu1=2, nu2=3), method= "mge")
+fitdist_t_ls <- fitdistrplus::fitdist(z_st, "sstd", start=list(nu=3.2, xi=1.5), fix.arg=list(mean=0, sd=1), method= "mle")
 fitdist_test[["gstudent"]][["gstudent"]] <- fitdist_t_ls
 summary(fitdist_t_ls)
-# Fitting of the distribution ' t_gstud ' by maximum likelihood 
+# Fitting of the distribution ' std  ' by maximum likelihood 
 # Parameters : 
 #     estimate Std. Error
-# alpha   0.4573744
-# nu1   342.0085693
-# nu2   181.2633741
-# Loglikelihood:  -729.372   AIC:  1464.744   BIC:  1477.388 
-
-# Distribuzione esponenziale generalizzata
-fitdist_gexp <- fitdistrplus::fitdist(z_st, dt_gexp, start=list(lambda=1, a=1), method= "mge")
-fitdist_test[["gexp"]][["gexp"]] <- fitdist_gexp
-summary(fitdist_gexp)
-# Fitting of the distribution ' t_gexp ' by maximum goodness-of-fit 
-# Parameters : 
-#        estimate
-# lambda 1.0402627
-# a      0.3799605
-#Loglikelihood:  -Inf   AIC:  Inf   BIC:  Inf 
+# nu 3.4035510 0.26918210
+# xi 0.8583075 0.04212473
+# Fixed parameters:
+#        value
+# mean     0
+# sd       1
+# Loglikelihood:  -648.5926   AIC:  1301.185   BIC:  1309.614 
+# Correlation matrix:
+#        nu         xi
+# nu  1.0000000 -0.2503397
+# xi -0.2503397  1.0000000
 
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-KS_z_st_ggamma <- ks.test(z_st, y="pgengamma", mu=loc, sigma=scl, Q=shp, alternative= "two.sided")
-fitdist_test[["ggamma"]][["Kolmogorov-Smirnov"]] <- KS_z_st_ggamma
-show(KS_z_st_ggamma)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.398, p-value < 2.2e-16
-# alternative hypothesis: two-sided
-# Con un p-value cosi basso, possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
-# che la serie non è una distribuzione esponenziale generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="past", alpha=alpha, nu1=nu1, nu2=nu2, alternative= "two.sided")
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+KS_z_st_t_ls <- stats::ks.test(z_st, y="psstd", mean=m, sd=sd, nu=df, xi=xi, alternative= "two.sided")
 fitdist_test[["gstudent"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.1074, p-value = 1.956e-05
+# D = 0.057974, p-value = 0.0694
 # alternative hypothesis: two-sided
-# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student asimmetrica generalizzata, quindi,
-# possiamo affermare che i residui non seguono la distribuzione specificata.
+# Ma non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student asimmetrica generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
 #
-# Setting
-lambda <- round(fitdist_gexp[["estimate"]][["lambda"]],4)
-a <- round(fitdist_gexp[["estimate"]][["a"]],4)
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pt_gexp", a=a, lambda=lambda, alternative= "two.sided")
-fitdist_test[["gexp"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
-show(KS_z_st_t_ls)
-# Asymptotic one-sample Kolmogorov-Smirnov test
-# data:  z_st
-# D = 0.398, p-value < 2.2e-16
-# alternative hypothesis: two-sided
 
 # Cramer-von Mises test of goodness-of-fit
 # Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.4574, nu1 = 342.0086, nu2 = 181.2634
+# with parameters mean = 0, sd = 1, nu = 3, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# omega2 = 1.6122, p-value = 9.417e-05
+# omega2 =0.61931, p-value = 0.02002
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata.
 
 # The Anderson-Darling test in the library *goftest*.
 # Setting
-loc <- round(fitdist_ggamma[["estimate"]][["mu"]],4)
-scl <- round(fitdist_ggamma[["estimate"]][["sigma"]],4)
-shp <- round(fitdist_ggamma[["estimate"]][["Q"]],4)
-AD_z_st_ggamma <- goftest::ad.test(z_st, null= "pgengamma", mu=loc, sigma=scl, Q=shp, estimated=FALSE)
-fitdist_test[["ggamma"]][["Anderson-Darling"]] <- AD_z_st_ggamma
-show(AD_z_st_ggamma)
-# Anderson-Darling test of goodness-of-fit
-# Null hypothesis: distribution ‘pglogis’
-# with parameters mu = 0.2598, sigma = 0.3591, Q = 8.5682
-# Parameters assumed to be fixed
-# data:  z_st
-# An = Inf, p-value = 1.2e-06
-# Poiché il p-value è molto basso, ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
-# Questo suggerisce che la serie non sembra seguire una distribuzione gamma generalizzata.
-#
-# Setting
-alpha <- round(fitdist_t_ls[["estimate"]][["alpha"]],4)
-nu1 <- round(fitdist_t_ls[["estimate"]][["nu1"]],4)
-nu2 <- round(fitdist_t_ls[["estimate"]][["nu2"]],4)
-AD_z_st_t_ls <- goftest::ad.test(z_st, "past", alpha=alpha, nu1=nu1, nu2=nu2, estimated=FALSE)
+m <- 0
+sd <- 1
+df <- round(fitdist_t_ls[['estimate']][['nu']])
+xi <- round(fitdist_t_ls[['estimate']][['xi']])
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "psstd", mean=m, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Anderson-Darling"]] <- AD_z_st_t_ls
 show(AD_z_st_t_ls)
 # Anderson-Darling test of goodness-of-fit
 # Null hypothesis: distribution ‘psstd’
-# with parameters alpha = 0.4574, nu1 = 342.0086, nu2 = 181.2634
+# with parameters mean = 0, sd = 1, nu = 3, xi = 1
 # Parameters assumed to be fixed
 # data:  z_st
-# An = 13.331, p-value = 1.2e-06
+# An =3.5981, p-value = 0.01375
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
@@ -17700,7 +17073,7 @@ summary(Xt_t_student_asymmetric_garch1_q2_p2_adf)
 # Il valore della statistica del test è significativamente inferiore al valore critico 
 # al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
 # nulla e concludere che la serie temporale è stazionaria.
-
+#
 # KPSS Test
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res   
 Xt_t_student_asymmetric_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
@@ -17801,13 +17174,13 @@ plot(Xt_t_student_asymmetric_garch1_q2_p2_lm,3) # Scale-location
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p2_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
 show(Xt_t_student_asymmetric_garch1_q2_p2_bp)
-# Si ha un p-value di 0.0001036 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 5.793e-09 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_t_student_asymmetric_garch1_q2_p2_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_t_student_asymmetric_garch1_q2_p2)
 show(Xt_t_student_asymmetric_garch1_q2_p2_w)
-# Si ha un p-value di 0.000534 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 1.928e-08 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa
 
 # Plot of the autocorrelogram.
@@ -17847,15 +17220,14 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 22.226, df = 1, p-value = 2.423e-06
+# X-squared =0.88367, df = 1, p-value = 0.3472
 # Consideriamo la forma estesa:
 T <- length(y)
 n_pars <- 7  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(10, T/4)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_t_student_asymmetric_garch1_q2_p2_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_t_student_asymmetric_garch1_q2_p2_lb)
-# Nella forma estesa del test di Ljung-Box si ha presenza di autocorrelazione con u p-valie nel primo lag
-# < 0.05
+# Nella forma estesa del test di Ljung-Box si ha presenza di autocorrelazione
 
 modello[['stimati']][['garch_q2_p2']] <- append(modello[['stimati']][['garch_q2_p2']], 
                                                 list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch1_q2_p2_new, 'a0'=a0, 'a1'=aq[1], 'a2'=aq[2], 'b1'=bp[1], 'b2'=bp[2], 'q'=q, 'p'=p,
