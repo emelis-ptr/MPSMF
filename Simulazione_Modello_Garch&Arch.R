@@ -103,12 +103,15 @@ title_content_gtable <- ggdraw() + draw_label(title_content)
 final_plot_dist_norm <- grid.arrange(title_content_gtable, plots_dist_norm, ncol = 1, heights = c(0.2, 1))
 
 ########## DISTRIBUZIONE T-STUDENT SIMMETRICA
+# mean: location parameter.
+# sd: scale parameter.
+# nu: shape parameter (degrees of freedom).
 set.seed(10)
-dist_t_student_symmetric1 <- rstd(n, mean = 0, sd = 1)
+dist_t_student_symmetric1 <- rstd(n, mean = 0, sd = 1, nu=5)
 set.seed(20)
-dist_t_student_symmetric2 <- rstd(n, mean = 0, sd = 1)
+dist_t_student_symmetric2 <- rstd(n, mean = 0, sd = 1, nu=5)
 set.seed(30)
-dist_t_student_symmetric3 <- rstd(n, mean = 0, sd = 1)
+dist_t_student_symmetric3 <- rstd(n, mean = 0, sd = 1, nu=5)
 
 type_dist = "Symmetric t-student Distribution"
 title_content <- bquote(atop(.(content), paste("Histogram of ", .(n) ," samples generated from the ", .(type_dist))))
@@ -147,6 +150,10 @@ title_content_gtable <- ggdraw() + draw_label(title_content)
 final_plot_dist_t_student_symmetric1 <- grid.arrange(title_content_gtable, plots_dist_symmetric, ncol = 1, heights = c(0.2, 1))
 
 ########## DISTRIBUZIONE T-STUDENT ASIMMETRICA
+# mean: location parameter.
+# sd: scale parameter.
+# nu: shape parameter (degrees of freedom).
+# xi:skewness parameter.
 set.seed(10)
 dist_t_student_asymmetric1 <- rsstd(n, mean = 0, sd = 1, nu = 5, xi = -1.5)
 set.seed(20)
@@ -2509,15 +2516,15 @@ summary(fitdist_glogis)
 # Fitting of the distribution ' glogis ' by maximum likelihood 
 # Parameters : 
 #           estimate Std. Error
-# location -0.1115003 0.14918042
-# scale     0.5677714 0.03765475
-# shape      1.1285050 0.19054318
-# Loglikelihood:  -697.8684   AIC:  1401.737   BIC:  1414.381
+# location -0.1014806 0.14664491
+# scale     0.5643380 0.03731272
+# shape     1.1159704 0.18625469
+#  Loglikelihood:  -697.0939   AIC:  1400.188   BIC:  1412.832 
 # Correlation matrix:
-#           location      scale      shape
-# location  1.0000000 -0.8006856 -0.9590605
-# scale     -0.8006856  1.0000000  0.8279624
-# shape    -0.9590605  0.8279624  1.0000000
+#   location      scale      shape
+# location  1.0000000 -0.7977072 -0.9578733
+# scale    -0.7977072  1.0000000  0.8264219
+# shape    -0.9578733  0.8264219  1.0000000
 #
 # La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
 set.seed(12345)
@@ -2526,9 +2533,9 @@ fitdist_test[["glogis"]][["bootdist"]] <- fitdist_glogis_bd
 summary(fitdist_glogis_bd)
 # Parametric bootstrap medians and 95% percentile CI 
 # Median       2.5%     97.5%
-# location -0.1229266 -0.4762804 0.1581700
-# scale     0.5660481  0.4937498 0.6479042
-# shape     1.1400779  0.8119753 1.7076289
+# location -0.1128609 -0.4616263 0.1651183
+# scale     0.5625120  0.4907607 0.6442987
+# shape     1.1275542  0.8038518 1.6826028
 # We fix the initial points of the constrained maximization procedure
 location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
 scale <- fitdist_glogis_bd[["fitpart"]][["estimate"]][2]
@@ -2539,7 +2546,7 @@ fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the
 # starting point.
 show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
 #    location       scale       shape 
-# -0.1109670  0.5676041  1.1277079
+# -0.1017126  0.5643816  1.1161846 
 
 # Dato che la Generalized Student distribution ha il parametro location che coincide con la media, possiamo provare 
 # a fittare i dati con una generalized Student distribution con zero location. 
@@ -4161,7 +4168,7 @@ show(Xt_normal_garch2_q1_p1_sw)
 
 # Line plot
 Data_df<- df_Xt_normal_garch2_q1_p1 
-lenh <- nrow(Data_df)
+length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
 title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) with a normal distribution")))
@@ -4219,16 +4226,36 @@ summary(Xt_normal_garch2_q1_p1_lm$fitted.values)
 
 Xt_normal_garch2_q1_p1_res <- Xt_normal_garch2_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
+skew <- list()
 set.seed(123)
-skew <- DescTools::Skew(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
-show(skew)
+s <- DescTools::Skew(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew[['0.80']] <- s
+print('conf.level=0.80')
+show(s)
 #     skew       lwr.ci      upr.ci 
 # -0.03835342 -0.17413800  0.07881778 
 set.seed(123)
-kurt <- DescTools::Kurt(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
-show(kurt)
+s <- DescTools::Skew(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
+skew[['0.99']] <- s
+print('conf.level=0.99')
+show(s)
+#     skew       lwr.ci      upr.ci 
+# -0.03835342 -0.32631653  0.22298066 
+kurt <- list()
+set.seed(123)
+k <- DescTools::Kurt(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt[['0.80']] <- k
+print('conf.level=0.80')
+show(k)
 #     kurt      lwr.ci   upr.ci 
 # -0.04608956 -0.23081440  0.18900943   
+set.seed(123)
+k <- DescTools::Kurt(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
+kurt[['0.99']] <- k
+print('conf.level=0.99')
+show(k)
+#     kurt      lwr.ci   upr.ci 
+# -0.04608956 -0.40012112  0.41884544   
 
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
@@ -4236,37 +4263,30 @@ Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=5000)
 show(Xt_normal_garch2_q1_p1_cf)
 # Conferma che la serie è una distribuzione normale.
 
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare.
-# ADF Test
-y <- Xt_normal_garch2_q1_p1_res
-num_lags <- 5                   # Setting the lag parameter for the test.
-Xt_normal_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_normal_garch2_q1_p1_adf) 
-# Il valore della statistica del test è significativamente inferiore al valore critico 
-# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
-# nulla e concludere che la serie temporale è stazionaria.
-#
-# KPSS Test
-y <- Xt_normal_garch2_q1_p1_res   
-Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
-summary(Xt_normal_garch2_q1_p1_kpss) 
-# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
-# rispetto al livello di significatività specificato.
+# Alla fine, consideriamo il test Goodness of fit.
+# The Kolmogorov-Smirnov test in the library *stats*
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pnorm", mean=1, sd=1, alternative= "two.sided")
+fitdist_test[["norm"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
+show(KS_z_st_t_ls)
+# Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.41848, p-value < 2.2e-16
+# alternative hypothesis: two-sided
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch2_q1_p1_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
 y_name <- bquote("Linear Model Residuals")
 Xt_normal_garch2_q1_p1_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
-  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
   geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
@@ -4297,7 +4317,6 @@ x_name <- bquote("t")
 y_name <- bquote("Square root of absolute residuals")
 Xt_normal_garch2_q1_p1_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
-  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
   geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
@@ -4319,12 +4338,30 @@ plot(Xt_normal_garch2_q1_p1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_garch2_q1_p1_lm,2) # Q-Q Residuals
 plot(Xt_normal_garch2_q1_p1_lm,3) # Scale-location
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare.
+# ADF Test
+y <- Xt_normal_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_normal_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+#
+# KPSS Test
+y <- Xt_normal_garch2_q1_p1_res   
+Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
+
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch2_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch2_q1_p1 )
 show(Xt_normal_garch2_q1_p1_bp)
 # Si ha un p-value di 0.7758 > 0.05, quindi, non possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch2_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch2_q1_p1 )
 show(Xt_normal_garch2_q1_p1_w)
@@ -4475,38 +4512,282 @@ summary(Xt_normal_garch2_q1_p1_lm$fitted.values)
 
 Xt_normal_garch2_q1_p1_res <- Xt_normal_garch2_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
+skew <- list()
 set.seed(123)
-skew <- skew <- DescTools::Skew(Xt_normal_garch2_q1_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
-show(skew)
-#  skew          lwr.ci      upr.ci 
-# 0.1735643069 0.0005266142 0.3567590946
+s <- DescTools::Skew(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew[['0.80']] <- s
+print('conf.level=0.80')
+show(s)
+#     skew       lwr.ci      upr.ci 
+# -0.03835342 -0.17413800  0.07881778 
 set.seed(123)
-kurt <- kurt <- DescTools::Kurt(Xt_normal_garch2_q1_p1_res, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
-show(kurt)
-#      kurt      lwr.ci      upr.ci 
-# 0.7551241 0.4687479 1.1888544
+s <- DescTools::Skew(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
+skew[['0.99']] <- s
+print('conf.level=0.99')
+show(s)
+#     skew       lwr.ci      upr.ci 
+# 0.1735643 -0.1593904  0.5740895
+kurt <- list()
+set.seed(123)
+k <- DescTools::Kurt(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+kurt[['0.80']] <- k
+print('conf.level=0.80')
+show(k)
+#     kurt      lwr.ci   upr.ci 
+# 0.1735643069 0.0005266142 0.3567590946   
+set.seed(123)
+k <- DescTools::Kurt(Xt_normal_garch2_q1_p1_res , weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
+kurt[['0.99']] <- k
+print('conf.level=0.99')
+show(k)
+#     kurt      lwr.ci   upr.ci 
+# 0.7551241 0.2266635 1.8394832  
 
+Xt_normal_garch2_q1_p1_cf <- list()
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=5000)
+show(Xt_normal_garch2_q1_p1_cf)
 
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
-# ADF Test
-y <- Xt_normal_garch2_q1_p1_res
-num_lags <- 5                   # Setting the lag parameter for the test.
-Xt_normal_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_normal_garch2_q1_p1_adf) 
-# Il valore della statistica del test è significativamente inferiore al valore critico 
-# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
-# nulla e concludere che la serie temporale è stazionaria.
+# Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
+# Applichiamo la standardizzazione
+# Calcolo dei residui standardizzati
+y <- Xt_normal_garch2_q1_p1
+show(c(mean(y),var(y)))
+# [1] -0.008155592  0.499408493
+z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
+show(c(mean(z_st),var(z_st)))
+# [1] 9.205093e-18 1.000000e+00
 
-# KPSS Test
-y <- Xt_normal_garch2_q1_p1_res   
-Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
-summary(Xt_normal_garch2_q1_p1_kpss) 
-# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
-# rispetto al livello di significatività specificato.
+# Cullen-Frey
+options(repr.plot.width = 10, repr.plot.height = 6)
+cf <- descdist(z_st, discrete=FALSE, graph=TRUE, boot=5000)
+Xt_normal_garch2_q1_p1_cf <- append(Xt_normal_garch2_q1_p1_cf, list(cf)) 
+show(cf)
+# summary statistics
+# ------
+# min:  -3.323782   max:  3.519228 
+# median:  0.01740523 
+# mean:  -1.407338e-17 
+# estimated sd:  1 
+# estimated skewness:  -0.01480967 
+# estimated kurtosis:  3.793243  
+# Da Cullen-Frey, si ha una evidenza di una distribuzione logistica.
+
+# Esploriamo queste possibilità in più dettagli.
+z_st_qemp <- EnvStats::qemp(stats::ppoints(z_st), z_st) # Empirical quantiles of the residuals.
+z_st_demp <- EnvStats::demp(z_st_qemp, z_st)     # Empirical probability density of the residuals.
+z_st_pemp <- EnvStats::pemp(z_st_qemp, z_st)     # Empirical distribution function of the residuals.  
+x <- z_st_qemp
+y_d <- z_st_demp
+y_p <- z_st_pemp
+# Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata con il parametri location=0,
+# scale=sqrt(3)/pi e shape=1.
+loc <- 0
+shp <- 1
+Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
+hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
+     freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the GARCH(1,1) model with a normal distribution", 
+     xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
+lines(x, y_d, lwd=2, col= "darkblue")
+lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, dglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", Gen_Log_Dens_Func), 
+       col=c("darkblue", "darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+# Plot della funzione di distribuzione empirica dei residui standardizzati
+loc <- 0
+shp <- 1
+Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", sqrt(3)/pi, ", shape = ", .(shp)))
+plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
+     main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(1,1) model with a normal distribution", 
+     xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
+lines(x, y_p, lwd=2, col= "darkblue")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Gen_Log_Distr_Func), 
+       col=c("darkblue","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+
+fitdist_test <- list()
+# Distribuzione logistica generalizzata
+# Come prima cosa, fittiamo la distribuzione logistica generalizzata utilizzando la funzione fitdistrplus::fitdist().
+fitdist_glogis <- fitdistrplus::fitdist(z_st, "glogis", start=list(location=0, scale=sqrt(3)/pi, shape=1), method= "mle")
+fitdist_test[["glogis"]][["glogis"]] <- fitdist_glogis
+summary(fitdist_glogis)
+# Fitting of the distribution ' glogis ' by maximum likelihood 
+# Parameters : 
+#           estimate Std. Error
+# location -0.1232003  0.1850044
+# scale     0.5993065  0.0435735
+# shape     1.1466406  0.2255960
+# Loglikelihood:  -714.2822   AIC:  1434.564   BIC:  1447.208 
+# Correlation matrix:
+#            location      scale      shape
+# location  1.0000000 -0.8426598 -0.9701573
+# scale    -0.8426598  1.0000000  0.8629687
+# shape    -0.9701573  0.8629687  1.0000000
+#
+# La funzione fitdistrplus::bootdist() permette di determinare l'incertezza nei parametri stimati della distribuzione fittata.
+set.seed(12345)
+fitdist_glogis_bd <- fitdistrplus::bootdist(fitdist_glogis, niter=1000)
+fitdist_test[["glogis"]][["bootdist"]] <- fitdist_glogis_bd
+summary(fitdist_glogis_bd)
+# Parametric bootstrap medians and 95% percentile CI 
+#            Median       2.5%     97.5%
+# location -0.1349432 -0.5115477 0.1627783
+# scale     0.5974578  0.5213120 0.6835657
+# shape     1.1586496  0.8234587 1.7423547
+# We fix the initial points of the constrained maximization procedure
+location <- fitdist_glogis_bd[["fitpart"]][["estimate"]][1]
+scale <- fitdist_glogis_bd[["fitpart"]][["estimate"]][2]
+shape <- fitdist_glogis_bd[["fitpart"]][["estimate"]][3]
+minus_logLik <- function(x) -sum(log(dglogis(z_st, location=x[1], scale=x[2], shape=x[3]))) # the log-likelihood of the generalized logistic
+# distribution.
+fminunc_result <- fminunc(x0=c(location, scale, shape), fn=minus_logLik)   # the minimization procedure where (location,scale,shape) is the 
+# starting point.
+show(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3])) # the estimated parameters.
+#    location       scale       shape 
+#   -0.1230653  0.5992392  1.1466324  
+#
+logLik <- -fminunc_result$value # the minimized negative log-likelihood
+n <- length(z_st)
+k <- length(fminunc_result[["par"]])
+AIC <- 2*k-2*logLik
+BIC <- k*log(n)-2*logLik
+AICc <- AIC + 2*k*((k+1)/(n-k-1))
+show(c(logLik, AIC, BIC, AICc))
+#    logLik    AIC       BIC      AICc
+# -714.2822 1434.5644 1447.2082 1434.6128
+#
+fitdist_glogis_location <- as.numeric(fitdist_glogis$estimate[1])
+fitdist_glogis_scale <- as.numeric(fitdist_glogis$estimate[2])
+fitdist_glogis_shape <- as.numeric(fitdist_glogis$estimate[3])
+# Notiamo:
+round(c(fitdist_glogis_location, fitdist_glogis_scale, fitdist_glogis_shape),4)
+# location    scale    shape
+#  -0.1232  0.5993  1.1466
+round(c(fminunc_result$par[1],fminunc_result$par[2],fminunc_result$par[3]),4)
+# location    scale    shape
+#  -0.1231   0.5992   1.1466 
+#
+
+# Creiamo un istogramma dei residui standardizzati insieme alla funzione di densità empirica, la funzione di densità gaussiana standard.
+# la funzione di densità Student con gradi di libertà df=5, e la funzione di densità logistica generalizzata
+loc <- fitdist_glogis_location
+shp <- fitdist_glogis_shape
+scl <- fitdist_glogis_scale
+#
+Gen_Log_Dens_Func <- bquote(paste("Gener. Logistic Density Function, location = ", .(loc),", scale = ", .(scl), ", shape = ", .(shp)))
+plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
+hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
+     freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the GARCH(1,1) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Histogram Values+Density Function")
+lines(x, y_d, lwd=2, col= "darkblue")
+lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, dglogis(x, location=loc, scale=scl, shape=shp), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", Gen_Log_Dens_Func), 
+       col=c("darkblue", "darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+# Plot della funzione di distribuzione empirica dei residui standardizzati
+Gen_Log_Distr_Func <-bquote(paste("Gener. Logistic Distribution Function, location = ", .(loc),", scale = ", .(scl), ", shape = ", .(shp)))
+plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
+     main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(1,1) model with a symmetric t-student distribution", 
+     xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
+lines(x, y_p, lwd=2, col= "darkblue")
+lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
+lines(x, pstd(x, mean = m, sd = sd, nu = df), lwd=2, col= "red")
+lines(x, pglogis(x, location=0, scale=sqrt(3)/pi, shape=1), lwd=2, col= "magenta")
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Log_Distr_Func), 
+       col=c("darkblue", "red","darkgreen","magenta"), 
+       lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
+       inset=-0.01, bty= "n")
+
+# Alla fine, consideriamo il test Goodness of fit.
+# The Kolmogorov-Smirnov test in the library *stats*
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+KS_z_st_glogis <- ks.test(z_st, y="pglogis", location=loc, scale=scl, shape=shp, alternative= "two.sided")
+fitdist_test[["glogis"]][["Kolmogorov-Smirnov"]] <- KS_z_st_glogis
+show(KS_z_st_glogis)
+# 	Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.02777, p-value = 0.8354
+# alternative hypothesis: two-sided
+# Con un p-value cosi alto, non possiamo rigettare l'ipotesi nulla. Di conseguenza, abbiamo una prova sufficiente
+# che la serie è una distribuzione logistica generalizzata.
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pnorm", mean=0, sd=1, alternative= "two.sided")
+fitdist_test[["normal"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
+show(KS_z_st_t_ls)
+# Asymptotic one-sample Kolmogorov-Smirnov test
+# data:  z_st
+# D = 0.019065, p-value = 0.9934
+# alternative hypothesis: two-sided
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
+
+# The Cramer-Von Mises test in the library *goftest*.
+# This function performs the Cramer-Von Mises test of goodness-of-fit to the distribution specified by the argument null. It is assumed that the 
+# values in x are independent and identically distributed random values, with some cumulative distribution function F. The null hypothesis is 
+# that F is the function specified by the argument null, while the alternative hypothesis is that F is some other function.
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+CVM_z_st_glogis <- goftest::cvm.test(z_st, null= "pglogis", location=loc, scale=scl, shape=shp, estimated=FALSE)
+fitdist_test[["glogis"]][["Cramer-Von Mises"]] <- CVM_z_st_glogis 
+show(CVM_z_st_glogis)
+# Cramer-von Mises test of goodness-of-fit
+# Null hypothesis: distribution ‘pglogis’
+# with parameters location = location = -0.1232, scale = 0.5993, shape = 1.1466
+# Parameters assumed to be fixed
+# data:  z_st
+# omega2 = 0.085386, p-value = 0.6615
+# Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
+# Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "pnorm", mean=0, sd=1, estimated=FALSE)
+fitdist_test[["normal"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
+show(CVM_z_st_t_ls)
+# Cramer-von Mises test of goodness-of-fit
+# Null hypothesis: distribution ‘psstd’
+# with parameters mean = 0, sd = 1
+# Parameters assumed to be fixed
+# data:  z_st
+# omega2 = 0.02501, p-value = 0.9896
+# E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui seguono la distribuzione specificata.
+
+# The Anderson-Darling test in the library *goftest*.
+loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
+scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
+shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
+AD_z_st_glogis <- goftest::ad.test(z_st, null= "pglogis", location=loc, scale=scl, shape=shp, estimated=FALSE)
+fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
+show(AD_z_st_glogis)
+# Anderson-Darling test of goodness-of-fit
+# Null hypothesis: distribution ‘pglogis’
+# with parameters location = -0.123200335183057, scale = 0.599306483325485, shape = 1.14664062505984
+# Parameters assumed to be fixed
+# data:  z_st
+# An = 0.59424, p-value = 0.6534
+# Poiché il p-value è molto alto, non ci sono evidenze sufficienti per respingere l'ipotesi nulla. 
+# Questo suggerisce che la serie sembra seguire una distribuzione logistica generalizzata.
+AD_z_st_t_ls <- goftest::ad.test(z_st, null = "pnorm", mean=0, sd=1, estimated=FALSE)
+fitdist_test[["normal"]][["Anderson-Darling"]] <- AD_z_st_t_ls
+show(AD_z_st_t_ls)
+# Anderson-Darling test of goodness-of-fit
+# Null hypothesis: distribution ‘psstd’
+# with parameters mean = 0, sd = 1, nu = 9
+# Parameters assumed to be fixed
+# data:  z_st
+# An = 0.16568, p-value = 0.9971
+# Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
+# possiamo affermare che i residui non seguono la distribuzione specificata
 
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_normal_garch2_q1_p1_res)
@@ -4571,16 +4852,34 @@ plot(Xt_normal_garch2_q1_p1_lm,1) # Residuals vs Fitted
 plot(Xt_normal_garch2_q1_p1_lm,2) # Q-Q Residuals
 plot(Xt_normal_garch2_q1_p1_lm,3) # Scale-location
 
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
+# ADF Test
+y <- Xt_normal_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_normal_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_normal_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+#
+# KPSS Test
+y <- Xt_normal_garch2_q1_p1_res   
+Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_normal_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
+
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_normal_garch2_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_normal_garch2_q1_p1 )
 show(Xt_normal_garch2_q1_p1_bp)
-# Si ha un p-value di 0.006036 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 2.015e-12 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
-
+#
 # Test WHITE sui residui del modello lineare
 Xt_normal_garch2_q1_p1_w <- lmtest::bptest(formula = Xt~t, varformula = ~ t+I(t^2), studentize = TRUE, data=df_Xt_normal_garch2_q1_p1 )
 show(Xt_normal_garch2_q1_p1_w)
-# Si ha un p-value di 0.023 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
+# Si ha un p-value di 1.722e-11 < 0.05, quindi, possiamo rigettare l'ipotesi nulla di 
 # omoschedasticità in favore  dell'ipotesi alternativa di eteroschedasticità
 
 # Plot of the autocorrelogram.
@@ -4621,7 +4920,7 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # Test Ljiung-box
 y <- Xt_normal_garch2_q1_p1_res
 Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
-# X-squared = 2.6795, df = 1, p-value = 0.1016
+# X-squared = 0.18709, df = 1, p-value = 0.6654
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
 # Consideriamo la forma estesa:
@@ -4634,7 +4933,7 @@ show(Xt_normal_garch2_q1_p1_lb)
 
 modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], 
                                                 list('normale'=list('Xt'=Xt_normal_garch2_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p,
-                                                                   'stazionarietà'=stazionaietà, 'lm'=Xt_normal_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                   'stazionarietà'=stazionarietà, 'lm'=Xt_normal_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                    'Cullen-Frey'=Xt_normal_garch2_q1_p1_cf, 
                                                                    'Breusch-Pagan'=Xt_normal_garch2_q1_p1_bp, 'White'=Xt_normal_garch2_q1_p1_w, 
                                                                    'Ljiung-Box'=Xt_normal_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_normal_garch2_q1_p1_adf, 
@@ -4769,7 +5068,7 @@ show(c(mean(z_st),var(z_st)))
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 cf <- descdist(z_st, discrete=FALSE, graph=TRUE, boot=5000)
-Xt_t_student_symmetric_arch1_q1_cf <- append(Xt_t_student_symmetric_arch1_q1_cf, list(cf)) 
+Xt_t_student_symmetric_garch3_q1_p1_cf <- append(Xt_t_student_symmetric_garch3_q1_p1_cf, list(cf)) 
 show(cf)
 # summary statistics
 # ------
@@ -5003,7 +5302,7 @@ show(CVM_z_st_t_ls)
 loc <- round(fitdist_glogis[["estimate"]][["location"]],4)
 scl <- round(fitdist_glogis[["estimate"]][["scale"]],4)
 shp <- round(fitdist_glogis[["estimate"]][["shape"]],4)
-AD_z_st_glogis <- goftest::ad.test(z_st, null= "pglogis", location=location, scale=scale, shape=shape, estimated=FALSE)
+AD_z_st_glogis <- goftest::ad.test(z_st, null= "pglogis", location=loc, scale=scl, shape=shp, estimated=FALSE)
 fitdist_test[["glogis"]][["Anderson-Darling"]] <- AD_z_st_glogis
 show(AD_z_st_glogis)
 # Anderson-Darling test of goodness-of-fit
@@ -5029,37 +5328,18 @@ show(AD_z_st_t_ls)
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
-# ADF Test
-y <- Xt_t_student_symmetric_garch3_q1_p1_res
-num_lags <- 5                   # Setting the lag parameter for the test.
-Xt_t_student_symmetric_garch3_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_t_student_symmetric_garch3_q1_p1_adf) 
-# Il valore della statistica del test è significativamente inferiore al valore critico 
-# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
-# nulla e concludere che la serie temporale è stazionaria.
-#
-# KPSS Test
-y <- Xt_t_student_symmetric_garch3_q1_p1_res   
-Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
-summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
-# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
-# rispetto al livello di significatività specificato.
-
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch3_q1_p1_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) with a symmetric t-student distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
 y_name <- bquote("Linear Model Residuals")
 Xt_t_student_symmetric_garch3_q1_p1_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
-  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
   geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
@@ -5083,14 +5363,13 @@ Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of a symmetric t-student distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) with a symmetric t-student distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
 y_name <- bquote("Square root of absolute residuals")
 Xt_t_student_symmetric_garch3_q1_p1_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
-  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
   geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
@@ -5110,6 +5389,24 @@ plot(Xt_t_student_symmetric_garch3_q1_p1_sp)
 
 plot(Xt_t_student_symmetric_garch3_q1_p1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_symmetric_garch3_q1_p1_lm,3) # Scale-location
+
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
+# ADF Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch3_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch3_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+#
+# KPSS Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res   
+Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch3_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch3_q1_p1)
@@ -5326,7 +5623,7 @@ show(c(mean(z_st),var(z_st)))
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 cf <- descdist(z_st, discrete=FALSE, graph=TRUE, boot=5000)
-Xt_t_student_symmetric_arch1_q1_cf <- append(Xt_t_student_symmetric_arch1_q1_cf, list(cf)) 
+Xt_t_student_symmetric_garch3_q1_p1_cf <- append(Xt_t_student_symmetric_garch3_q1_p1_cf, list(cf)) 
 show(cf)
 # summary statistics
 # ------
@@ -5589,30 +5886,12 @@ show(AD_z_st_t_ls)
 # E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui seguono la distribuzione specificata
 
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
-# ADF Test
-y <- Xt_t_student_symmetric_garch3_q1_p1_res
-num_lags <- 5                   # Setting the lag parameter for the test.
-Xt_t_student_symmetric_garch3_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_t_student_symmetric_garch3_q1_p1_adf) 
-# Il valore della statistica del test è significativamente inferiore al valore critico 
-# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
-# nulla e concludere che la serie temporale è stazionaria.
-#
-# KPSS Test
-y <- Xt_t_student_symmetric_garch3_q1_p1_res   
-Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
-summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
-# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
-# rispetto al livello di significatività specificato.
-
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_symmetric_garch3_q1_p1_res)
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\" -Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) of a normal distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) with a t-student symmetric distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
@@ -5642,7 +5921,7 @@ Data_df$X <- sqrt(abs(Data_df$X))
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) of a symmetric t-student distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Scatter Plot of the Residuals of the model Garch(1,1) with a symmetric t-student distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
@@ -5672,7 +5951,6 @@ leg_cols   <- c("y1_col"="blue", "y2_col"="red", "y3_col"="green")
 leg_breaks <- c("y1_col", "y2_col", "y3_col")
 Xt_t_student_symmetric_garch3_q1_p1_sp <- ggplot(Data_df) +
   geom_point(alpha=1, size=0.5, shape=19, aes(x=t, y=X, color="y1_col")) +
-  geom_line(alpha=0.7, size=0.01, linetype="solid", aes(x=t, y=X, color="y1_col", group=1)) +
   geom_smooth(alpha=1, size = 0.8, linetype="solid", aes(x=t, y=X, color="y3_col"),
               method = "lm" , formula = y ~ x, se=FALSE, fullrange=TRUE) +
   geom_smooth(alpha=1, size = 0.8, linetype="dashed", aes(x=t, y=X, color="y2_col"),
@@ -5692,6 +5970,24 @@ plot(Xt_t_student_symmetric_garch3_q1_p1_sp)
 
 plot(Xt_t_student_symmetric_garch3_q1_p1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_symmetric_garch3_q1_p1_lm,3) # Scale-location
+
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
+# ADF Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_symmetric_garch3_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_symmetric_garch3_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+#
+# KPSS Test
+y <- Xt_t_student_symmetric_garch3_q1_p1_res   
+Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_symmetric_garch3_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_symmetric_garch3_q1_p1)
@@ -5754,7 +6050,7 @@ show(Xt_t_student_symmetric_garch3_q1_p1_lb)
 
 modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], 
                                                 list('simmetrico'=list('Xt'=Xt_t_student_symmetric_garch3_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p, 
-                                                                       'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_symmetric_garch3_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                       'stazionarietà'=stazionarietà, 'lm'=Xt_t_student_symmetric_garch3_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                        'Cullen-Frey'=Xt_t_student_symmetric_garch3_q1_p1_cf,
                                                                        'Breusch-Pagan'=Xt_t_student_symmetric_garch3_q1_p1_bp, 'White'=Xt_t_student_symmetric_garch3_q1_p1_w, 
                                                                        'Ljiung-Box'=Xt_t_student_symmetric_garch3_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_symmetric_garch3_q1_p1_adf, 
@@ -5863,11 +6159,11 @@ show(k)
 #  kurt   lwr.ci   upr.ci 
 # 4.532716 1.153100 9.407195   
 
-Xt_t_student_asymmetric_arch1_q1_cf <- list()
+Xt_t_student_asymmetric_garch2_q1_p1_cf <- list()
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 cf <- descdist(Xt, discrete=FALSE, method= "sample", boot=2000)
-Xt_t_student_asymmetric_arch1_q1_cf <- append(Xt_t_student_asymmetric_arch1_q1_cf, list(cf)) 
+Xt_t_student_asymmetric_garch2_q1_p1_cf <- append(Xt_t_student_asymmetric_garch2_q1_p1_cf, list(cf)) 
 show(cf)
 # summary statistics
 # ------
@@ -5892,7 +6188,7 @@ show(c(mean(z_st),var(z_st)))
 # Cullen-Frey
 options(repr.plot.width = 10, repr.plot.height = 6)
 cf <- descdist(z_st, discrete=FALSE, method= "sample", graph=TRUE, boot=2000)
-Xt_t_student_asymmetric_arch1_q1_cf <- append(Xt_t_student_asymmetric_arch1_q1_cf, list(cf)) 
+Xt_t_student_asymmetric_garch2_q1_p1_cf <- append(Xt_t_student_asymmetric_garch2_q1_p1_cf, list(cf)) 
 show(cf)
 # summary statistics
 # ------
@@ -5991,24 +6287,6 @@ show(AD_z_st_t_ls)
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
-# ADF Test
-y <- Xt_t_student_asymmetric_garch2_q1_p1_res
-num_lags <- 5                   # Setting the lag parameter for the test.
-Xt_t_student_asymmetric_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_t_student_asymmetric_garch2_q1_p1_adf) 
-# Il valore della statistica del test è significativamente inferiore al valore critico 
-# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
-# nulla e concludere che la serie temporale è stazionaria.
-#
-# KPSS Test
-y <- Xt_t_student_asymmetric_garch2_q1_p1_res   
-Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
-summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
-# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
-# rispetto al livello di significatività specificato.
-
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch2_q1_p1_res)
 length <- nrow(Data_df)
@@ -6093,6 +6371,24 @@ plot(Xt_t_student_asymmetric_garch2_q1_p1_sp)
 
 plot(Xt_t_student_asymmetric_garch2_q1_p1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_asymmetric_garch2_q1_p1_lm,3) # Scale-location
+
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
+# ADF Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+#
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res   
+Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch2_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch2_q1_p1)
@@ -6251,11 +6547,19 @@ summary(Xt_t_student_asymmetric_garch2_q1_p1_lm$fitted.values)
 
 Xt_t_student_asymmetric_garch2_q1_p1_res <- Xt_t_student_asymmetric_garch2_q1_p1_lm$residuals
 # Calcoliamo la skew e la kurtosi
+skew <- list()
 set.seed(123)
-skew <- DescTools::Skew(Xt_t_student_asymmetric_garch2_q1_p1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
-show(skew)
+s <- DescTools::Skew(Xt_t_student_asymmetric_garch2_q1_p1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
+skew[['0.80']] <- s
+show(s)
 #  skew       lwr.ci      upr.ci 
 # -1.526175 -1.919925 -1.213420  
+set.seed(123)
+s <- DescTools::Skew(Xt_t_student_asymmetric_garch2_q1_p1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.99, ci.type= "bca", R=1000)
+skew[['0.99']] <- s
+show(s)
+#  skew       lwr.ci      upr.ci 
+# -1.5261751 -2.3890455 -0.8644226 
 kurt <- list()
 set.seed(123)
 k <- DescTools::Kurt(Xt_t_student_asymmetric_garch2_q1_p1, weights=NULL, na.rm=TRUE, method=2, conf.level=0.80, ci.type= "bca", R=1000)
@@ -6398,24 +6702,6 @@ show(AD_z_st_t_ls)
 # Ma possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui non seguono la distribuzione specificata
 
-# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
-# ADF Test
-y <- Xt_t_student_asymmetric_garch2_q1_p1_res
-num_lags <- 5                   # Setting the lag parameter for the test.
-Xt_t_student_asymmetric_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
-summary(Xt_t_student_asymmetric_garch2_q1_p1_adf) 
-# Il valore della statistica del test è significativamente inferiore al valore critico 
-# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
-# nulla e concludere che la serie temporale è stazionaria.
-#
-# KPSS Test
-y <- Xt_t_student_asymmetric_garch2_q1_p1_res   
-Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
-summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
-# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
-# rispetto al livello di significatività specificato.
-
 # Scatter plot - Residuals
 Data_df <- data.frame(t = 1:length(Xt), X = Xt_t_student_asymmetric_garch2_q1_p1_res)
 length <- nrow(Data_df)
@@ -6501,6 +6787,25 @@ plot(Xt_t_student_asymmetric_garch2_q1_p1_sp)
 plot(Xt_t_student_asymmetric_garch2_q1_p1_lm,1) # Residuals vs Fitted
 plot(Xt_t_student_asymmetric_garch2_q1_p1_lm,3) # Scale-location
 
+
+# La serie è stata costruita per essere stazionaria, ma eseguiamo i test ADF e KPSS per verificare. 
+# ADF Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res
+num_lags <- 5                   # Setting the lag parameter for the test.
+Xt_t_student_asymmetric_garch2_q1_p1_adf <- ur.df(y, type="none", lags=num_lags, selectlags="Fixed")    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_adf) 
+# Il valore della statistica del test è significativamente inferiore al valore critico 
+# al livello di significatività del 1%. Di conseguenza, possiamo respingere l'ipotesi 
+# nulla e concludere che la serie temporale è stazionaria.
+#
+# KPSS Test
+y <- Xt_t_student_asymmetric_garch2_q1_p1_res   
+Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
+summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
+# Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
+# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# rispetto al livello di significatività specificato.
+
 # Test BREUSCH-PAGAN sui residui del modello lineare
 Xt_t_student_asymmetric_garch2_q1_p1_bp <- lmtest::bptest(formula = Xt~t, varformula=NULL, studentize = TRUE, data=df_Xt_t_student_asymmetric_garch2_q1_p1)
 show(Xt_t_student_asymmetric_garch2_q1_p1_bp)
@@ -6564,7 +6869,7 @@ show(Xt_t_student_asymmetric_garch2_q1_p1_lb)
 
 modello[['stimati']][['garch_q1_p1']] <- append(modello[['stimati']][['garch_q1_p1']], 
                                                 list('asimmetrico'=list('Xt'=Xt_t_student_asymmetric_garch2_q1_p1_new, 'a0'=a0, 'a1'=a1, 'b1'=b1, 'q'=q, 'p'=p,
-                                                                        'stazionarietà'=stazionaietà, 'lm'=Xt_t_student_asymmetric_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
+                                                                        'stazionarietà'=stazionarietà, 'lm'=Xt_t_student_asymmetric_garch2_q1_p1_lm, 'skew'=skew, 'kurt'=kurt, 
                                                                         'Cullen-Frey'=Xt_t_student_asymmetric_garch2_q1_p1_cf,
                                                                         'Breusch-Pagan'=Xt_t_student_asymmetric_garch2_q1_p1_bp, 'White'=Xt_t_student_asymmetric_garch2_q1_p1_w, 
                                                                         'Ljiung-Box'=Xt_t_student_asymmetric_garch2_q1_p1_lb, 'Dickey-Fuller'=Xt_t_student_asymmetric_garch2_q1_p1_adf, 
