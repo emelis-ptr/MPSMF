@@ -24,7 +24,6 @@ if (!requireNamespace("FitAR", quietly = TRUE)) {
 
 " Librerie necessarie"
 library(stats)
-library(skewtDist) # libreria utilizzata per la distribuzione t-student asimmetrica
 library(ggplot2)
 library(gridExtra)
 library(cowplot)
@@ -40,14 +39,6 @@ library(urca)
 library(goftest)
 library(glogis) # generalized logistic distribution
 library(pracma)
-# install.packages("flexsurv")
-library(flexsurv) # generalized gamma distribution
-# install.packages("actuar")
-library(actuar) # generalized beta distribution
-# install.packages("gnorm")
-library(gnorm) # generalized normal distribution
-# install.packages("VaRES")
-library(VaRES) # generalized asymmetric t-student distribution
 library(fGarch)
 
 ##########################################################################################################################
@@ -153,7 +144,7 @@ final_plot_dist_t_student_symmetric1 <- grid.arrange(title_content_gtable, plots
 # mean: location parameter.
 # sd: scale parameter.
 # nu: shape parameter (degrees of freedom).
-# xi:skewness parameter.
+# xi: skewness parameter.
 set.seed(10)
 dist_t_student_asymmetric1 <- rsstd(n, mean = 0, sd = 1, nu = 5, xi = -1.5)
 set.seed(20)
@@ -1742,7 +1733,7 @@ y <- Xt_normal_arch1_q1_res
 Xt_normal_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_arch1_q1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -2174,7 +2165,7 @@ y <- Xt_normal_arch1_q1_res
 Xt_normal_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_arch1_q1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -2745,7 +2736,7 @@ y <- Xt_t_student_symmetric_arch1_q1_res
 Xt_t_student_symmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_arch1_q1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -3301,7 +3292,7 @@ y <- Xt_t_student_symmetric_arch1_q1_res
 Xt_t_student_symmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_arch1_q1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -3684,7 +3675,7 @@ y <- Xt_t_student_asymmetric_arch1_q1_res
 Xt_t_student_asymmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_arch1_q1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -3997,7 +3988,7 @@ m <- 0
 sd <- 1
 df <- round(fitdist_t_ls[['estimate']][['nu']])
 xi <- round(fitdist_t_ls[['estimate']][['xi']])
-CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=0, sd=s, nu=df, xi=xi, estimated=FALSE)
+CVM_z_st_t_ls <- goftest::cvm.test(z_st, null= "psstd", mean=0, sd=sd, nu=df, xi=xi, estimated=FALSE)
 fitdist_test[["gstudent"]][["Cramer-Von Mises"]] <- CVM_z_st_t_ls
 show(CVM_z_st_t_ls)
 # Cramer-von Mises test of goodness-of-fit
@@ -4044,7 +4035,7 @@ y <- Xt_t_student_asymmetric_arch1_q1_res
 Xt_t_student_asymmetric_arch1_q1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_arch1_q1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -4171,7 +4162,7 @@ Data_df<- df_Xt_normal_garch2_q1_p1
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\" -  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) with a normal distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\" - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Line Plot of the model Garch(1,1) with a normal distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
@@ -4181,7 +4172,7 @@ x_breaks_up <- Data_df$t[length]
 x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
 x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
 if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
-x_labs <- paste(Data_df$t[x_breaks],Data_df$t[x_breaks])
+x_labs <- paste(Data_df$t[x_breaks])
 J <- 0
 x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
 y_name <- bquote("Samples")
@@ -4263,14 +4254,39 @@ Xt_normal_garch2_q1_p1_cf <- descdist(Xt, discrete=FALSE, boot=5000)
 show(Xt_normal_garch2_q1_p1_cf)
 # Conferma che la serie è una distribuzione normale.
 
+# Test pe verificare che sia una distribuzione t-student -> Goodness of fit: prendere i dati e fare una distribuzione parametrica della distribuzione per verificare che sia una t-student
+# Applichiamo la standardizzazione
+# Calcolo dei residui standardizzati
+y <- Xt_normal_garch2_q1_p1
+show(c(mean(y),var(y)))
+# [1] -0.008155592  0.499408493
+z_st <- as.numeric((1/sd(y))*(y-mean(y))) # We standardize the residuals of the GARCH model.
+show(c(mean(z_st),var(z_st)))
+# [1] 9.205093e-18 1.000000e+00
+
+# Cullen-Frey
+options(repr.plot.width = 10, repr.plot.height = 6)
+cf <- descdist(z_st, discrete=FALSE, graph=TRUE, boot=5000)
+Xt_normal_garch2_q1_p1_cf <- append(Xt_normal_garch2_q1_p1_cf, list(cf)) 
+show(cf)
+# summary statistics
+# ------
+# min:  -3.323782   max:  3.519228 
+# median:  0.01740523 
+# mean:  -1.407338e-17 
+# estimated sd:  1 
+# estimated skewness:  -0.01480967 
+# estimated kurtosis:  3.793243  
+# Da Cullen-Frey, si ha una evidenza di una distribuzione logistica.
+
 # Alla fine, consideriamo il test Goodness of fit.
 # The Kolmogorov-Smirnov test in the library *stats*
-KS_z_st_t_ls <- stats::ks.test(z_st, y="pnorm", mean=1, sd=1, alternative= "two.sided")
-fitdist_test[["norm"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
+KS_z_st_t_ls <- stats::ks.test(z_st, y="pnorm", mean=0, sd=1, alternative= "two.sided")
+fitdist_test[["normal"]][["Kolmogorov-Smirnov"]] <- KS_z_st_t_ls
 show(KS_z_st_t_ls)
 # Asymptotic one-sample Kolmogorov-Smirnov test
 # data:  z_st
-# D = 0.41848, p-value < 2.2e-16
+# D = 0.019065, p-value = 0.9934
 # alternative hypothesis: two-sided
 # E non possiamo rigettare l'ipotesi nulla che i residui standardizzati hanno una distribuzione Student generalizzata, quindi,
 # possiamo affermare che i residui seguono la distribuzione specificata.
@@ -4353,7 +4369,7 @@ y <- Xt_normal_garch2_q1_p1_res
 Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch2_q1_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
@@ -4409,7 +4425,7 @@ Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.20218, df = 1, p-value = 0.653
 # Consideriamo la forma estesa:
 T <- length(y)
-n_pars <- 4  # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
+n_pars <- 4 # numbers of parameters/ or degrees of freedom estimated in the model (Hyndman)
 max_lag <- ceiling(min(10, T/4)) # Hyndman https://robjhyndman.com/hyndsight/ljung-box-test/
 Xt_normal_garch2_q1_p1_lb <- LjungBoxTest(y, lag.max=max_lag, k=n_pars, StartLag=1, SquaredQ=FALSE)
 show(Xt_normal_garch2_q1_p1_lb)
@@ -4467,7 +4483,7 @@ x_breaks_up <- Data_df$t[length]
 x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
 x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
 if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
-x_labs <- paste(Data_df$t[x_breaks],Data_df$t[x_breaks])
+x_labs <- paste(Data_df$t[x_breaks])
 J <- 0
 x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
 y_name <- bquote("Samples")
@@ -4867,7 +4883,7 @@ y <- Xt_normal_garch2_q1_p1_res
 Xt_normal_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch2_q1_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
@@ -4960,7 +4976,7 @@ Data_df<- df_Xt_t_student_symmetric_garch3_q1_p1
 length <- nrow(Data_df)
 First_Day <- paste(Data_df$t[1])
 Last_Day <- paste(Data_df$t[length])
-title_content <- bquote(atop("University of Roma \"Tor Vergata\"  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Residuals of the model Garch(1,1) with a symmetric t-student distribution")))
+title_content <- bquote(atop("University of Roma \"Tor Vergata\"  - Metodi Probabilistici e Statistici per i Mercati Finanziari", paste("Line plot of the model Garch(1,1) with a symmetric t-student distribution")))
 subtitle_content <- bquote(paste("path length ", .(length), " sample points"))
 caption_content <- author_content
 x_name <- bquote("t")
@@ -4970,7 +4986,7 @@ x_breaks_up <- Data_df$t[length]
 x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
 x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
 if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
-x_labs <- paste(Data_df$t[x_breaks],Data_df$t[x_breaks])
+x_labs <- paste(Data_df$t[x_breaks])
 J <- 0
 x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
 y_name <- bquote("Samples")
@@ -5405,7 +5421,7 @@ y <- Xt_t_student_symmetric_garch3_q1_p1_res
 Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
@@ -5986,7 +6002,7 @@ y <- Xt_t_student_symmetric_garch3_q1_p1_res
 Xt_t_student_symmetric_garch3_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch3_q1_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
@@ -6088,7 +6104,7 @@ x_breaks_up <- Data_df$t[length]
 x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
 x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
 if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
-x_labs <- paste(Data_df$t[x_breaks],Data_df$t[x_breaks])
+x_labs <- paste(Data_df$t[x_breaks])
 J <- 0
 x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
 y_name <- bquote("Samples")
@@ -6387,7 +6403,7 @@ y <- Xt_t_student_asymmetric_garch2_q1_p1_res
 Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
@@ -6503,7 +6519,7 @@ x_breaks_up <- Data_df$t[length]
 x_binwidth <- floor((x_breaks_up-x_breaks_low)/x_breaks_num)
 x_breaks <- seq(from=x_breaks_low, to=x_breaks_up, by=x_binwidth)
 if((max(x_breaks)-x_breaks_up)>x_binwidth/2){x_breaks <- c(x_breaks,x_breaks_up)}
-x_labs <- paste(Data_df$t[x_breaks],Data_df$t[x_breaks])
+x_labs <- paste(Data_df$t[x_breaks])
 J <- 0
 x_lims <- c(x_breaks_low-J*x_binwidth, x_breaks_up+J*x_binwidth)
 y_name <- bquote("Samples")
@@ -6803,7 +6819,7 @@ y <- Xt_t_student_asymmetric_garch2_q1_p1_res
 Xt_t_student_asymmetric_garch2_q1_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch2_q1_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Test BREUSCH-PAGAN sui residui del modello lineare
@@ -7029,7 +7045,7 @@ y <- Xt_normal_garch1_q1_p2_res
 Xt_normal_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch1_q1_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -7594,7 +7610,7 @@ y <- Xt_normal_garch1_q1_p2_res
 Xt_normal_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch1_q1_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -8143,7 +8159,7 @@ y <- Xt_t_student_symmetric_garch1_q1_p2_res
 Xt_t_student_symmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch1_q1_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -8696,7 +8712,7 @@ y <- Xt_t_student_symmetric_garch1_q1_p2_res
 Xt_t_student_symmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch1_q1_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -9077,7 +9093,7 @@ y <- Xt_t_student_asymmetric_garch1_q1_p2_res
 Xt_t_student_asymmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch1_q1_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -9470,7 +9486,7 @@ y <- Xt_t_student_asymmetric_garch1_q1_p2_res
 Xt_t_student_asymmetric_garch1_q1_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch1_q1_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -9752,7 +9768,7 @@ y <- Xt_normal_arch1_q2_res
 Xt_normal_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_arch1_q2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -10052,7 +10068,7 @@ y <- Xt_normal_arch1_q2_res
 Xt_normal_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_arch1_q2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -10597,7 +10613,7 @@ y <- Xt_t_student_symmetric_arch2_q2_res
 Xt_t_student_symmetric_arch2_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_arch2_q2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -11150,7 +11166,7 @@ y <- Xt_t_student_symmetric_arch2_q2_res
 Xt_t_student_symmetric_arch2_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_arch2_q2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -11529,7 +11545,7 @@ y <- Xt_t_student_asymmetric_arch1_q2_res
 Xt_t_student_asymmetric_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_arch1_q2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -11919,7 +11935,7 @@ y <- Xt_t_student_asymmetric_arch1_q2_res
 Xt_t_student_asymmetric_arch1_q2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_arch1_q2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -12201,7 +12217,7 @@ y <- Xt_normal_garch1_q2_p1_res
 Xt_normal_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch1_q2_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -12757,7 +12773,7 @@ y <- Xt_normal_garch1_q2_p1_res
 Xt_normal_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch1_q2_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -13230,7 +13246,7 @@ plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0),
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(2,1) model", 
      xlab= "Standardized Residuals", ylab= "Probability Distribution")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, pt_ls(x, mean=0, sd=sd, nu=df), lwd=2, col= "blue")
+lines(x, pstd(x, mean=0, sd=sd, nu=df), lwd=2, col= "blue")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Est_Gen_Stud_Distr_Func, Est_Gen_Logis_Distr_Func ),
        col=c("darkgreen", "red", "blue", "magenta"), 
@@ -13339,7 +13355,7 @@ y <- Xt_t_student_symmetric_garch2_q2_p1_res
 Xt_t_student_symmetric_garch2_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch2_q2_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -13835,7 +13851,7 @@ plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0),
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(2,1) model", 
      xlab= "Standardized Residuals", ylab= "Probability Distribution")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "red")
-lines(x, pt_ls(x, mean=m, sd=sd, nu=df), lwd=2, col= "blue")
+lines(x, pstd(x, mean=m, sd=sd, nu=df), lwd=2, col= "blue")
 lines(x, pglogis(x, location=location, scale=scale, shape=shape), lwd=2, col= "magenta")
 legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", Est_Gen_Stud_Distr_Func, Est_Gen_Logis_Distr_Func ),
        col=c("darkgreen", "red", "blue", "magenta"), 
@@ -13944,7 +13960,7 @@ y <- Xt_t_student_symmetric_garch2_q2_p1_res
 Xt_t_student_symmetric_garch2_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch2_q2_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -14336,7 +14352,7 @@ y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 Xt_t_student_asymmetric_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch1_q2_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -14725,7 +14741,7 @@ y <- Xt_t_student_asymmetric_garch1_q2_p1_res
 Xt_t_student_asymmetric_garch1_q2_p1_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch1_q2_p1_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -15005,7 +15021,7 @@ y <- Xt_normal_garch1_q2_p2_res
 Xt_normal_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch1_q2_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -15579,7 +15595,7 @@ y <- Xt_normal_garch1_q2_p2_res
 Xt_normal_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_normal_garch1_q2_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -15900,7 +15916,6 @@ y_p <- z_st_pemp
 # scale=sqrt(3)/pi e shape=1.
 m <- 0
 s <- sqrt(1/3)
-Gen_Stud_Dens_Func <- bquote(paste("Gener. Student Density Function, m = ", .(m),", s = ", .(s)))
 plot(x, y_d, xlim=c(x[1]-2.0, x[length(x)]+2.0), ylim=c(0, y_d[length(y_d)]+0.75), type= "n")
 hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[length(x)]+1.0), ylim=c(0, y_d[length(y)]+0.75), 
      freq=FALSE, main= "Density Histogram and Empirical Density Function of the Standardized Residuals of the GARCH(2,2) model with a symmetric t-student distribution", 
@@ -15908,24 +15923,21 @@ hist(z_st, breaks= "Scott", col= "cyan", border= "black", xlim=c(x[1]-1.0, x[len
 lines(x, y_d, lwd=2, col= "darkblue")
 lines(x, dnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, dstd(x, mean=0, sd=1, nu=5), lwd=2, col= "red")
-lines(x, dstd (x, m=m, s=s, df=df), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5", Gen_Stud_Dens_Func), 
-       col=c("darkblue", "darkgreen", "red", "magenta"), 
+legend("topleft", legend=c("Empirical Density Function", "Standard Gaussian Density Function", "Student Density Function, df=5"), 
+       col=c("darkblue", "darkgreen", "red"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 # Plot della funzione di distribuzione empirica dei residui standardizzati
 loc <- 0
 shp <- 1
-Gen_Stud_Distr_Func <-bquote(paste("Gener. Student Distribution Function, location = ", .(m),", scale = ", .(s)))
 plot(x, y_p, pch=16, col= "cyan", xlim=c(x[1]-1.0, x[length(x)]+1.0), 
      main= "Empirical Distribution Function of the Standardized Residuals of the GARCH(1,1) model with a symmetric t-student distribution", 
      xlab= "Standardized Residuals", ylab= "Empirical Probability Distribution")
 lines(x, y_p, lwd=2, col= "darkblue")
 lines(x, pnorm(x, m=0, sd=1), lwd=2, col= "darkgreen")
 lines(x, pstd(x, mean = 0, sd = 1, nu = 5), lwd=2, col= "red")
-lines(x, psstd(x, m=m, s=s, df=df), lwd=2, col= "magenta")
-legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5", Gen_Stud_Distr_Func), 
-       col=c("darkblue", "darkgreen", "red", "magenta"), 
+legend("topleft", legend=c("Empirical Distribution Function", "Standard Gaussian Distribution Function", "Student Distribution Function, df=5"), 
+       col=c("darkblue", "darkgreen", "red"), 
        lty=1, lwd=0.1, cex=0.8, x.intersp=0.50, y.intersp=0.70, text.width=2, seg.len=1, text.font=4, box.lty=0,
        inset=-0.01, bty= "n")
 
@@ -16013,7 +16025,7 @@ y <- Xt_t_student_symmetric_garch2_q2_p2_res
 Xt_t_student_symmetric_garch2_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch2_q2_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -16605,7 +16617,7 @@ y <- Xt_t_student_symmetric_garch2_q2_p2_res
 Xt_t_student_symmetric_garch2_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_symmetric_garch2_q2_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -16998,7 +17010,7 @@ y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 Xt_t_student_asymmetric_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch1_q2_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
@@ -17384,7 +17396,7 @@ y <- Xt_t_student_asymmetric_garch1_q2_p2_res
 Xt_t_student_asymmetric_garch1_q2_p2_kpss <- ur.kpss(y, type="mu", lags="nil", use.lag=NULL)    
 summary(Xt_t_student_asymmetric_garch1_q2_p2_kpss) 
 # Il valore del test statistico è minore per ogni livello di significatività, pertanto possiamo
-# respingere l'ipotesi di non stazionarietà e concludere che la serie temporale è stazionaria 
+# respingere l'ipotesi di stazionarietà e concludere che la serie temporale è non stazionaria 
 # rispetto al livello di significatività specificato.
 
 # Scatter plot - Residuals
