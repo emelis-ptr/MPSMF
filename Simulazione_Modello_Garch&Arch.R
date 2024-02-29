@@ -4387,7 +4387,7 @@ show(Xt_normal_garch2_q1_p1_w)
 # Plot of the autocorrelogram.
 y <- Xt_normal_garch2_q1_p1_lm$residuals
 length <- length(y)
-maxlag <- ceiling(10*log10(length))
+maxlag <- ceiling(min(10, T/4))
 Aut_Fun_y <- acf(y, lag.max = maxlag, type="correlation", plot=FALSE)
 ci_90 <- qnorm((1+0.90)/2)/sqrt(length)
 ci_95 <- qnorm((1+0.95)/2)/sqrt(length)
@@ -4419,9 +4419,52 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 # nel grafico dell'autocorrelogramma possiamo notare che i valori oscillano sempre entro 
 # l'inervallo di confidenza.
 
+# The partial autocorrelogram of the remainders.
+y <-  Xt_normal_garch2_q1_p1_lm$residuals
+T <- length(y)
+# maxlag <- ceiling(10*log10(T))    # Default
+# maxlag <- ceiling(sqrt(n)+45)     # Box-Jenkins
+maxlag <- ceiling(min(10, T/4))     # Hyndman (for data without seasonality)
+# maxlag <- ceiling(min(2*12, T/5)) # Hyndman (for data with seasonality)
+# https://robjhyndman.com/hyndsight/ljung-box-test/
+Aut_Fun_y <- pacf(y, lag.max=maxlag, type="correlation", plot=FALSE)
+ci_90 <- qnorm((1+0.90)/2)/sqrt(T)
+ci_95 <- qnorm((1+0.95)/2)/sqrt(T)
+ci_99 <- qnorm((1+0.99)/2)/sqrt(T)
+Plot_Aut_Fun_y <- data.frame(lag=Aut_Fun_y$lag, acf=Aut_Fun_y$acf)
+title_content <- bquote(atop("Partial Autocorrelogram of the Residuals in the Linear Model for the model GARCH(1,1)"))
+subtitle_content <- bquote(paste("Path length ", .(T), " sample points. Lags ", .(maxlag)))
+caption_content <- author_content
+x_name <- bquote("lags")
+x_breaks_num <- maxlag
+x_binwidth <- 1
+x_breaks <- Aut_Fun_y$lag
+x_labs <- format(x_breaks, scientific=FALSE)
+ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf))+
+  geom_segment(aes(x=lag, y=rep(0,length(lag)), xend=lag, yend=acf), linewidth=1, col="black") +
+  # geom_col(mapping=NULL, data=NULL, position="dodge", width=0.1, col="black", inherit.aes=TRUE)+
+  geom_hline(aes(yintercept=-ci_90, color="CI_90"), show.legend=TRUE, lty=3) +
+  geom_hline(aes(yintercept=ci_90, color="CI_90"), lty=3) +
+  geom_hline(aes(yintercept=ci_95, color="CI_95"), show.legend=TRUE, lty=4)+
+  geom_hline(aes(yintercept=-ci_95, color="CI_95"), lty=4) +
+  geom_hline(aes(yintercept=-ci_99, color="CI_99"), show.legend=TRUE, lty=4) +
+  geom_hline(aes(yintercept=ci_99, color="CI_99"), lty=4) +
+  scale_x_continuous(name="lag", breaks=x_breaks, label=x_labs) +
+  scale_y_continuous(name="acf value", breaks=waiver(), labels=NULL,
+                     sec.axis=sec_axis(~., breaks=waiver(), labels=waiver())) +
+  scale_color_manual(name="Conf. Inter.", labels=c("90%","95%","99%"),
+                     values=c(CI_90="green", CI_95="blue", CI_99="red")) +
+  ggtitle(title_content) +
+  labs(subtitle=subtitle_content, caption=caption_content) +
+  theme(plot.title=element_text(hjust=0.5, size=9), 
+        plot.subtitle=element_text(hjust= 0.5, size=8.5),
+        plot.caption=element_text(hjust=1.0),
+        legend.key.width=unit(0.8,"cm"), legend.position="bottom")
+
 # Test Ljiung-box
 y <- Xt_normal_garch2_q1_p1_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
+max_lag <- ceiling(min(10, T/4)) 
+Box.test(y, lag = max_lag, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.20218, df = 1, p-value = 0.653
 # Consideriamo la forma estesa:
 T <- length(y)
@@ -4935,7 +4978,8 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 
 # Test Ljiung-box
 y <- Xt_normal_garch2_q1_p1_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
+max_lag <- ceiling(min(10, T/4))
+Box.test(y, lag = max_lag, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.18709, df = 1, p-value = 0.6654
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
@@ -5476,7 +5520,8 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch3_q1_p1_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
+max_lag <- ceiling(min(10, T/4))
+Box.test(y, lag = max_lag, type = "Ljung-Box", fitdf = 0)
 # X-squared = 2.2579, df = 1, p-value = 0.1329
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
@@ -6052,7 +6097,8 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 
 # Test Ljiung-box
 y <- Xt_t_student_symmetric_garch3_q1_p1_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
+max_lag <- ceiling(min(10, T/4)) 
+Box.test(y, lag = max_lag, type = "Ljung-Box", fitdf = 0)
 # X-squared = 0.34583, df = 1, p-value = 0.5565
 # I risultati mostrano un p-value > 0.05, ciò significa che non possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
@@ -6456,7 +6502,8 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch2_q1_p1_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
+max_lag <- ceiling(min(10, T/4)) 
+Box.test(y, lag = max_lag, type = "Ljung-Box", fitdf = 0)
 # X-squared = 7.1729, df = 1, p-value = 0.007401
 # Consideriamo la forma estesa:
 T <- length(y)
@@ -6871,7 +6918,8 @@ ggplot(Plot_Aut_Fun_y, aes(x=lag, y=acf)) +
 
 # Test Ljiung-box
 y <- Xt_t_student_asymmetric_garch2_q1_p1_res
-Box.test(y, lag = 1, type = "Ljung-Box", fitdf = 0)
+max_lag <- ceiling(min(10, T/4))
+Box.test(y, lag = max_lag, type = "Ljung-Box", fitdf = 0)
 # X-squared = 2.9465, df = 1, p-value = 0.08607
 # I risultati mostrano un p-value > 0.05, ciò significa che possiamo rigettare
 # l'ipotesi nulla di assenza di autocorrelazione.
